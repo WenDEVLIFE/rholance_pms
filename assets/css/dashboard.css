@@ -1,0 +1,152 @@
+/* ================= ROOT COLORS ================= */
+:root {
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+
+    --primary: #0f172a;
+    --accent: #f59e0b;
+
+    --border: #e2e8f0;
+}
+
+/* DARK MODE */
+body.dark-mode {
+    --bg: #0b1220;
+    --card: #1e293b;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #334155;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* MAIN CONTENT FIX (VERY IMPORTANT) */
+.main-content {
+    margin-left: 260px; /* adjust if sidebar width changes */
+    padding: 30px;
+}
+
+/* ================= PAGE TITLE ================= */
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* ================= STATS GRID ================= */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* ================= STAT CARD ================= */
+.stat-box {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+}
+
+.stat-box h3 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.stat-box p {
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+/* ================= DASHBOARD CARD ================= */
+.dashboard-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+.dashboard-card h3 {
+    margin-bottom: 15px;
+}
+
+/* ================= LIST ITEMS ================= */
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.time {
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.name {
+    font-weight: 500;
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.btn-approve {
+    background: #22c55e;
+    color: white;
+}
+
+.btn-reject {
+    background: #ef4444;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* ================= LINKS ================= */
+a {
+    text-decoration: none;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

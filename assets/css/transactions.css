@@ -1,0 +1,151 @@
+/* =========================
+   GRID
+========================= */
+.transactions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* =========================
+   CARD
+========================= */
+.transaction-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.transaction-card:hover {
+    transform: translateY(-4px);
+}
+
+/* HEADER */
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* STATUS */
+.status {
+    background: #22c55e;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* BODY */
+.transaction-body {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+/* ITEM ROW */
+/* PRODUCT ROW STYLE */
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    padding: 6px 0;
+}
+
+.item-row span:first-child {
+    font-weight: 500;
+}
+
+/* EMPTY STATE */
+.item-row.empty {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* HEADER UPGRADE */
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* STATUS BADGE */
+.status {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+/* FOOTER */
+.transaction-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* DATE STYLE */
+.transaction-footer small {
+    color: #9ca3af;
+}
+
+/* FOOTER */
+.transaction-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+/* DARK MODE */
+body.dark-mode .transaction-card {
+    background: #1f2937;
+    color: #fff;
+}
+/* ITEM STYLE */
+.item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.item-info small {
+    display: block;
+    color: #9ca3af;
+    font-size: 12px;
+}
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #374151;
+    color: #fff;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background: #3b82f6;
+}

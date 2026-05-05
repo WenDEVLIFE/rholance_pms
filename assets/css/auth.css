@@ -1,0 +1,107 @@
+/* ===== FORGOT PASSWORD PAGE ===== */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    height: 100vh;
+}
+
+/* CENTER CONTAINER */
+.fp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* CARD */
+.fp-card {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* TITLE */
+.fp-card h2 {
+    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* SUBTEXT */
+.fp-card p {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.fp-card input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* BUTTON */
+.fp-card button {
+    width: 100%;
+    padding: 12px;
+    background: #f59e0b;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.fp-card button:hover {
+    background: #d97706;
+}
+
+/* MESSAGE */
+.fp-message {
+    background: #ecfdf5;
+    color: #065f46;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+/* BACK LINK */
+.fp-back {
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 13px;
+    color: #f59e0b;
+    text-decoration: none;
+}
+
+.fp-back:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .fp-card {
+        margin: 20px;
+        padding: 25px;
+    }
+}
+.fp-logo {
+    width: 90%;
+    max-width: 100px;
+    min-width: 60px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+}

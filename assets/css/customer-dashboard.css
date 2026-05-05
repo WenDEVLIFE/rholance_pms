@@ -1,0 +1,2082 @@
+/* ============================
+   CLEAN CUSTOMER DASHBOARD (FIXED)
+============================ */
+
+/* ===== ROOT ===== */
+.customer-dashboard {
+    --accent: #f59e0b;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.main.customer-dashboard {
+    background: 
+        linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
+        url("../images/weld.jpg");
+    
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    backdrop-filter: blur(3px);
+   
+    padding: 0 40px 40px;
+
+
+    box-sizing: border-box;
+    /* DARK OVERLAY */
+}
+.customer-dashboard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.20); /*  adjust this */
+
+    pointer-events: none;
+    z-index: 0;
+}
+.main.customer-dashboard {
+    background-color: #0f172a; /*  SAME AS SIDEBAR */
+}
+.topbar {
+    background: #0f172a !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.customer-dashboard .card:first-of-type {
+    margin-top: 20px;
+}
+
+/* ===== BACKGROUND ===== */
+
+.customer-dashboard {
+    position: relative;
+    overflow: hidden;
+}   
+/* ============================
+   SIMPLE STACKED HEADER
+============================ */
+
+.dashboard-header {
+    display: flex;
+    flex-direction: column;   /* STACKED */
+    align-items: flex-start;
+
+    gap: 6px;
+    margin-bottom: 24px;
+   
+    width: 100%;
+    padding-bottom: 16px;
+    
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+}
+
+/* TITLE */
+.dashboard-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+/* SUBTITLE */
+.dashboard-header .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* DARK MODE */
+body.dark .dashboard-header .subtitle {
+    color: #94a3b8;
+}
+/* ============================
+   HERO (FULL WIDTH FIXED)
+============================ */
+
+.hero-card {
+    width: 100%;
+    max-width: 100%;
+
+    padding: 32px;
+    border-radius: 20px;
+
+    margin-bottom: 30px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-sizing: border-box;
+}
+
+/* ============================
+   GRID (FIXED SPACING)
+============================ */
+
+.header-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 30px;
+    width: 100%;
+}
+
+/* ============================
+   CARD
+============================ */
+
+.stat-card {
+    padding: 24px;
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+
+    
+    
+
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ============================
+   CONTENT ALIGN
+============================ */
+
+.stat-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ============================
+   ICON
+============================ */
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
+
+/* ============================
+   BUTTON
+============================ */
+
+.btn-primary {
+    margin-top: 12px;
+    display: flex;
+   
+
+    padding: 12px 18px;
+    border-radius: 12px;
+
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+
+    border: none;
+
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+@media (max-width: 768px) {
+    .main.customer-dashboard {
+        padding: 20px;
+    }
+
+    .header-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+/* ============================
+   GLOBAL SECTION SPACING
+============================ */
+
+.customer-dashboard > *:not(.dashboard-header) {
+    margin-bottom: 24px;
+}
+
+/* Remove double spacing for last element */
+.customer-dashboard > *:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================
+   CARD CONSISTENT SPACING
+============================ */
+
+.hero-card {
+    margin-bottom: 24px;
+}
+
+.header-cards {
+    margin-bottom: 24px;
+}
+
+.card {
+    margin-bottom: 24px;
+}
+
+/* ============================
+   GRID GAP (MATCH IMAGE)
+============================ */
+
+.header-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px; /* 🔥 perfect balance */
+}
+
+/* ============================
+   CARD VISUAL BALANCE
+============================ */
+
+.stat-card,
+.card,
+.hero-card {
+    border-radius: 18px;
+    padding: 24px;
+}
+
+/* TEXT */
+body:not(.dark) h1,
+body:not(.dark) h2,
+body:not(.dark) h3 {
+    color: #111827;
+}
+
+body:not(.dark) p,
+body:not(.dark) span {
+    color: #6b7280;
+}
+
+/* ICON */
+body:not(.dark) .stat-icon {
+    background: #f1f5f9;
+    color: #f59e0b;
+}
+
+
+/* TEXT */
+body.dark h1,
+body.dark h2,
+body.dark h3 {
+    color: #f9fafb;
+}
+
+body.dark p,
+body.dark span {
+    color: #94a3b8;
+}
+
+/* ============================
+   HOVER (SUBTLE, MODERN)
+============================ */
+
+.stat-card:hover,
+.card:hover {
+    transform: translateY(-4px);
+    transition: 0.25s ease;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+@media (max-width: 768px) {
+    .header-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+/* ============================
+   PREMIUM GLASS CARD
+============================ */
+
+.glass-premium::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.12),
+        transparent,
+        rgba(255,255,255,0.05)
+    );
+
+    pointer-events: none;
+}
+body.dark .glass-premium h2,
+body.dark .glass-premium h3 {
+    color: #ffffff;
+}
+
+body.dark .glass-premium p,
+body.dark .glass-premium span {
+    color: rgba(255,255,255,0.85);
+}
+body:not(.dark) .glass-premium {
+    background: rgba(255,255,255,0.7);
+
+    backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.08);
+}
+/* ============================
+   ULTRA PREMIUM GLASS
+============================ */
+
+.glass-premium {
+    position: relative;
+    overflow: hidden;
+
+    /* base glass */
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.25),
+        rgba(255,255,255,0.08)
+    );
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    border-radius: 20px;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.6),
+        inset 0 -1px 0 rgba(255,255,255,0.1);
+}
+.glass-premium::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.6),
+        rgba(255,255,255,0.1) 40%,
+        transparent 60%
+    );
+
+    opacity: 0.25;
+    pointer-events: none;
+}
+.glass-premium:hover {
+    transform: translateY(-6px) scale(1.01);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    
+    transition: all 0.3s ease;
+}
+body:not(.dark) .glass-premium h2,
+body:not(.dark) .glass-premium h3 {
+    color: #111827;
+}
+
+body:not(.dark) .glass-premium p,
+body:not(.dark) .glass-premium span {
+    color: #475569;
+}
+
+/* LIGHT MODE */
+body:not(.dark) .glass-premium {
+    background: rgba(255,255,255,0.65);
+
+    backdrop-filter: blur(16px);
+
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* LIGHT MODE */
+body:not(.dark) .glass-premium {
+    background: rgba(255,255,255,0.75);
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* LIGHT MODE GLASS (SOFT, NOT BLINDING) */
+body:not(.dark) .glass-premium {
+    background: rgba(255,255,255,0.55);
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+}
+body:not(.dark) .glass-premium h2,
+body:not(.dark) .glass-premium h3 {
+    color: #111827;
+}
+
+body:not(.dark) .glass-premium p,
+body:not(.dark) .glass-premium span {
+    color: #4b5563;
+}
+
+/* LIGHT MODE */
+body:not(.dark) .glass-premium {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(0,0,0,0.08);
+
+    backdrop-filter: blur(12px);
+}
+
+/* TEXT */
+body.dark .glass-premium {
+    color: #fff;
+}
+
+body:not(.dark) .glass-premium {
+    color: #111827;
+}
+/* FORCE CARDS TO ALLOW GLASS */
+.hero-card,
+.stat-card,
+.card {
+    background: transparent !important;
+}
+.customer-dashboard .stat-card::before,
+.customer-dashboard .stat-card::after {
+    display: none !important;
+}
+.clickable-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.clickable-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* ============================
+   SIDEBAR FINAL (WORKING)
+============================ */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-nav .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px 12px 20px;
+    border-radius: 12px;
+
+    color: #cbd5e1;
+    text-decoration: none;
+
+    transition: 
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
+}
+
+/* HOVER */
+.sidebar-nav .nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+/* ACTIVE */
+.sidebar-nav .nav-item.active {
+    background: rgba(148,163,184,0.15);
+    backdrop-filter: blur(10px);
+
+    color: #ffffff;
+
+    transform: translateX(6px);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 6px 16px rgba(0,0,0,0.25);
+}
+
+/* LEFT INDICATOR */
+.sidebar-nav .nav-item::before {
+    content: "";
+    position: absolute;
+
+    left: 0;              /* ✅ stay inside */
+    top: 6px;
+    bottom: 6px;
+
+    width: 3px;
+    border-radius: 6px;
+
+    background: transparent;
+
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+/* ACTIVE INDICATOR */
+.sidebar-nav .nav-item.active::before {
+    background: #94a3b8;
+    transform: scaleY(1);
+}
+
+/* HOVER INDICATOR */
+.sidebar-nav .nav-item:hover::before {
+    background: rgba(148,163,184,0.4);
+    transform: scaleY(0.8);
+}
+
+/* ICON */
+.sidebar-nav .nav-item i {
+    transition: transform 0.2s ease, color 0.25s ease;
+}
+
+/* ICON HOVER */
+.sidebar-nav .nav-item:hover i {
+    transform: scale(1.1);
+}
+
+/* ICON ACTIVE */
+.sidebar-nav .nav-item.active i {
+    transform: scale(1.15);
+}
+/* =========================
+   GLASSMORPHISM CARD
+========================= */
+
+.customer-dashboard .card {
+    background: rgba(255, 255, 255, 0.08); /* transparent */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    border-radius: 16px;
+
+    /* ✨ THIS IS KEY */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    /* ✨ DEPTH */
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+
+    padding: 20px;
+}
+.customer-dashboard h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #0f172a;
+}
+
+.customer-dashboard .card-subtitle {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+.customer-dashboard .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 14px;
+}
+
+/* responsive */
+@media (max-width: 1024px) {
+    .customer-dashboard .calendar {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .customer-dashboard .calendar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.customer-dashboard .day {
+    background: #e6f4ea;
+    border-radius: 12px;
+    padding: 14px;
+
+    text-align: center;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+    border: 1px solid #d1e7d6;
+}
+
+/* date text */
+.customer-dashboard .day strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #065f46;
+}
+
+/* status text */
+.customer-dashboard .day span {
+    font-size: 12px;
+    color: #047857;
+}
+
+/* hover */
+.customer-dashboard .day:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+/* FULL */
+.customer-dashboard .day.full {
+    background: #fde2e2;
+    border: 1px solid #f5c2c2;
+}
+
+.customer-dashboard .day.full strong {
+    color: #991b1b;
+}
+
+.customer-dashboard .day.full span {
+    color: #b91c1c;
+}
+.customer-dashboard .legend {
+    margin-top: 14px;
+    font-size: 12px;
+    display: flex;
+    gap: 16px;
+}
+
+.customer-dashboard .legend .available {
+    color: #047857;
+    font-weight: 600;
+}
+
+.customer-dashboard .legend .full {
+    color: #b91c1c;
+    font-weight: 600;
+}
+.customer-dashboard .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+/* header */
+.customer-dashboard .modern-table th {
+    text-align: left;
+    font-size: 12px;
+    color: #94a3b8;
+    padding: 12px;
+}
+
+/* rows */
+.customer-dashboard .modern-table td {
+    padding: 16px 12px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #1e293b;
+}
+.customer-dashboard .status {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Pending */
+.customer-dashboard .status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Approved */
+.customer-dashboard .status.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* Completed */
+.customer-dashboard .status.completed {
+    background: #dbeafe;
+    color: #1e3a8a;
+}
+/* ===============================
+   APPOINTMENT SECTION FIX
+   (ONLY CUSTOMER DASHBOARD)
+=============================== */
+
+.customer-dashboard {
+    background: #f8fafc;
+}
+
+/* =========================
+   GLASSMORPHISM CARD
+========================= */
+
+.customer-dashboard .card {
+    background: rgba(255, 255, 255, 0.08); /* transparent */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    border-radius: 16px;
+
+    /* ✨ THIS IS KEY */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    /* ✨ DEPTH */
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+
+    padding: 20px;
+}
+
+/* TITLE */
+.customer-dashboard h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.customer-dashboard .card-subtitle {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+/* CALENDAR GRID */
+.customer-dashboard .calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+/* DATE CARD */
+.customer-dashboard .day {
+    background: #ecfdf5;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+
+    border: 1px solid #d1fae5;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.customer-dashboard .day strong {
+    font-size: 14px;
+    color: #065f46;
+    display: block;
+}
+
+.customer-dashboard .day span {
+    font-size: 12px;
+    color: #047857;
+}
+
+/* HOVER */
+.customer-dashboard .day:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* FULL */
+.customer-dashboard .day.full {
+    background: #fee2e2;
+    border-color: #fecaca;
+}
+
+.customer-dashboard .day.full strong {
+    color: #991b1b;
+}
+
+.customer-dashboard .day.full span {
+    color: #b91c1c;
+}
+
+/* LEGEND */
+.customer-dashboard .legend {
+    margin-top: 12px;
+    font-size: 13px;
+}
+
+.customer-dashboard .legend span {
+    margin-right: 16px;
+    font-weight: 600;
+}
+
+.customer-dashboard .modern-table th {
+    text-align: left;
+    font-size: 12px;
+    color: #94a3b8;
+    padding: 12px;
+}
+
+.customer-dashboard .modern-table td {
+    padding: 16px 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ROW HOVER */
+.customer-dashboard .modern-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* STATUS */
+.customer-dashboard .status {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.customer-dashboard .status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.customer-dashboard .status.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* EMPTY STATE */
+.customer-dashboard .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .customer-dashboard {
+        padding: 15px;
+    }
+
+    .customer-dashboard .calendar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* FIX HEADER OVERLAP — FINAL */
+.customer-dashboard {
+    padding-top: 20px; /* adjust if header taller */
+}
+/* =========================
+   APPOINTMENT STATES
+========================= */
+
+/* Base day card */
+.customer-dashboard .day {
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+/* AVAILABLE */
+.customer-dashboard .day.available {
+    background: #e6f7f1;
+    border: 1px solid #b7e4d7;
+    color: #065f46;
+}
+
+.customer-dashboard .day.available strong {
+    color: #047857;
+}
+
+/* FULLY BOOKED */
+.customer-dashboard .day.full {
+    background: #fde8e8;
+    border: 1px solid #f5b5b5;
+    color: #991b1b;
+    opacity: 0.9;
+}
+
+/* NO SCHEDULE */
+.customer-dashboard .day.disabled {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+    opacity: 0.85;
+}
+
+/* =========================
+   TIME SLOTS
+========================= */
+
+.customer-dashboard .time-slots {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.customer-dashboard .slot {
+    padding: 4px 0;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.03);
+}
+
+/* =========================
+   LEGEND (MATCH COLORS)
+========================= */
+
+.customer-dashboard .legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.customer-dashboard .legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Legend colors */
+.customer-dashboard .legend .available {
+    color: #047857;
+}
+
+.customer-dashboard .legend .full {
+    color: #b91c1c;
+}
+
+.customer-dashboard .legend .disabled {
+    color: #6b7280;
+}
+
+/* Add dot indicator */
+.customer-dashboard .legend span::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Match dots */
+.customer-dashboard .legend .available::before {
+    background: #10b981;
+}
+
+.customer-dashboard .legend .full::before {
+    background: #ef4444;
+}
+
+.customer-dashboard .legend .disabled::before {
+    background: #9ca3af;
+}
+
+/* =========================
+   HOVER EFFECT (ONLY AVAILABLE)
+========================= */
+
+.customer-dashboard .day.available:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+/* =========================
+   MODAL BACKDROP
+========================= */
+.booking-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+/* =========================
+   MODAL CARD
+========================= */
+.modal-content {
+    width: 100%;
+    max-width: 400px;
+    padding: 28px;
+
+     transform: translateX(120px);
+
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+
+    animation: slideUp 0.35s ease;
+}
+
+/* =========================
+   TITLE
+========================= */
+.modal-content h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #0f172a;
+}
+
+/* =========================
+   DATE & TIME DISPLAY
+========================= */
+.modal-content p {
+    font-size: 14px;
+    margin: 4px 0;
+    color: #475569;
+}
+
+.modal-content strong {
+    color: #0f172a;
+}
+
+/* =========================
+   INPUTS
+========================= */
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+    margin-top: 10px;
+
+    padding: 10px 12px;
+    border-radius: 10px;
+
+    border: 1px solid #e5e7eb;
+    background: rgba(255,255,255,0.85);
+
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.modal-content textarea {
+    resize: none;
+    min-height: 70px;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.modal-content .btn-primary {
+    width: 100%;
+    margin-top: 16px;
+
+    padding: 12px;
+    border-radius: 10px;
+
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+
+    font-weight: 600;
+    border: none;
+
+    transition: 0.25s;
+}
+
+.modal-content .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+}
+
+/* CANCEL BUTTON */
+.modal-content .btn-secondary {
+    width: 100%;
+    margin-top: 8px;
+
+    padding: 10px;
+    border-radius: 10px;
+
+    background: #e5e7eb;
+    color: #475569;
+
+    border: none;
+    font-size: 13px;
+
+    transition: 0.2s;
+}
+
+.modal-content .btn-secondary:hover {
+    background: #d1d5db;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px) scale(0.97);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 480px) {
+    .modal-content {
+        margin: 0 16px;
+        padding: 22px;
+    }
+}
+.success-alert {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-weight: 500;
+
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+/* =========================
+   APPOINTMENT TEXT FIX
+   (LIGHT + DARK MODE SAFE)
+========================= */
+
+/* TABLE HEADER */
+.customer-dashboard .modern-table th {
+    color: #1e293b; /* DARK readable */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* TABLE DATA */
+.customer-dashboard .modern-table td {
+    color: #334155;
+}
+
+/* EMPTY STATE */
+.customer-dashboard .empty-state {
+    color: #475569;
+}
+
+/* CARD TITLES */
+.customer-dashboard .card h2 {
+    color: #0f172a;
+}
+
+/* SUBTITLE */
+.customer-dashboard .card-subtitle {
+    color: #64748b;
+}
+
+/* =========================
+   DARK MODE (CORRECT CLASS)
+========================= */
+
+/* TABLE HEADER */
+body.dark .customer-dashboard .modern-table th {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* TABLE DATA */
+body.dark .customer-dashboard .modern-table td {
+    color: #e5e7eb !important;
+}
+
+/* HEADER BACKGROUND */
+body.dark .customer-dashboard .modern-table thead {
+    background: rgba(255,255,255,0.06);
+}
+
+/* ROW DIVIDER */
+body.dark .customer-dashboard .modern-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* SUBTITLE BAR */
+body.dark .customer-dashboard .card-subtitle {
+    color: #cbd5f5 !important;
+    background: rgba(255,255,255,0.06);
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* EMPTY STATE */
+body.dark .customer-dashboard .empty-state {
+    color: #94a3b8;
+}
+/* =========================
+   DARK MODE STATUS FIX ONLY
+========================= */
+
+body.dark .customer-dashboard .status.pending {
+    background: #b89c2c;
+    color: #1f2937;
+    font-weight: 600;
+}
+/* =========================
+   DARK MODE FIX - NO SCHEDULE
+========================= */
+body.dark .customer-dashboard .day.disabled {
+    background: rgba(255,255,255,0.08) !important; /* darker glass */
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* FIX THE DATE (Apr 22) */
+body.dark .customer-dashboard .day.disabled strong {
+    color: #22c55e !important; /* keep green visible */
+}
+
+/* FIX THE "No Schedule" TEXT */
+body.dark .customer-dashboard .day.disabled span {
+    color: #e5e7eb !important; /* strong readable */
+    font-weight: 500;
+    opacity: 1;
+}
+/* =========================
+   DARK MODE - FULLY BOOKED TEXT FIX
+========================= */
+
+body.dark .customer-dashboard .day.full strong {
+    color: #dc2626 !important; /* strong red for date */
+}
+
+body.dark .customer-dashboard .day.full span {
+    color: #991b1b !important; /* darker red text */
+    font-weight: 600;
+    opacity: 1;
+}
+.status.cancelled {
+    background: #d85252;
+    color: #7f1d1d;
+}
+/* =========================
+   DARK MODE - AVAILABLE FIX
+========================= */
+
+/* CARD BACKGROUND */
+body.dark .customer-dashboard .day.available {
+    background: rgba(34, 197, 94, 0.15) !important; /* soft green glass */
+    border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* DATE (Apr 21) */
+body.dark .customer-dashboard .day.available strong {
+    color: #4ade80 !important; /* bright green */
+}
+
+/* "Available" TEXT */
+body.dark .customer-dashboard .day.available span {
+    color: #bbf7d0 !important;
+    font-weight: 500;
+}
+
+/* TIME SLOTS */
+body.dark .customer-dashboard .day.available .slot {
+    background: rgba(255,255,255,0.06);
+    color: #e5e7eb;
+
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-top: 4px;
+}
+
+/* SLOT HOVER */
+body.dark .customer-dashboard .day.available .slot:hover {
+    background: rgba(34,197,94,0.25);
+    color: #ffffff;
+}
+body.dark .day.available:hover {
+    box-shadow: 0 0 12px rgba(34,197,94,0.3);
+}
+/* ROWS */
+.customer-dashboard .modern-table tbody tr {
+    background: rgba(255,255,255,0.03);
+    transition: 0.2s ease;
+}
+
+/* HOVER EFFECT */
+.customer-dashboard .modern-table tbody tr:hover {
+    background: rgba(255,255,255,0.08);
+}
+/* TABLE HEADER */
+.customer-dashboard .modern-table thead {
+    background: rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+/* =========================
+   DARK MODE GLASS
+========================= */
+
+body.dark .customer-dashboard .card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+body.dark .customer-dashboard .table-wrapper {
+    background: rgba(15, 23, 42, 0.5);
+}
+/* SUBTLE EDGE GLOW */
+.customer-dashboard .card:hover {
+    border-color: rgba(255,255,255,0.3);
+}
+/* =========================
+   APPOINTMENT MODAL (BASE)
+========================= */
+
+.booking-modal {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
+
+    z-index: 999;
+}
+
+/* MODAL CARD */
+.modal-content {
+    width: 100%;
+    max-width: 420px;
+
+    border-radius: 16px;
+    padding: 24px;
+
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px);
+
+    border: 1px solid rgba(255,255,255,0.3);
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+
+    animation: modalFade 0.25s ease;
+}
+
+/* TEXT */
+.modal-content h3 {
+    text-align: center;
+    margin-bottom: 12px;
+    color: #111827;
+}
+
+.modal-content p {
+    text-align: center;
+    color: #374151;
+    font-size: 14px;
+}
+
+/* INPUTS */
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+
+    background: #ffffff;
+    color: #111827;
+
+    outline: none;
+}
+
+/* BUTTONS */
+.modal-content .btn-primary {
+    width: 100%;
+    margin-top: 16px;
+
+    padding: 12px;
+    border-radius: 10px;
+
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+
+    border: none;
+    font-weight: 600;
+
+        /* ✅ ADD THIS */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* =========================
+   MODAL LABEL VISIBILITY FIX
+========================= */
+
+/* LABEL (Date, Time, Customer) */
+.modal-content p strong {
+    color: #6b7280;  /* soft but visible */
+    font-weight: 500;
+}
+
+/* VALUE (actual data) */
+.modal-content p span {
+    color: #111827; /* bright */
+    font-weight: 600;
+}
+.modal-content .btn-secondary {
+    width: 100%;
+    margin-top: 8px;
+
+    padding: 10px;
+    border-radius: 10px;
+
+    background: #e5e7eb;
+    color: #374151;
+
+    border: none;
+}
+
+/* =========================
+   DARK MODE FIX (IMPORTANT)
+========================= */
+
+body.dark .modal-content {
+    background: rgba(15, 23, 42, 0.85); /* dark glass */
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* TEXT */
+body.dark .modal-content h3 {
+    color: #f1f5f9;
+}
+
+body.dark .modal-content p {
+    color: #cbd5f5;
+}
+
+/* INPUTS (FIXED) */
+body.dark .modal-content input,
+body.dark .modal-content textarea {
+    background: rgba(255,255,255,0.06);
+    color: #e5e7eb;
+
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* PLACEHOLDER */
+body.dark .modal-content input::placeholder,
+body.dark .modal-content textarea::placeholder {
+    color: #94a3b8;
+}
+
+/* CANCEL BUTTON */
+body.dark .modal-content .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: #e5e7eb;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+.status.completed {
+    background: #22c55e;
+    color: white;
+}
+
+.status.cancelled {
+    background: #ef4444;
+    color: white;
+}
+
+.status.pending {
+    background: #facc15;
+    color: black;
+}
+
+.status.approved {
+    background: #3b82f6;
+    color: white;
+}
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    transition: 0.3s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.08);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    background: #f59e0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 20px;
+    color: #fff;
+}
+
+.stat-info h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.stat-breakdown {
+    margin-top: 5px;
+    font-size: 13px;
+    display: flex;
+    gap: 10px;
+}
+
+.stat-breakdown .active {
+    color: #3b82f6;
+}
+
+.stat-breakdown .completed {
+    color: #22c55e;
+}
+/* ===============================
+   THEME VARIABLES (AUTO LIGHT/DARK)
+=============================== */
+:root {
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-sub: #475569;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --row-hover: #f8fafc;
+
+    --badge-appointment: #f59e0b;
+    --badge-ongoing: #3b82f6;
+    --badge-completed: #22c55e;
+    --badge-cancelled: #ef4444;
+
+    --btn-bg: #f59e0b;
+    --btn-hover: #d97706;
+}
+
+/* DARK MODE */
+body.dark-mode {
+    --bg-card: rgba(15, 23, 42, 0.7);
+    --text-main: #ffffff;
+    --text-sub: #cbd5f5;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255,255,255,0.08);
+    --row-hover: rgba(255,255,255,0.05);
+}
+
+/* ===============================
+   TABLE
+=============================== */
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modern-table th {
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 12px;
+    font-weight: 600;
+}
+
+.modern-table td {
+    padding: 16px 12px;
+    color: var(--text-main);
+}
+
+.modern-table tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modern-table tr:hover {
+    background: var(--row-hover);
+}
+
+/* ===============================
+   PROJECT COLUMN (FIX REDUNDANCY)
+=============================== */
+.project-info strong {
+    font-size: 15px;
+    color: var(--text-main);
+}
+
+/* PRIMARY LABEL */
+.project-type {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-sub);
+}
+
+/* SECONDARY (LESS IMPORTANT NOW) */
+.material {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ===============================
+   DETAILS
+=============================== */
+.details {
+    color: var(--text-sub);
+    font-size: 13px;
+}
+/* ===============================
+   STATUS BADGES (FIXED VISIBILITY)
+=============================== */
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+/* LIGHT MODE (SOLID + CLEAR) */
+body:not(.dark-mode) .status-appointment {
+    background: #915f0b;
+    color: #ffffff;
+}
+
+body:not(.dark-mode) .status-on-going {
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+body:not(.dark-mode) .status-completed {
+    background: #22c55e;
+    color: #ffffff;
+}
+
+body:not(.dark-mode) .status-for-delivery {
+    background: #8b5cf6;   /* strong violet */
+    color: #ffffff;        /* white text */
+    border: none;
+}
+
+
+body:not(.dark-mode) .status-cancelled {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* DARK MODE (SOFT / GLASS STYLE) */
+body.dark-mode .status-appointment {
+    background: rgba(245, 158, 11, 0.2);
+    color: #facc15;
+}
+
+body.dark-mode .status-on-going {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+body.dark-mode .status-completed {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+body.dark-mode .status-for-delivery {
+    background: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;        /* light violet text */
+}
+
+body.dark-mode .status-cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+/* ===============================
+   BUTTON
+=============================== */
+.btn-view {
+    padding: 6px 14px;
+    background: var(--btn-bg);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 12px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-view:hover {
+    background: var(--btn-hover);
+}
+
+/* ===============================
+   CARD (GLASS FIX)
+=============================== */
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 20px;
+}
+/* PROJECT CELL */
+.project-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* IMAGE */
+.project-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* TEXT */
+.project-info strong {
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.material {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* LIGHT MODE FIX */
+body:not(.dark-mode) .desc {
+    color: #334155;
+}
+
+body:not(.dark-mode) .dimension {
+    color: #64748b;
+}
+
+/* HIDDEN ROW */
+.details-row {
+    display: none;
+}
+
+/* SHOW */
+.details-row.active {
+    display: table-row;
+}
+
+
+
+/* LIGHT MODE FIX */
+body:not(.dark-mode) .details-box {
+    background: #f1f5f9;
+}
+
+body:not(.dark-mode) .detail-item {
+    background: #ffffff;
+}
+
+body:not(.dark-mode) .detail-item strong {
+    color: #0f172a;
+}
+/* ===============================
+   DETAILS PANEL — FINAL FIX
+=============================== */
+
+/* CONTAINER */
+.details-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    padding: 18px;
+    border-radius: 14px;
+
+    background: rgba(15, 23, 42, 0.75); /* DARK BASE */
+    backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ITEM CARD */
+.detail-item {
+    padding: 14px 16px;
+    border-radius: 12px;
+
+    background: rgba(51, 65, 85, 0.65); /* CONTRAST LAYER */
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* LABEL */
+.detail-item span {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* VALUE */
+.detail-item strong {
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+/* ===============================
+   LIGHT MODE (FIXED PROPERLY)
+=============================== */
+
+body:not(.dark-mode) .details-box {
+    background: #e2e8f0; /* SOFT GRAY (NOT WHITE) */
+    border: 1px solid #cbd5f5;
+}
+
+body:not(.dark-mode) .detail-item {
+    background: #f8fafc; /* LIGHT CARD (VISIBLE NOW) */
+}
+
+body:not(.dark-mode) .detail-item span {
+    color: #475569;
+}
+
+body:not(.dark-mode) .detail-item strong {
+    color: #0f172a;
+}
+
+/* ===============================
+   MOBILE
+=============================== */
+
+@media (max-width: 768px) {
+    .details-box {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===============================
+   DETAILS TEXT FORCE VISIBILITY
+=============================== */
+
+/* LIGHT MODE */
+body:not(.dark-mode) .details-box {
+    background: #e2e8f0 !important;
+}
+
+body:not(.dark-mode) .detail-item {
+    background: #ffffff !important;
+}
+
+body:not(.dark-mode) .detail-item span {
+    color: #475569 !important;
+}
+
+body:not(.dark-mode) .detail-item strong {
+    color: #020617 !important; /* VERY DARK = ALWAYS VISIBLE */
+}
+
+/* DARK MODE */
+body.dark-mode .details-box {
+    background: rgba(15, 23, 42, 0.85) !important;
+}
+
+body.dark-mode .detail-item {
+    background: rgba(51, 65, 85, 0.8) !important;
+}
+
+body.dark-mode .detail-item span {
+    color: #cbd5f5 !important;
+}
+
+body.dark-mode .detail-item strong {
+    color: #ffffff !important;
+}
+.details-row { display:none; }
+.details-row.active { display:table-row; }
+
+/* ===============================
+   PROGRESS BAR (VISIBLE FIXED)
+=============================== */
+
+.progress-bar {
+    width: 100%;
+    height: 8px; /* 🔥 important */
+    background: rgba(148, 163, 184, 0.25); /* visible in dark */
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    
+    transition: width 0.6s ease-in-out; /* 🔥 smooth */
+}
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        left: 100%;
+    }
+}
+
+/* LIGHT MODE FIX */
+body:not(.dark-mode) .progress-bar {
+    background: #e2e8f0;
+}
+
+body:not(.dark-mode) .progress-bar-fill {
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+}
+
+.pagination {
+    margin-top:20px;
+    text-align:center;
+}
+
+.pagination a {
+    padding:6px 12px;
+    margin:0 3px;
+    background:#e2e8f0;
+    border-radius:6px;
+    text-decoration:none;
+    color:#0f172a;
+}
+
+.pagination a.active {
+    background:#3b82f6;
+    color:#fff;
+}
+/* PROJECT IMAGE (FIX SIZE) */
+.project-cell img {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;   /* keeps aspect ratio, crops if needed */
+    border-radius: 8px;
+
+    display: block;
+}
+
+/* ALIGN TEXT + IMAGE */
+.project-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* PREVENT ROW BREAKING */
+.project-cell div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
