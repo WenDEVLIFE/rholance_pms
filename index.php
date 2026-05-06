@@ -5,9 +5,11 @@
     <title>Rholance Trading | Metal & Industrial Materials</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/output.css">
     <link rel="icon" href="/rholance_pms/favicon2.ico">
-<link rel="shortcut icon" href="/rholance_pms/favicon2.ico">
+    <link rel="shortcut icon" href="/rholance_pms/favicon2.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
