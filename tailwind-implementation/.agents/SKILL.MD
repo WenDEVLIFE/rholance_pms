@@ -1,83 +1,67 @@
-# Rholance PMS: Modern UI Implementation Plan (Tailwind CSS)
+# Rholance PMS: Modern UI & Functional Implementation (Tailwind CSS)
 
 ## 🎨 Design Philosophy
-The modernization of Rholance PMS will leverage **Tailwind CSS** to create a high-performance, visually stunning, and highly responsive user interface. The aesthetic will be "Industrial Modern" – reflecting the welding and manufacturing nature of the business while maintaining a premium software feel.
+The Rholance Project Management System (PMS) leverages **Tailwind CSS** to create a high-performance, visually stunning interface. The aesthetic is **Industrial Modern** – dark, sleek, and professional, reflecting the welding industry while providing a premium software experience.
 
 ---
 
-## 🛠️ 1. Core Design System (Tailwind Config)
-To achieve a "WOW" factor, we will extend the default Tailwind configuration:
+## 🏗️ 1. Module-Specific Features
 
-### 🌑 Color Palette
-- **Primary**: `bg-slate-900` (Main background/Sidebars)
-- **Secondary**: `bg-slate-800` (Card/Section backgrounds)
-- **Accent**: `text-amber-500` or `text-blue-500` (Industrial focus/Action items)
-- **Success/Progress**: `text-emerald-500` (Completed/Ongoing)
-- **Gradients**: `from-slate-800 to-slate-900` for a depth effect.
-
-### 🖋️ Typography
-- **Headings**: `font-outfit` or `font-inter` (Sans-serif, bold, tight tracking).
-- **Body**: `font-inter` (Highly readable, modern).
-
-### ✨ Effects
-- **Glassmorphism**: `backdrop-blur-md bg-white/10 border border-white/20` for modern overlays.
-- **Shadows**: Custom soft shadows `shadow-[0_8px_30px_rgb(0,0,0,0.12)]`.
-
----
-
-## 🏗️ 2. Shared Component Library
-### 🧭 Navigation
-- **Glass Navbar**: Sticky header with `backdrop-blur-lg` and `bg-slate-900/80`.
-- **Sidebar (Admin/Staff)**: Collapsible, dark-themed with active state indicators (`border-l-4 border-amber-500`).
-
-### 🗃️ Data Presentation
-- **Modern Tables**: 
-    - `w-full border-separate border-spacing-y-2`
-    - Rows with `bg-slate-800 hover:bg-slate-750 transition-all`
-    - Rounded corners on first and last cells.
-- **Status Badges**: Pill-shaped with low-opacity backgrounds (`bg-opacity-20`).
-
-### 🔘 Buttons & Inputs
-- **Primary Buttons**: `bg-gradient-to-br from-amber-500 to-orange-600 hover:scale-[1.02] transition-transform shadow-lg shadow-amber-500/20`.
-- **Inputs**: `bg-slate-800 border-slate-700 focus:ring-2 focus:ring-amber-500 text-white`.
-
----
-
-## 📱 3. Module-Specific Layouts
 ### 🏠 Landing Page
-- **Hero**: Large font `text-5xl md:text-7xl font-bold tracking-tighter`.
-- **Customized Products Grid**: `grid grid-cols-1 md:grid-cols-3 gap-8`.
-- **Hover Effects**: `group-hover:opacity-100` for showing price ranges on hover.
+- **Customized Products Showcase**: Dynamic grid/carousel highlighting bespoke work.
+- **Location Integration**: High-visibility footer displaying the **Laguna** location and map.
+- **Call to Action**: Quick links to the Customer Customization tool.
 
-### 👤 Customer Dashboard
-- **Stats Overview**: Simple cards with large icons and clear numbers.
-- **Progress Bars**: 
-    ```html
-    <div class="w-full bg-slate-700 rounded-full h-2">
-      <div class="bg-gradient-to-r from-blue-500 to-emerald-500 h-2 rounded-full" style="width: 20%"></div>
-    </div>
-    ```
-- **Expectation vs Reality**: 2-column flex container with `rounded-2xl overflow-hidden shadow-2xl`.
+### 👤 Customer Module
+- **Interactive Customization**: Tool to customize product parameters with real-time feedback.
+- **Location-Aware Appointments**:
+    - **Filter**: System restricts appointments to **Cavite and Laguna** only.
+    - **Schedule Visibility**: Dashboard shows **Available Dates** for easy booking.
+- **Project Tracking**:
+    - **Transaction History**: Filtered tabs for `Ongoing`, `Finished`, and `Old` transactions.
+    - **Expectation vs Reality**: Side-by-side visual comparison (Design vs. Actual).
+    - **Granular Progress**: Milestone-based tracker (e.g., "20% Foundation/Framing").
+    - **Transparency**: Estimated completion date and assigned personnel (Welder/Staff).
+- **Financial Details**:
+    - **Material Breakdown**: Full list of materials needed.
+    - **Price Ranges**: Cost ranges for each material category.
+- **Payment & Legal**:
+    - **Dual Payment**: Choose between Cash or GCash (with proof-of-payment upload).
+    - **Contracts**: Digital access to project contracts and terms.
 
-### 👨‍💼 Staff & Admin Panels
-- **Dashboard Layout**: Side-nav with a top-search bar.
-- **Inventory Table**: Multi-column table with "Stock Level" indicators (Green/Yellow/Red text).
-- **Sales Charts**: Integration with Chart.js using Tailwind-colored lines/bars.
+### 🧑‍💼 Staff Module (Cashier)
+- **Appointment Management**:
+    - **Daily Overview**: View all appointments for a specific date.
+    - **Constraint**: No cancellation authority for initial consultations.
+- **Scope Validation**:
+    - Automated flagging for out-of-scope addresses (outside Cavite/Laguna).
+    - Customer-side visibility of scope restrictions.
+- **Shop Visibility**: Easy access to shop info (Address, Phone, Email) for customer support.
+- **Inventory & Projects**:
+    - **Table-Based Inventory**: Focused on project materials used.
+    - **Sourcing Logic**: Project acceptance based on material origin (Preference for local Philippines sourcing vs international).
+    - **Resource Allocation**: Assign materials and staff (Welders) to specific projects.
+- **Governance**: Defined rules for project cancellation authority.
+
+### 👨‍🏭 Staff Module (Welder)
+- **Production Control**:
+    - Update project details based on appointment outcomes.
+    - Manually update **Progress Percentage** and **Materials Used**.
+    - Adjust **Timeline** and update **Contract** status in real-time.
+
+### 👑 Admin Module
+- **User Governance**: Overview of all accounts and roles.
+- **Performance Intelligence**:
+    - Staff workload tracking (who handles which projects).
+    - Identification of high-performing staff members.
+- **Operations & Sales**:
+    - Global inventory oversight.
+    - **Sales Analytics**: Daily, Weekly, Monthly, and Yearly reporting.
 
 ---
 
-## ⚡ 4. Interactions & Animations
-- **Micro-interactions**: 
-    - `hover:translate-y-[-4px]` for cards.
-    - `active:scale-95` for buttons.
-- **Transitions**: Global `duration-300 ease-in-out`.
-- **Empty States**: Illustrated with SVG icons and subtle `text-slate-500`.
-
----
-
-## 🛠️ 5. Implementation Roadmap
-1.  **Phase 1: Setup**: Install Tailwind CSS, configure `tailwind.config.js` with the Rholance color palette.
-2.  **Phase 2: Layout Foundation**: Build the `main_layout.php` or equivalent using a responsive grid system.
-3.  **Phase 3: Component Building**: Create the table, button, and card components.
-4.  **Phase 4: Styling Modules**: Port existing views (Landing, Dashboard, Admin) to the new Tailwind components.
-5.  **Phase 5: Polish**: Add animations, dark mode refinements, and responsive testing.
+## 🛠️ 2. Core Design System (Tailwind)
+- **Theme**: Dark Mode focus with `slate-900` backgrounds and `amber-500` accents.
+- **Typography**: `Outfit` (Headings) and `Inter` (Body).
+- **Glassmorphism**: Use of `backdrop-blur-md` for cards and modals.
+- **Interactions**: Subtle `hover:scale-[1.02]` and `fade-in` animations for a premium feel.
