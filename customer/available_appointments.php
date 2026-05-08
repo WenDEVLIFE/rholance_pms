@@ -253,7 +253,17 @@ $showSuccess = isset($_GET['success']);
 
             <p><strong>Customer:</strong> <?= $_SESSION['full_name'] ?? $_SESSION['name'] ?></p>
 
-            <textarea name="address" placeholder="Address" required></textarea>
+            <select name="branch_id" required class="modern-input">
+                <option value="" disabled selected>Select Branch</option>
+                <?php
+                $branchesQuery = mysqli_query($conn, "SELECT * FROM branches WHERE name LIKE '%Cavite%' OR name LIKE '%Laguna%'");
+                while ($b = mysqli_fetch_assoc($branchesQuery)):
+                ?>
+                    <option value="<?= $b['id'] ?>"><?= htmlspecialchars($b['name']) ?></option>
+                <?php endwhile; ?>
+            </select>
+
+            <textarea name="address" placeholder="Complete Address (Must be in Cavite or Laguna)" required></textarea>
             <input type="text" name="landmark" placeholder="Landmark">
 
             <button type="submit" class="btn-primary">Confirm Booking</button>

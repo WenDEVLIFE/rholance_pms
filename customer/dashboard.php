@@ -95,50 +95,40 @@ function orderProgress($status) {
 
 <!-- HERO -->
 <div class="hero-card glass-premium">
-    <h2>Start a Custom Order</h2>
-    <p>Submit a request and choose your preferred schedule. Our staff will handle the details.</p>
-
-    <a href="customize.php" class="btn-primary">
-        Request Custom Order
-    </a>
+    <div class="hero-content">
+        <h2>Start a Custom Order</h2>
+        <p>Submit a request and choose your preferred schedule. Our staff will handle the details.</p>
+        <a href="customize.php" class="btn-modern">
+            <i class="fas fa-plus-circle"></i> Request Custom Order
+        </a>
+    </div>
 </div>
 
 <!-- STATS -->
 <div class="header-cards">
 
-    <!-- MY ORDERS -->
-<a href="my_projects.php" class="stat-card project-card">
-    
-    <div class="stat-icon">
-        <i class="fas fa-diagram-project"></i>
-    </div>
-
-    <div class="stat-info">
-        <h4>My Projects</h4>
-
-        <div class="stat-breakdown">
-            <span class="active">
-                <?= $activeProjects ?> Active
-            </span>
-
-            <span class="completed">
-                <?= $completedProjects ?> Completed
-            </span>
+    <!-- MY PROJECTS -->
+    <a href="my_projects.php" class="stat-card glass-premium clickable-card">
+        <div class="stat-icon">
+            <i class="fas fa-diagram-project"></i>
         </div>
-    </div>
-
-</a>
+        <div class="stat-info">
+            <span>My Projects</span>
+            <div class="stat-breakdown">
+                <span class="active-tag"><?= $activeProjects ?> Active</span>
+                <span class="completed-tag"><?= $completedProjects ?> Done</span>
+            </div>
+        </div>
+    </a>
 
     <!-- APPOINTMENTS -->
     <a href="my_appointment.php" class="stat-card glass-premium clickable-card"> 
-        <div class="stat-left">
-            <div class="stat-icon">
-                <i class="fa-solid fa-calendar"></i>
-            </div>
-            <div>
-                <span>Appointments</span>
-                <h2 id="appointmentCount"><?= $appointmentCount ?></h2>
-            </div>
+        <div class="stat-icon">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="stat-info">
+            <span>Appointments</span>
+            <h2 id="appointmentCount"><?= $appointmentCount ?></h2>
         </div>
     </a>
 

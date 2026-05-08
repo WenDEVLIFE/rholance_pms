@@ -1,11 +1,45 @@
 :root {
-    --primary: #000000;
+    --primary: #0F172A;
+    --primary-light: #1E293B;
     --accent: #F59E0B;
-    --bg: #9b9b9b;
+    --accent-hover: #D97706;
+    --bg: #F8FAFC;
     --card: #FFFFFF;
-    --border: #E5E7EB;
-    --text: #111827;
-    --muted: #6B7280;
+    --border: #E2E8F0;
+    --text: #1E293B;
+    --text-muted: #64748B;
+    --glass: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.glass-premium {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-modern {
+    background: var(--accent);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-modern:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 body {
     margin: 0;

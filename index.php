@@ -152,6 +152,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
     <button class="p2-btn" data-filter="tools">Tools</button>
     <button class="p2-btn" data-filter="equipment">Equipment</button>
     <button class="p2-btn" data-filter="finished">Finished</button>
+    <button class="p2-btn" data-filter="customized">Customized</button>
 </div>
 
 <!-- CAROUSEL -->
@@ -224,6 +225,13 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 <div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Decorative socket collars.png"><h3>Socket Collars</h3></div>
 <div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Stainless steel numbers.png"><h3>Steel Numbers</h3></div>
 <div class="product-card p2-card" data-category="finished"><img src="assets/images/products/triple-basin kitchen sink.png"><h3>Kitchen Sink</h3></div>
+
+<!-- ================= CUSTOMIZED ================= -->
+<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/gate.png"><h3>Modern Gate</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/railing.png"><h3>Stainless Railing</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/grills.png"><h3>Window Grills</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/truss.png"><h3>Steel Trusses</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/furniture.png"><h3>Industrial Furniture</h3></div>
 
 </div>
 
@@ -349,9 +357,9 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 
         <div class="footer-grid">
 
-            <!-- LOCATION -->
+            <!-- LOCATIONS -->
             <div class="footer-col">
-                <h4>Our Location</h4>
+                <h4>Cavite Branch</h4>
 
                 <p>
                     <i class="fa-solid fa-location-dot"></i>
@@ -362,6 +370,22 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!4v1773403631013!6m8!1m7!1ssXJ-LBgr4Pt4MYHA9YXhEA!2m2!1d14.31275641785308!2d120.9734889513085!3f164.30066107713117!4f-6.9895435408727735!5f0.7820865974627469"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <div class="footer-col">
+                <h4>Laguna Branch</h4>
+
+                <p>
+                    <i class="fa-solid fa-location-dot"></i>
+                    <a href="#" target="_blank">
+                        Langkiwa, Biñan City, Laguna
+                    </a>
+                </p>
+
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3865.8!2d121.0!3d14.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d!2sLangkiwa%2C%20Bi%C3%B1an%2C%20Laguna!5e0!3m2!1sen!2sph!4v1715095000000!5m2!1sen!2sph"
                     loading="lazy">
                 </iframe>
             </div>
