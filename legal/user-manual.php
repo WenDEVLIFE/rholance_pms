@@ -1,418 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Manual | Rholance Trading</title>
-
-<style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, sans-serif;
-        background: linear-gradient(135deg, #0b1f3a, #1e3a8a);
-        color: #333;
-    }
-
-    .container {
-        max-width: 900px;
-        margin: 60px auto;
-        padding: 40px;
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        animation: fadeIn 0.6s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-        from {opacity: 0; transform: translateY(20px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
-
-    .back-btn {
-        display: inline-block;
-        margin-bottom: 20px;
-        text-decoration: none;
-        color: #1e40af;
-        font-weight: 600;
-        transition: 0.3s;
-    }
-
-    .back-btn:hover {
-        color: #f59e0b;
-    }
-
-    h1 {
-        margin-top: 10px;
-        font-size: 32px;
-        color: #0b1f3a;
-    }
-
-    h2 {
-        margin-top: 30px;
-        color: #1e3a8a;
-        border-left: 5px solid #f59e0b;
-        padding-left: 10px;
-    }
-
-    p {
-        line-height: 1.7;
-        margin-top: 10px;
-        color: #555;
-    }
-
-    ul {
-        margin-top: 10px;
-        padding-left: 20px;
-    }
-
-    ul li {
-        margin-bottom: 8px;
-    }
-
-    .date {
-        background: #f3f4f6;
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 14px;
-        margin-top: 10px;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-        .container {
-            margin: 20px;
-            padding: 25px;
-        }
-
-        h1 {
-            font-size: 24px;
-        }
-    }
-</style>
-
-</head>
-<body>
-
-<div class="container">
-
-    <a href="../index.php" class="back-btn">← Back to Homepage</a>
-
-    <h1>User Manual
-</h1>
-    <div class="date"><strong>System: </strong>  Rholance Trading Project Management System (PMS)</div>
-  <div class="date"><strong>Version: </strong> 1.0</div>
-  <div class="date"><strong>Last Updated: </strong>   January 15, 2026</div>
-
-    <h2>Introduction
-
-</h2>
-    <p>
-   This User Manual provides a comprehensive guide on how to use the Rholance Trading Project Management System (PMS). The system is a web-based platform developed to support and organize the business operations of Rholance Trading. It is designed to manage customized orders, monitor inventory, record transactions, schedule appointments, and coordinate tasks within the organization.
- </p>
-  <p>The system aims to improve the flow of information between customers, staff, and administrators by providing a structured and accessible platform. Through this manual, users will understand how to navigate the system, perform tasks, and utilize available features based on their assigned roles.
- </p>
-   
-    <h2>System Requirements
-
-</h2>
-    <p>To ensure proper use of the system, users must meet the following requirements:
- </p>
-       <ul>
-        <li>A modern web browser such as Google Chrome, Microsoft Edge, or Mozilla Firefox
- </li>
- <li> A stable internet connection to access system features without interruption
-
-</li>
- <li>A registered user account with valid login credentials
-</li>    
-    </ul>
-    <p>The system is optimized for desktop and laptop devices and is accessed through a web browser.
- </p>
-
-
-    <h2>User Roles
-
-</h2>
-     <p>The system supports three (3) types of users, each with specific access and responsibilities:
-</p>
-      <p>1 Customer</p>
-      <p>Customers can:</p>
-    <ul>
-        <li>Register and manage their account
- </li>
- <li> View available customized products and materials
-
-</li>
- <li>Submit customized project requests
-</li>    
-    <li>Schedule appointments for consultation or measurement
-
- </li>
- <li> Track order status and progress
-
-</li>
- <li>Submit payment details and view transaction history
-</li>   
-    </ul>
-
-<p>2 Staff</p>
-<p>Staff are responsible for daily operations and can:
-</p>
-  <ul>
-        <li>Manage customized orders and update order status
-</li>
- <li> Handle appointments and coordinate schedules
-
-</li>
- <li>Update and monitor inventory records
-</li>    
-    <li>Verify and record payments through the POS module
-
- </li>
- <li> Manage operational tasks related to project preparation
-
-</li>
- <li>Track and manage backjobs or rework tasks
-</li>   
-    </ul>
-
-  
-<p>3 Owner / Administrator</p>        
-<p>The administrator has full access to the system and can:
- </p>   
-<ul>
-        <li>Manage user accounts and control system access
-</li>
- <li>View and monitor customized orders and backjobs
-
-</li>
- <li>Monitor inventory levels and material usage
-
-</li>    
-    <li>View and analyze reports related to orders, payments, and operations
-
-
- </li>
- <li> Oversee overall business activities across branches
-
-</li>
-    </ul>
-
-    
-    <h2>Account Registration
-</h2>
-     <p>To create an account, follow these steps:
-</p>
-    
-    <ul>
-        <li>Enter your full name, email address, and password
-
- </li>
- <li> Confirm your password
-
-</li>
- <li>Click “Register” to submit your information 
-    </ul>
-
-
-     <p>After registration, the system may require email verification before the account becomes active. Once verified, users can log in using their credentials.
-</p>
-    
-
-   <h2>Logging In
-
-</h2>
-     <p>To access your account:
-</p>
-    
-    <ul>
-        <li>Click the user icon or login button in the navigation bar
-
- </li>
- <li> Enter your registered email address and password
-
-</li>
- <li>Click “Log In” </li>
- </ul>
-
-     <p>After successful login, you will be redirected to your dashboard based on your assigned role.
-</p>
-    
-
- <h2>Browsing Products
-
-</h2>
-     <p>Customers can view available customized products by:
-
-</p>
-    
-    <ul>
-        <li>Navigating to the “Products” section
- </li>
- <li> Browsing the available materials and options
-</li>
- <li>Clicking on product items to view details </li>
- </ul>
-
-     <p>Note: The system displays customized product options only. Direct checkout is not available since orders are handled through customization and approval.</p>
-    
- <h2>Submitting a Custom Order
-</h2>
-     <p>To submit a customized project request:
-
-</p>
-    
-    <ul>
-        <li>Log in to your customer account
-
- </li>
- <li> Click “Submit Custom Order”
-
- <li>Select the material type and quantity
- </li>
-  <li> Provide detailed specifications (e.g., size, design, requirements)
-
-
- <li>Submit the request
-
- </li>
- </ul>
-
-     <p>The submitted order will be reviewed and processed by the staff.
-
-     </p>
-    
- <h2>Appointment Scheduling and Payment Setup
-
-</h2>
-     <p>Customers can schedule appointments by:
-</p>
-    
-    <ul>
-        <li>Accessing the Appointment Module
- </li>
- <li> Selecting preferred date and time</li>
- <li>Confirming the schedule</li>
- </ul>
-
-     <p>During the appointment process, payment arrangements are also set. Customers may provide an initial downpayment before the project begins and complete the full payment after project completion or installation.
-     </p>
-    
-
-      <h2>Tracking Orders
-</h2>
-     <p>To monitor order progress:
-
-</p>
-    
-    <ul>
-        <li>Go to your dashboard
-
- </li>
- <li> Select “Track Order”
-</li>
- <li>View the status of your order (e.g., Pending, Processing, Completed)
-</li>
- </ul>
-
-     <p>This feature allows customers to stay updated on the progress of their projects.
-  </p>
-    
-      <h2>Inventory Management (Staff/Administrator)
-
-</h2>
-     <p>Authorized users can manage inventory by:
-</p>
-    
-    <ul>
-        <li>Accessing the Inventory Module
- </li>
- <li> Adding, updating, or removing materials
-</li>
- <li>Monitoring stock levels and usage</li>
- </ul>
-
-     <p>This helps ensure that materials are properly recorded and available for project preparation.  </p>
-    
-    <h2>Payment and Transactions
-
-</h2>
-     <p>The system supports two types of payment:
-
-</p>
-    
-    <ul>
-        <li>Cash Payment – recorded by staff through the POS module
- </li>
- <li> GCash Payment – requires uploading a screenshot as proof of payment
-
- </ul>
-
-     <p>All transactions are verified and stored in the system for monitoring and reporting purposes.
-     </p>
-    
-      <h2>Security Guidelines
-</h2>
-     <p>To maintain system security:
-</p>
-    
-    <ul>
-        <li>Keep your password confidential
- </li>
- <li> Do not share your account credentials </li>
-<li>Log out after each session
- </li>
- <li> Ensure your email is verified
- </li>
-<li> Report any suspicious activity immediately </li>
- </ul>
-
-    
-      <h2>Troubleshooting
-</h2>
-     <p>Unable to Log In
-</p>
-    
-    <ul>
-        <li>Check if the email and password are correct
- </li>
- <li> Ensure stable internet connection </li>
-<li>Reset your password if necessary
- </li>
-</ul>
-
-<p>Order Not Displaying
-</p>
-    
-    <ul>
-        <li>Refresh the page
- </li>
- <li> Confirm that the order was successfully submitted </li>
-<li>Contact support if the issue continues
- </li>
-</ul>
-
-  <h2>Support and Contact
-</h2>
-     <p>For technical assistance or inquiries, you may contact:
-</p>
-    
-    <ul>
-        <li>Email: rholancetrading@gmail.com
- </li>
- <li> Phone: 09957742174</li>
-<li>Location (Cavite Branch): Dasmariñas City, Cavite, Philippines
- </li>
- <li>Location (Laguna Branch): Langkiwa, Laguna, Philippines</li>
-</ul>
-
-<h2>Disclaimer
-</h2>
-     <p>This system is intended for authorized users only. Any misuse, unauthorized access, or violation of system policies may result in account suspension or restriction of access. Users are responsible for proper use of the system in accordance with its intended purpose.
-
-</p>
+<?php
+include '../includes/header.php';
+include '../includes/sidebar.php';
+?>
+
+<div class="rh-main">
+    <div class="rh-page-header">
+        <h1>User Manual</h1>
+        <p>A comprehensive guide for Rholance Trading PMS users.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="card sticky-top" style="top: 100px;">
+                <div class="card-body">
+                    <h6 class="fw-800 mb-3">Contents</h6>
+                    <nav class="nav flex-column small gap-2">
+                        <a href="#intro" class="text-decoration-none text-dark hover-amber">Introduction</a>
+                        <a href="#roles" class="text-decoration-none text-dark hover-amber">User Roles</a>
+                        <a href="#registration" class="text-decoration-none text-dark hover-amber">Registration & Login</a>
+                        <a href="#orders" class="text-decoration-none text-dark hover-amber">Custom Orders</a>
+                        <a href="#appointments" class="text-decoration-none text-dark hover-amber">Appointments</a>
+                        <a href="#inventory" class="text-decoration-none text-dark hover-amber">Inventory</a>
+                        <a href="#payments" class="text-decoration-none text-dark hover-amber">Payments</a>
+                        <a href="#support" class="text-decoration-none text-dark hover-amber">Support</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card card-body p-4 p-md-5">
+                
+                <section id="intro" class="mb-5">
+                    <h2 class="fw-800 text-amber mb-3">Introduction</h2>
+                    <p class="text-muted">This User Manual provides a comprehensive guide on how to use the Rholance Trading Project Management System (PMS). The system is a web-based platform developed to support and organize the business operations of Rholance Trading.</p>
+                    <p class="text-muted">It is designed to manage customized orders, monitor inventory, record transactions, schedule appointments, and coordinate tasks within the organization.</p>
+                </section>
+
+                <section id="roles" class="mb-5">
+                    <h3 class="fw-800 mb-4">User Roles & Access</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded-3 h-100">
+                                <h6 class="fw-800 mb-2">Customer</h6>
+                                <ul class="small text-muted ps-3">
+                                    <li>Submit custom requests</li>
+                                    <li>Track order progress</li>
+                                    <li>Schedule appointments</li>
+                                    <li>View payment history</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded-3 h-100">
+                                <h6 class="fw-800 mb-2">Staff</h6>
+                                <ul class="small text-muted ps-3">
+                                    <li>Update order status</li>
+                                    <li>Manage stock levels</li>
+                                    <li>Verify payments (POS)</li>
+                                    <li>Manage appointments</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded-3 h-100">
+                                <h6 class="fw-800 mb-2">Administrator</h6>
+                                <ul class="small text-muted ps-3">
+                                    <li>Full system oversight</li>
+                                    <li>User account management</li>
+                                    <li>View sales analytics</li>
+                                    <li>Manage branch data</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="registration" class="mb-5 border-top pt-4">
+                    <h3 class="fw-800 mb-3">Registration & Login</h3>
+                    <p class="text-muted small">To start using the system, click the user icon in the top right of the landing page. New customers can sign up by providing their name, email, and a secure password. Once registered, use these credentials to log in and access your personalized dashboard.</p>
+                </section>
+
+                <section id="orders" class="mb-5 border-top pt-4">
+                    <h3 class="fw-800 mb-3">Submitting a Custom Order</h3>
+                    <p class="text-muted small">Navigate to the "Customize Product" section in your dashboard. Here, you can specify materials (Stainless, Iron, etc.), dimensions, and upload reference images to show us exactly what you want. After submission, our staff will review your request and provide an update.</p>
+                </section>
+
+                <section id="appointments" class="mb-5 border-top pt-4">
+                    <h3 class="fw-800 mb-3">Appointments & Measurements</h3>
+                    <p class="text-muted small">Choose a convenient date and time through the Appointment module. This is typically used for on-site measurements or design consultations. Our team will be notified and confirm your slot through the system.</p>
+                </section>
+
+                <section id="inventory" class="mb-5 border-top pt-4">
+                    <h3 class="fw-800 mb-3">Inventory Tracking</h3>
+                    <p class="text-muted small">Staff members can monitor raw material stock in real-time. The system categorizes items (Industrial, Tools, etc.) and provides alerts for low-stock items to ensure fabrication never stops due to missing parts.</p>
+                </section>
+
+                <section id="payments" class="mb-5 border-top pt-4">
+                    <h3 class="fw-800 mb-3">Payments</h3>
+                    <p class="text-muted small">We support cash payments recorded via our POS terminal and digital payments (e.g., GCash). For digital transactions, please upload a screenshot of your transaction slip through the system for verification.</p>
+                </section>
+
+                <section id="support" class="mb-4 border-top pt-4">
+                    <h3 class="fw-800 mb-3">Technical Support</h3>
+                    <div class="alert bg-amber-light border-amber-light text-dark">
+                        <div class="fw-700">Need help?</div>
+                        <div class="small">Contact us at <a href="mailto:rholancetrading@gmail.com" class="text-dark fw-700">rholancetrading@gmail.com</a> or call <strong>09957742174</strong>.</div>
+                    </div>
+                </section>
+
+                <div class="text-center text-muted small mt-5 pt-4 border-top">
+                    © 2026 Rholance Trading. Document Version 1.1 — Updated May 2026.
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
 
-</body>
-</html>
+<style>
+.hover-amber:hover { color: #F59E0B !important; }
+.w-fit { width: fit-content; }
+section { scroll-margin-top: 100px; }
+</style>
+</body></html>

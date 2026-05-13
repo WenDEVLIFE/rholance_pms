@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . '/../config/database.php';
 
 if (!isset($_SESSION['verify_email'])) {
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 unset($_SESSION['verify_email']);
 
                 $_SESSION['login_success'] = "Email verified successfully!";
-                header("Location: /rholance_pms/index.php");
+                header("Location: " . BASE_URL . "index.php");
                 exit;
             }
         }

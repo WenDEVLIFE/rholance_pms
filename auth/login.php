@@ -6,7 +6,7 @@ require_once __DIR__ . '/../config/database.php';
    ONLY ALLOW POST REQUEST
 ========================= */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -18,7 +18,7 @@ $password = $_POST['password'] ?? '';
 
 if ($email === '' || $password === '') {
     $_SESSION['login_error'] = "Email and password are required.";
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -30,7 +30,7 @@ $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
 if (!$stmt) {
     // DB prepare error
     $_SESSION['login_error'] = "System error. Please try again.";
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -49,7 +49,7 @@ if ($user) {
     ========================= */
     if ((int)$user['is_verified'] === 0) {
         $_SESSION['login_error'] = "Please verify your email first.";
-        header("Location: /rholance_pms/index.php");
+        header("Location: " . BASE_URL . "index.php");
         exit;
     }
 
@@ -58,7 +58,7 @@ if ($user) {
     ========================= */
     if (strtolower($user['status']) === 'blocked') {
         $_SESSION['blocked_user'] = true;
-        header("Location: /rholance_pms/index.php");
+        header("Location: " . BASE_URL . "index.php");
         exit;
     }
 
@@ -80,19 +80,19 @@ if ($user) {
         ========================= */
         switch ($_SESSION['role']) {
             case 'admin':
-                header("Location: /rholance_pms/admin/dashboard.php");
+                header("Location: " . BASE_URL . "admin/dashboard.php");
                 break;
 
             case 'staff':
-                header("Location: /rholance_pms/staff/dashboard.php");
+                header("Location: " . BASE_URL . "staff/dashboard.php");
                 break;
 
             case 'welder':
-                header("Location: /rholance_pms/welder/dashboard.php");
+                header("Location: " . BASE_URL . "staff/welder_dashboard.php");
                 break;
 
             default:
-                header("Location: /rholance_pms/customer/dashboard.php");
+                header("Location: " . BASE_URL . "customer/dashboard.php");
                 break;
         }
 
@@ -104,5 +104,5 @@ if ($user) {
    FAILED LOGIN (SAFE FALLBACK)
 ========================= */
 $_SESSION['login_error'] = "Invalid email or password.";
-header("Location: /rholance_pms/index.php");
+header("Location: " . BASE_URL . "index.php");
 exit;

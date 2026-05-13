@@ -2,5 +2,5 @@
 session_start();
 session_destroy();
 
-header("Location: /rholance_pms/index.php");
+header("Location: " . BASE_URL . "index.php");
 exit;

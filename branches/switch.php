@@ -11,7 +11,7 @@ if (isset($_POST['branch_id'])) {
 }
 
 /* Fallback if no referrer */
-$redirect = $_SERVER['HTTP_REFERER'] ?? '/rholance_pms/admin/dashboard.php';
+$redirect = $_SERVER['HTTP_REFERER'] ?? '<?= BASE_URL ?>admin/dashboard.php';
 
 header("Location: " . $redirect);
 exit;

@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch("/rholance_pms/search_api.php?q=" + encodeURIComponent(query))
+        fetch(BASE_URL + "search_api.php?q=" + encodeURIComponent(query))
             .then(res => res.json())
             .then(data => {
 

@@ -56,8 +56,8 @@ $totalPages = ceil($total / $limit);
 
         <div class="item-info">
             <img 
-                src="/rholance_pms/assets/images/orders/<?= htmlspecialchars($t['image']) ?>"
-                onerror="this.src='/rholance_pms/assets/images/default.png';"
+                src="<?= BASE_URL ?>assets/images/orders/<?= htmlspecialchars($t['image']) ?>"
+                onerror="this.src='<?= BASE_URL ?>assets/images/default.png';"
             >
             <div>
                 <strong><?= htmlspecialchars($t['project_name']) ?></strong>

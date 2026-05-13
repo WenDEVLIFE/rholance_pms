@@ -1,3 +1,4 @@
+<?php include 'config/database.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,8 +7,8 @@
 
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/output.css">
-    <link rel="icon" href="/rholance_pms/favicon2.ico">
-    <link rel="shortcut icon" href="/rholance_pms/favicon2.ico">
+    <link rel="icon" href="<?= BASE_URL ?>favicon2.ico">
+    <link rel="shortcut icon" href="<?= BASE_URL ?>favicon2.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -464,7 +465,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
         <?php unset($_SESSION['login_error']); endif; ?>
 
         <!-- FORM -->
-        <form method="POST" action="/rholance_pms/auth/login.php">
+        <form method="POST" action="<?= BASE_URL ?>auth/login.php">
 
             <!-- EMAIL -->
             <div class="form-group">
@@ -539,7 +540,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
             </div>
         <?php unset($_SESSION['register_success']); endif; ?>
 
-        <form method="POST" action="/rholance_pms/auth/register.php">
+        <form method="POST" action="<?= BASE_URL ?>auth/register.php">
 
             <!-- FULL NAME -->
             <div class="form-group">
@@ -597,7 +598,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
     </div>
 </div>
 
-<script src="/rholance_pms/assets/js/app.js"></script>
+<script src="<?= BASE_URL ?>assets/js/app.js"></script>
 
 <script>
     const params = new URLSearchParams(window.location.search);

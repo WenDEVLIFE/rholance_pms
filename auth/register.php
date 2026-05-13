@@ -12,7 +12,7 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -23,19 +23,19 @@ $confirm_password = $_POST['confirm_password'] ?? '';
 
 if ($name === '' || $email === '' || $password === '' || $confirm_password === '') {
     $_SESSION['register_error'] = "All fields are required.";
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['register_error'] = "Invalid email format.";
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
 if ($password !== $confirm_password) {
     $_SESSION['register_error'] = "Passwords do not match.";
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -45,7 +45,7 @@ $check->execute();
 
 if ($check->get_result()->num_rows > 0) {
     $_SESSION['register_error'] = "Email already exists.";
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 
@@ -88,5 +88,5 @@ sendVerificationEmail($email, $code);
 
 $_SESSION['verify_email'] = $email;
 
-header("Location: /rholance_pms/auth/verify.php");
+header("Location: " . BASE_URL . "auth/verify.php");
 exit;

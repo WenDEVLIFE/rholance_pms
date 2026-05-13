@@ -1,198 +1,119 @@
 <?php
-$current_page = basename($_SERVER['PHP_SELF']);
-$current_dir  = basename(dirname($_SERVER['PHP_SELF']));
+if (session_status() === PHP_SESSION_NONE) session_start();
+$cur_page = basename($_SERVER['PHP_SELF']);
+$cur_dir  = basename(dirname($_SERVER['PHP_SELF']));
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+function rh_nav($href, $icon, $label, $active) {
+    $cls = $active ? 'rh-nav-link active' : 'rh-nav-link';
+    echo "<a href=\"$href\" class=\"$cls\"><i class=\"$icon\"></i><span>$label</span></a>";
 }
-$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 
-<div class="sidebar">
+<aside class="rh-sidebar" id="rhSidebar">
 
-    <!-- Branch -->
-    <div class="sidebar-brand">
-    <img src="../assets/images/logoo.png" class="sidebar-logo">
+    <!-- BRAND -->
+    <a href="<?= BASE_URL ?>index.php" class="rh-sidebar-brand text-decoration-none">
+        <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Logo"
+             onerror="this.style.display='none'">
+        <div>
+            <div class="brand-name">Rholance</div>
+            <div class="brand-sub">Trading System</div>
+        </div>
+    </a>
 
-    <div class="brand-text">
-        <span class="brand-title">Rholance</span>
-        <span class="brand-sub">Trading System</span>
+    <!-- BRANCH SELECTOR (Admin only) -->
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+    <div class="branch-select px-3 py-2">
+        <form method="POST" action="<?= BASE_URL ?>branches/switch.php">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"
+                      style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#CBD5E1;">
+                    <i class="fas fa-code-branch"></i>
+                </span>
+                <select name="branch_id" id="branchSelect"
+                        class="form-select form-select-sm"
+                        style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);color:#CBD5E1;">
+                    <option value="1" <?= ($_SESSION['branch_id']==1)?'selected':'' ?>>Dasmariñas, Cavite</option>
+                    <option value="2" <?= ($_SESSION['branch_id']==2)?'selected':'' ?>>Biñan, Laguna</option>
+                </select>
+            </div>
+        </form>
     </div>
-</div>
+    <div class="rh-divider"></div>
+    <?php endif; ?>
 
+    <!-- ── CUSTOMER NAVIGATION ── -->
+    <?php if ($_SESSION['role'] === 'customer'): ?>
+    <div class="rh-sidebar-section">Menu</div>
+    <nav class="flex-column">
+        <?php rh_nav(BASE_URL . 'customer/dashboard.php',           'fas fa-house',         'Dashboard',    $cur_page==='dashboard.php'); ?>
+        <?php rh_nav(BASE_URL . 'customer/customize.php',           'fas fa-pen-ruler',     'Custom Order', $cur_page==='customize.php'); ?>
+        <?php rh_nav(BASE_URL . 'customer/my_projects.php',         'fas fa-diagram-project','My Projects', in_array($cur_page,['my_projects.php','project_details.php'])); ?>
+        <?php rh_nav(BASE_URL . 'customer/available_appointments.php','fas fa-calendar-check','Appointments',$cur_page==='available_appointments.php'); ?>
+        <?php rh_nav(BASE_URL . 'customer/transactions.php',        'fas fa-receipt',       'Transactions', $cur_page==='transactions.php'); ?>
+        <?php rh_nav(BASE_URL . 'products/index.php',               'fas fa-box',           'Products',     $cur_dir==='products'); ?>
+    </nav>
+    <?php endif; ?>
 
-<hr class="sidebar-divider">
+    <!-- ── ADMIN NAVIGATION ── -->
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+    <div class="rh-sidebar-section">Overview</div>
+    <nav class="flex-column">
+        <?php rh_nav(BASE_URL . 'admin/dashboard.php',       'fas fa-gauge-high',   'Dashboard',       strpos($_SERVER['REQUEST_URI'],'admin/dashboard')!==false); ?>
+        <?php rh_nav(BASE_URL . 'admin/sales_reports.php',   'fas fa-chart-line',   'Sales Reports',   strpos($_SERVER['REQUEST_URI'],'sales_reports')!==false); ?>
+    </nav>
+    <div class="rh-sidebar-section">Management</div>
+    <nav class="flex-column">
+        <?php rh_nav(BASE_URL . 'admin/user_management.php', 'fas fa-users',        'User Management', strpos($_SERVER['REQUEST_URI'],'user_management')!==false); ?>
+        <?php rh_nav(BASE_URL . 'orders/orders.php',         'fas fa-file-lines',   'Custom Orders',   $cur_dir==='orders'); ?>
+        <?php rh_nav(BASE_URL . 'inventory/index.php',       'fas fa-boxes-stacked','Inventory',       $cur_dir==='inventory'); ?>
+        <?php rh_nav(BASE_URL . 'staff/project_management.php','fas fa-diagram-project','Projects',    strpos($_SERVER['REQUEST_URI'],'project_management')!==false); ?>
+    </nav>
+    <?php endif; ?>
 
-    <!-- Branch Selector (OWNER ONLY) -->
-   <?php if ($_SESSION['role'] === 'admin'): ?>
+    <!-- ── STAFF NAVIGATION ── -->
+    <?php if ($_SESSION['role'] === 'staff'): ?>
+    <div class="rh-sidebar-section">Menu</div>
+    <nav class="flex-column">
+        <?php rh_nav(BASE_URL . 'staff/dashboard.php',             'fas fa-gauge-high',     'Dashboard',        $cur_page==='dashboard.php'); ?>
+        <?php rh_nav(BASE_URL . 'staff/appointment.php',           'fas fa-calendar-check', 'Appointments',     $cur_page==='appointment.php'); ?>
+        <?php rh_nav(BASE_URL . 'staff/project_management.php',    'fas fa-diagram-project','Projects',         $cur_page==='project_management.php'); ?>
+        <?php rh_nav(BASE_URL . 'orders/orders.php',               'fas fa-file-lines',     'Custom Orders',    $cur_dir==='orders'); ?>
+        <?php rh_nav(BASE_URL . 'inventory/staff_inventory.php',   'fas fa-boxes-stacked',  'Inventory',        $cur_page==='staff_inventory.php'); ?>
+        <?php rh_nav(BASE_URL . 'staff/pos/index.php',             'fas fa-cash-register',  'POS Terminal',     $cur_dir==='pos'); ?>
+        <?php rh_nav(BASE_URL . 'tasks/index.php',                 'fas fa-list-check',     'Task Management',  $cur_dir==='tasks'); ?>
+    </nav>
+    <?php endif; ?>
 
-<div class="branch-select">
-    <span class="branch-label">
-        <i class="fa-solid fa-code-branch"></i> All Branches
-    </span>
+    <!-- ── WELDER NAVIGATION ── -->
+    <?php if ($_SESSION['role'] === 'welder'): ?>
+    <div class="rh-sidebar-section">Menu</div>
+    <nav class="flex-column">
+        <?php rh_nav(BASE_URL . 'staff/welder_dashboard.php', 'fas fa-hard-hat',    'My Projects',  $cur_page==='welder_dashboard.php'); ?>
+        <?php rh_nav(BASE_URL . 'tasks/index.php',            'fas fa-list-check',  'My Tasks',     $cur_dir==='tasks'); ?>
+    </nav>
+    <?php endif; ?>
 
-   <form method="POST" action="/rholance_pms/branches/switch.php">
-       <select name="branch_id" id="branchSelect">
-            <option value="1" <?= $_SESSION['branch_id']==1?'selected':'' ?>>
-             Dasmariñas, Cavite 
-            </option>
-            <option value="2" <?= $_SESSION['branch_id']==2?'selected':'' ?>>
-                Biñan, Laguna
-            </option>
-        </select>
-    </form>
+    <!-- LOGOUT (bottom) -->
+    <div class="mt-auto p-3">
+        <div class="rh-divider mb-3"></div>
+        <a href="<?= BASE_URL ?>auth/logout.php" class="rh-nav-link text-danger-emphasis" style="border-left-color:transparent;">
+            <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+    </div>
 
-</div>
-
-<?php endif; ?>
-    
-
-    <!-- ================= CUSTOMER NAVIGATION ================= -->
-<?php if ($_SESSION['role'] === 'customer'): ?>
-
-<?php
-$currentPage = basename($_SERVER['PHP_SELF']);
-?>
-
-<nav class="sidebar-nav">
-
-    <!-- DASHBOARD -->
-    <a href="../customer/dashboard.php" 
-       class="nav-item <?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-house"></i>
-        <span>Dashboard</span>
-    </a>
-
-    <!-- PRODUCTS (Product Viewing Module) -->
-    <a href="../products/index.php" 
-       class="nav-item <?= $currentPage == 'index.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-box"></i>
-        <span>Products</span>
-    </a>
-
-    <!-- CUSTOM ORDER -->
-<a href="../customer/projects.php"
-   class="nav-item <?= $currentPage == 'projects.php' ? 'active' : '' ?>">
-    <i class="fa-solid fa-pen-ruler"></i>
-    <span>My Projects</span>
-</a>
-
-    <!-- APPOINTMENT MODULE -->
-    <a href="../customer/available_appointments.php" 
-       class="nav-item <?= $currentPage == 'available_appointments.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-calendar-check"></i>
-        <span>My Appointment</span>
-    </a>
-
-    <!-- 🔥 NEW: TRANSACTIONS MODULE -->
-    <a href="../customer/transactions.php" 
-       class="nav-item <?= $currentPage == 'transactions.php' ? 'active' : '' ?>">
-        <i class="fa-solid fa-receipt"></i>
-        <span>Transactions</span>
-    </a>
-
-</nav>
-
-<?php endif; ?>
-
-    <!-- ================= OWNER NAVIGATION ================= -->
-<?php if ($_SESSION['role'] === 'admin'): ?>
-<nav class="sidebar-nav">
-
-<a href="../admin/dashboard.php" 
-class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], 'dashboard.php') !== false) ? 'active' : '' ?>">
-<i class="fa-solid fa-gauge-high"></i>
-<span>Dashboard</span>
-</a>
-
-<a href="../dashboard/users.php" 
-class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], 'users.php') !== false) ? 'active' : '' ?>">
-<i class="fa-solid fa-users"></i>
-<span>User Management</span>
-</a>
-
-<a href="../orders/orders.php" 
-class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], 'orders') !== false) ? 'active' : '' ?>">
-<i class="fa-solid fa-file-lines"></i>
-<span>Custom Orders</span>
-</a>
-
-<a href="../inventory/index.php" 
-class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], 'inventory') !== false) ? 'active' : '' ?>">
-<i class="fa-solid fa-boxes-stacked"></i>
-<span>Inventory</span>
-</a>
-
-<a href="../reports/index.php"
-class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], 'reports') !== false) ? 'active' : '' ?>">
-<i class="fa-solid fa-chart-line"></i>
-<span>Reports</span>
-</a>
-
-</nav>
-<?php endif; ?>
-
-<!-- ================= STAFF NAVIGATION ================= -->
-
-<?php if ($_SESSION['role'] === 'staff'): ?>
-<nav class="sidebar-nav">
-
-    <a href="../staff/dashboard.php" 
-       class="nav-item <?= ($current_page == 'dashboard.php') ? 'active' : '' ?>">
-        <i class="fa-solid fa-chart-line"></i>
-        <span>Dashboard</span>
-    </a>
-
-    <a href="../staff/appointment.php" 
-       class="nav-item <?= ($current_page == 'appointment.php') ? 'active' : '' ?>">
-        <i class="fa-solid fa-calendar-check"></i>
-        <span>Appointments</span>
-    </a>
-
-    <a href="../orders/index.php" 
-       class="nav-item <?= ($current_dir == 'orders') ? 'active' : '' ?>">
-        <i class="fa-solid fa-file-lines"></i>
-        <span>Custom Orders</span>
-    </a>
-
-    <a href="../inventory/index.php" 
-       class="nav-item <?= ($current_dir == 'inventory') ? 'active' : '' ?>">
-        <i class="fa-solid fa-boxes-stacked"></i>
-        <span>Inventory</span>
-    </a>
-
-    <a href="../staff/pos/index.php" 
-       class="nav-item <?= ($current_dir == 'pos') ? 'active' : '' ?>">
-        <i class="fa-solid fa-cash-register"></i>
-        <span>POS Terminal</span>
-    </a>
-
-    <a href="../tasks/index.php" 
-       class="nav-item <?= ($current_dir == 'tasks') ? 'active' : '' ?>">
-        <i class="fa-solid fa-list-check"></i>
-        <span>Task Management</span>
-    </a>
-
-</nav>
-<?php endif; ?>
+</aside>
 
 <script>
-document.getElementById('branchSelect').addEventListener('change', function(){
-
-    const branchId = this.value;
-
-    fetch('/rholance_pms/branches/switch.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'branch_id=' + branchId
-    })
-    .then(() => {
-        // ✅ RELOAD PAGE (CRITICAL)
-        window.location.reload();
+/* Branch auto-submit */
+const bSel = document.getElementById('branchSelect');
+if (bSel) {
+    bSel.addEventListener('change', function() {
+        fetch('<?= BASE_URL ?>branches/switch.php', {
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body:'branch_id=' + this.value
+        }).then(() => window.location.reload());
     });
-
-});
+}
 </script>
-</div>

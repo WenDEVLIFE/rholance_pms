@@ -2,231 +2,78 @@
 include __DIR__ . '/../includes/auth_check.php';
 include __DIR__ . '/../config/database.php';
 include __DIR__ . '/../includes/header.php';
-
-if ($_SESSION['role'] !== 'customer') {
-    header("Location: ../dashboard/index.php");
-    exit;
-}
-
-$customerId = $_SESSION['user_id'];
-$status_filter = $_GET['status'] ?? 'ongoing';
-
-/* 
-   Ongoing: 'Appointment','Initial Payment','On-going','For Delivery','Backjobs'
-   Finished: 'Completed'
-   Old: 'Cancelled'
-*/
-
-$status_map = [
-    'ongoing' => "('Appointment','Initial Payment','On-going','For Delivery','Backjobs')",
-    'finished' => "('Completed')",
-    'old' => "('Cancelled')"
-];
-
-$filter_sql = $status_map[$status_filter] ?? $status_map['ongoing'];
-
-$query = "SELECT * FROM custom_orders WHERE customer_id = ? AND status IN $filter_sql ORDER BY created_at DESC";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $customerId);
-$stmt->execute();
-$projects = $stmt->get_result();
-
 include __DIR__ . '/../includes/sidebar.php';
+
+if ($_SESSION['role'] !== 'customer') { header("Location: ../index.php"); exit; }
+$cid = $_SESSION['user_id'];
+$sf  = $_GET['status'] ?? 'ongoing';
+$map = [
+    'ongoing'  => "'Appointment','Initial Payment','On-going','For Delivery','Backjobs'",
+    'finished' => "'Completed'",
+    'old'      => "'Cancelled'"
+];
+$filter = $map[$sf] ?? $map['ongoing'];
+$stmt = $conn->prepare("SELECT * FROM custom_orders WHERE customer_id = ? AND status IN ($filter) ORDER BY created_at DESC");
+$stmt->bind_param("i",$cid); $stmt->execute();
+$projects = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
-<div class="main customer-dashboard">
-
-    <div class="dashboard-header">
-        <h1>MY PROJECTS</h1>
-        <div class="filter-tabs">
-            <a href="?status=ongoing" class="<?= $status_filter === 'ongoing' ? 'active' : '' ?>">Ongoing</a>
-            <a href="?status=finished" class="<?= $status_filter === 'finished' ? 'active' : '' ?>">Finished</a>
-            <a href="?status=old" class="<?= $status_filter === 'old' ? 'active' : '' ?>">Old Transactions</a>
+<div class="rh-main">
+    <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+            <h1>My Projects</h1>
+            <p>Track all your custom fabrication orders.</p>
         </div>
+        <a href="customize.php" class="btn btn-primary"><i class="fas fa-plus me-2"></i>New Order</a>
     </div>
 
-    <div class="project-grid">
-        <?php if ($projects->num_rows > 0): ?>
-            <?php while ($p = $projects->fetch_assoc()): ?>
-                <div class="project-card glass-premium">
-                    <div class="project-image">
-                        <img src="../<?= $p['image'] ?? 'assets/images/no-image.png' ?>" alt="Project">
-                        <span class="status-tag <?= strtolower(str_replace(' ','-',$p['status'])) ?>">
-                            <?= $p['status'] ?>
-                        </span>
-                    </div>
-                    <div class="project-info">
-                        <h3><?= htmlspecialchars($p['project_name'] ?? 'Custom Project') ?></h3>
-                        <p class="category"><?= htmlspecialchars($p['category'] ?? 'General') ?></p>
-                        
-                        <div class="progress-container">
-                            <?php 
-                                $progress = 0;
-                                switch($p['status']) {
-                                    case 'Appointment': $progress = 10; break;
-                                    case 'Initial Payment': $progress = 30; break;
-                                    case 'On-going': $progress = 60; break;
-                                    case 'For Delivery': $progress = 90; break;
-                                    case 'Completed': $progress = 100; break;
-                                    case 'Backjobs': $progress = 80; break;
-                                }
-                            ?>
-                            <div class="progress-label">
-                                <span>Progress</span>
-                                <span><?= $progress ?>%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: <?= $progress ?>%"></div>
-                            </div>
-                        </div>
+    <!-- FILTER TABS -->
+    <div class="rh-tabs mb-4">
+        <a href="?status=ongoing"  class="rh-tab <?= $sf==='ongoing' ?'active':'' ?>">Ongoing</a>
+        <a href="?status=finished" class="rh-tab <?= $sf==='finished'?'active':'' ?>">Finished</a>
+        <a href="?status=old"      class="rh-tab <?= $sf==='old'     ?'active':'' ?>">Old Transactions</a>
+    </div>
 
-                        <div class="project-footer">
-                            <span class="date"><i class="far fa-calendar"></i> <?= date('M d, Y', strtotime($p['created_at'])) ?></span>
-                            <a href="project_details.php?id=<?= $p['id'] ?>" class="btn-details">View Details</a>
-                        </div>
+    <?php if (empty($projects)): ?>
+        <div class="card p-5 text-center text-muted">
+            <i class="fas fa-folder-open fs-1 mb-3 opacity-25 d-block"></i>
+            No projects in this category.
+        </div>
+    <?php else: ?>
+    <div class="row g-3">
+        <?php foreach ($projects as $p):
+            $pct = ['Appointment'=>10,'Initial Payment'=>30,'On-going'=>60,'For Delivery'=>85,'Backjobs'=>50,'Completed'=>100][$p['status']] ?? 0;
+            $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
+        ?>
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="rh-proj-card">
+                <div class="rh-proj-thumb">
+                    <img src="../<?= $p['image'] ?? 'assets/images/no-image.png' ?>"
+                         onerror="this.src='../assets/images/no-image.png'" alt="">
+                    <span class="badge <?= $cls ?> status-float"><?= $p['status'] ?></span>
+                </div>
+                <div class="rh-proj-body">
+                    <h6><?= htmlspecialchars($p['project_name'] ?? 'Custom Project') ?></h6>
+                    <p class="proj-meta">
+                        <span class="badge bg-light text-dark fw-600 me-1"><?= htmlspecialchars($p['category'] ?? '') ?></span>
+                        <?= htmlspecialchars($p['material'] ?? '') ?>
+                    </p>
+                    <div class="d-flex justify-content-between mb-1" style="font-size:.75rem;font-weight:700;">
+                        <span>Progress</span><span><?= $pct ?>%</span>
+                    </div>
+                    <div class="progress mb-3" style="height:7px;">
+                        <div class="progress-bar" style="width:<?= $pct ?>%"></div>
+                    </div>
+                    <div class="rh-proj-footer">
+                        <small class="text-muted"><i class="far fa-calendar me-1"></i><?= date('M d, Y',strtotime($p['created_at'])) ?></small>
+                        <a href="project_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-warning fw-700">View Details</a>
                     </div>
                 </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <div class="empty-state">
-                <i class="fas fa-folder-open"></i>
-                <p>No projects found in this category.</p>
             </div>
-        <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
     </div>
-
+    <?php endif; ?>
 </div>
 
-<script src="/rholance_pms/assets/js/darkmode.js"></script>
-<style>
-.filter-tabs {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-}
-.filter-tabs a {
-    padding: 8px 20px;
-    border-radius: 20px;
-    background: #fff;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s;
-    border: 1px solid var(--border);
-}
-.filter-tabs a.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
-}
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-}
-.project-card {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-.project-image {
-    height: 180px;
-    position: relative;
-}
-.project-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.status-tag {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: white;
-}
-.status-appointment { background: #64748B; }
-.status-initial-payment { background: #3B82F6; }
-.status-on-going { background: #F59E0B; }
-.status-for-delivery { background: #10B981; }
-.status-backjobs { background: #EF4444; }
-.status-completed { background: #059669; }
-.status-cancelled { background: #94A3B8; }
-
-.project-info {
-    padding: 20px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-.project-info h3 {
-    margin: 0;
-    font-size: 18px;
-    color: var(--primary);
-}
-.project-info .category {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin: 4px 0 20px;
-}
-.progress-container {
-    margin-bottom: 20px;
-}
-.progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-.progress-bar {
-    height: 8px;
-    background: #E2E8F0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-.progress-fill {
-    height: 100%;
-    background: var(--accent);
-    transition: width 0.5s ease-out;
-}
-.project-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--border);
-    padding-top: 15px;
-}
-.project-footer .date {
-    font-size: 12px;
-    color: var(--text-muted);
-}
-.btn-details {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    text-decoration: none;
-}
-.empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 60px;
-    color: var(--text-muted);
-}
-.empty-state i {
-    font-size: 48px;
-    margin-bottom: 15px;
-    opacity: 0.3;
-}
-</style>
-
-</body>
-</html>
+</body></html>

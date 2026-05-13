@@ -5,7 +5,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/mailer.php'; // ✅ THIS WAS MISSING
 
 if (!isset($_SESSION['verify_email'])) {
-    header("Location: /rholance_pms/index.php");
+    header("Location: " . BASE_URL . "index.php");
     exit;
 }
 

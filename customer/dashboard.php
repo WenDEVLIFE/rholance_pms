@@ -2,235 +2,158 @@
 include __DIR__ . '/../includes/auth_check.php';
 include __DIR__ . '/../config/database.php';
 include __DIR__ . '/../includes/header.php';
-
-// Ensure role is customer
-if ($_SESSION['role'] !== 'customer') {
-    header("Location: ../dashboard/index.php");
-    exit;
-}
-
-$customerId = $_SESSION['user_id'];
-
-/* COUNT ORDERS */
-$orderCountQuery = mysqli_query($conn, "
-    SELECT COUNT(*) AS total 
-    FROM custom_orders 
-    WHERE customer_id = '$customerId'
-");
-$orderCount = mysqli_fetch_assoc($orderCountQuery)['total'];
-
-/* COUNT APPOINTMENTS */
-$stmt = $conn->prepare("
-    SELECT COUNT(*) AS total 
-    FROM appointments
-    WHERE user_id = ?
-    AND status IN ('Pending','Approved')
-");
-$stmt->bind_param("i", $customerId);
-$stmt->execute();
-$appointmentCount = $stmt->get_result()->fetch_assoc()['total'];
-
-
-/* GET ALL ORDERS */
-$orders = mysqli_query($conn, "
-    SELECT 
-        co.id AS order_id,
-        co.material,
-        co.dimensions,
-        co.status,
-        co.created_at,
-        oi.quantity,
-        oi.total_amount,
-        i.name AS item_name
-    FROM custom_orders co
-    LEFT JOIN order_items oi ON co.id = oi.order_id
-    LEFT JOIN items i ON oi.item_id = i.id
-    WHERE co.customer_id = '$customerId'
-    ORDER BY co.created_at DESC
-");
-
-
-/* ===============================
-   PROJECT COUNTS
-=============================== */
-$stmt = $conn->prepare("
-    SELECT 
-        SUM(CASE WHEN status != 'Completed' THEN 1 ELSE 0 END) AS active,
-        SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) AS completed
-    FROM custom_orders
-    WHERE customer_id = ?
-");
-
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$result = $stmt->get_result()->fetch_assoc();
-
-$activeProjects = $result['active'] ?? 0;
-$completedProjects = $result['completed'] ?? 0;
-
 include __DIR__ . '/../includes/sidebar.php';
 
-function orderProgress($status) {
-    $map = [
-        'Order Received' => 15,
-        'Measurement'    => 30,
-        'Cutting'        => 50,
-        'Quality Check'  => 70,
-        'Ready'          => 85,
-        'Completed'      => 100
-    ];
-    return $map[$status] ?? 0;
+if ($_SESSION['role'] !== 'customer') { header("Location: ../index.php"); exit; }
+
+$cid = $_SESSION['user_id'];
+
+$s = ['active'=>0,'done'=>0,'total'=>0];
+$appt = 0;
+
+if (!$conn->connect_error) {
+    $statsQ = $conn->prepare("
+        SELECT
+            SUM(status NOT IN ('Completed','Cancelled')) AS active,
+            SUM(status = 'Completed')                    AS done,
+            SUM(1)                                        AS total
+        FROM custom_orders WHERE customer_id = ?
+    ");
+    if ($statsQ) {
+        $statsQ->bind_param("i", $cid); $statsQ->execute();
+        $s = $statsQ->get_result()->fetch_assoc();
+    }
+
+    $apptCount = $conn->prepare("SELECT COUNT(*) c FROM appointments WHERE user_id = ? AND status != 'Rejected'");
+    if ($apptCount) {
+        $apptCount->bind_param("i", $cid); $apptCount->execute();
+        $appt = $apptCount->get_result()->fetch_assoc()['c'];
+    }
 }
 ?>
 
-<div class="main customer-dashboard">
+<div class="rh-main">
 
-<!-- HEADER -->
-<div class="dashboard-header">
-    <h1>DASHBOARD</h1>
-    <p class="subtitle">
-        Track your orders, schedules, and request custom services.
-    </p>
-</div>
-
-<!-- HERO -->
-<div class="hero-card glass-premium">
-    <div class="hero-content">
-        <h2>Start a Custom Order</h2>
-        <p>Submit a request and choose your preferred schedule. Our staff will handle the details.</p>
-        <a href="customize.php" class="btn-modern">
-            <i class="fas fa-plus-circle"></i> Request Custom Order
+    <!-- PAGE HEADER -->
+    <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+            <h1>Welcome back, <?= htmlspecialchars(explode(' ', $_SESSION['name'])[0]) ?> 👋</h1>
+            <p>Here's what's happening with your projects today.</p>
+        </div>
+        <a href="customize.php" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Custom Order
         </a>
     </div>
-</div>
 
-<!-- STATS -->
-<div class="header-cards">
-
-    <!-- MY PROJECTS -->
-    <a href="my_projects.php" class="stat-card glass-premium clickable-card">
-        <div class="stat-icon">
-            <i class="fas fa-diagram-project"></i>
+    <!-- STAT CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <a href="my_projects.php?status=ongoing" class="rh-stat-card text-decoration-none d-flex">
+                <div class="rh-stat-icon bg-amber"><i class="fas fa-diagram-project"></i></div>
+                <div>
+                    <div class="rh-stat-label">Active Projects</div>
+                    <div class="rh-stat-value"><?= $s['active'] ?? 0 ?></div>
+                </div>
+            </a>
         </div>
-        <div class="stat-info">
-            <span>My Projects</span>
-            <div class="stat-breakdown">
-                <span class="active-tag"><?= $activeProjects ?> Active</span>
-                <span class="completed-tag"><?= $completedProjects ?> Done</span>
+        <div class="col-6 col-md-3">
+            <a href="my_projects.php?status=finished" class="rh-stat-card text-decoration-none d-flex">
+                <div class="rh-stat-icon bg-green"><i class="fas fa-circle-check"></i></div>
+                <div>
+                    <div class="rh-stat-label">Completed</div>
+                    <div class="rh-stat-value"><?= $s['done'] ?? 0 ?></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="available_appointments.php" class="rh-stat-card text-decoration-none d-flex">
+                <div class="rh-stat-icon bg-blue"><i class="fas fa-calendar-check"></i></div>
+                <div>
+                    <div class="rh-stat-label">Appointments</div>
+                    <div class="rh-stat-value"><?= $appt ?></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="my_projects.php" class="rh-stat-card text-decoration-none d-flex">
+                <div class="rh-stat-icon bg-purple"><i class="fas fa-layer-group"></i></div>
+                <div>
+                    <div class="rh-stat-label">Total Orders</div>
+                    <div class="rh-stat-value"><?= $s['total'] ?? 0 ?></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- HERO CARD -->
+    <div class="card rh-glass mb-4 border-0" style="background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);">
+        <div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h4 class="fw-800 text-white mb-1"><i class="fas fa-pen-ruler me-2 text-amber"></i>Start a Custom Order</h4>
+                <p class="text-secondary mb-0" style="font-size:.9rem;">
+                    Design your project — gates, railings, trusses, grills & more. Our team handles the rest.
+                </p>
+            </div>
+            <a href="customize.php" class="btn btn-warning fw-700 px-4">
+                <i class="fas fa-paper-plane me-2"></i>Submit Request
+            </a>
+        </div>
+    </div>
+
+    <!-- RECENT PROJECTS -->
+    <?php
+    $recProj = [];
+    if (!$conn->connect_error) {
+        $recent = $conn->prepare("SELECT * FROM custom_orders WHERE customer_id = ? ORDER BY created_at DESC LIMIT 4");
+        if ($recent) {
+            $recent->bind_param("i",$cid); $recent->execute();
+            $recProj = $recent->get_result()->fetch_all(MYSQLI_ASSOC);
+        }
+    }
+    ?>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="fw-800 mb-0">Recent Projects</h5>
+        <a href="my_projects.php" class="btn btn-sm btn-outline-secondary">View All</a>
+    </div>
+
+    <?php if (empty($recProj)): ?>
+        <div class="card p-5 text-center text-muted">
+            <i class="fas fa-folder-open fs-1 mb-3 opacity-25"></i>
+            <p>No projects yet. <a href="customize.php">Submit your first order</a>.</p>
+        </div>
+    <?php else: ?>
+    <div class="row g-3">
+        <?php foreach ($recProj as $p):
+            $pct = ['Appointment'=>10,'Initial Payment'=>30,'On-going'=>60,'For Delivery'=>85,'Backjobs'=>50,'Completed'=>100][$p['status']] ?? 0;
+            $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
+        ?>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="rh-proj-card">
+                <div class="rh-proj-thumb">
+                    <img src="../<?= $p['image'] ?? 'assets/images/no-image.png' ?>" alt="Project"
+                         onerror="this.src='../assets/images/no-image.png'">
+                    <span class="badge <?= $cls ?> status-float"><?= $p['status'] ?></span>
+                </div>
+                <div class="rh-proj-body">
+                    <h6><?= htmlspecialchars($p['project_name'] ?? 'Custom Project') ?></h6>
+                    <p class="proj-meta"><?= htmlspecialchars($p['category'] ?? '') ?></p>
+                    <div class="d-flex justify-content-between mb-1" style="font-size:.75rem;font-weight:700;">
+                        <span>Progress</span><span><?= $pct ?>%</span>
+                    </div>
+                    <div class="progress mb-3" style="height:6px;">
+                        <div class="progress-bar" style="width:<?= $pct ?>%"></div>
+                    </div>
+                    <div class="rh-proj-footer">
+                        <small class="text-muted"><?= date('M d, Y',strtotime($p['created_at'])) ?></small>
+                        <a href="project_details.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-warning fw-700">Details</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </a>
-
-    <!-- APPOINTMENTS -->
-    <a href="my_appointment.php" class="stat-card glass-premium clickable-card"> 
-        <div class="stat-icon">
-            <i class="fa-solid fa-calendar-check"></i>
-        </div>
-        <div class="stat-info">
-            <span>Appointments</span>
-            <h2 id="appointmentCount"><?= $appointmentCount ?></h2>
-        </div>
-    </a>
-
-</div>
-
-<!-- ORDER STATUS FLOW -->
-<div class="card">
-    <h3>Order Status Overview</h3>
-
-    <div class="progress-steps">
-        <span>Request</span>
-        <span>Scheduled</span>
-        <span>In Progress</span>
-        <span>For Delivery</span>
-        <span class="done">Completed</span>
+        <?php endforeach; ?>
     </div>
-</div>
-
-<!-- PRODUCTS ACCESS -->
-<div class="card">
-    <h3>Explore Available Products</h3>
-    <p>Browse available materials and product options for your custom requests.</p>
-
-    <a href="products.php" class="btn-secondary">
-        View Products
-    </a>
-</div>
-
-<!-- TABLE -->
-<div class="card">
-    <h3>My Custom Orders</h3>
-
-    <?php if (mysqli_num_rows($orders) === 0): ?>
-        <p class="empty">You haven’t placed any custom orders yet.</p>
-    <?php else: ?>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Details</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        <?php while ($o = mysqli_fetch_assoc($orders)): ?>
-        <?php $progress = orderProgress($o['status']); ?>
-
-        <tr>
-            <td><?= htmlspecialchars($o['item_name'] ?? 'Custom Order') ?></td>
-
-            <td>
-                <?= htmlspecialchars($o['material']) ?><br>
-                <small><?= htmlspecialchars($o['dimensions']) ?></small>
-            </td>
-
-            <td><?= $o['quantity'] ?? '-' ?></td>
-
-            <td>Php<?= isset($o['total_amount']) ? number_format($o['total_amount'], 2) : '0.00' ?></td>
-
-            <td>
-                <span class="status-badge status-<?= strtolower(str_replace(' ','-',$o['status'])) ?>">
-                    <?= $o['status'] ?>
-                </span>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: <?= $progress ?>%"></div>
-                </div>
-            </td>
-
-            <td><?= date('M d, Y', strtotime($o['created_at'])) ?></td>
-        </tr>
-
-        <?php endwhile; ?>
-        </tbody>
-    </table>
-
     <?php endif; ?>
-</div>
 
 </div>
 
-<script src="/rholance_pms/assets/js/darkmode.js"></script>
-
-<script>
-function fetchDashboardStats() {
-    fetch("api/dashboard-stats.php")
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("orderCount").textContent = data.orders;
-            document.getElementById("appointmentCount").textContent = data.appointments;
-        })
-        .catch(err => console.error("Error:", err));
-}
-
-/* AUTO REFRESH EVERY 5 SECONDS */
-setInterval(fetchDashboardStats, 5000);
-</script>
-
-</body>
-</html>
+</body></html>

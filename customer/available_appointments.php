@@ -2,374 +2,217 @@
 session_start();
 include '../config/database.php';
 include '../includes/auth_check.php';
+include '../includes/header.php';
+include '../includes/sidebar.php';
 
-/* ===============================
-   USER
-=============================== */
-$user_id = $_SESSION['user_id'];
-
-/* ===============================
-   SUCCESS MESSAGE FIX
-=============================== */
+$user_id    = $_SESSION['user_id'];
 $showSuccess = isset($_GET['success']);
+
+/* ── Build 14-day availability grid ── */
+$calDays = [];
+for ($i = 0; $i < 14; $i++) {
+    $date    = date('Y-m-d', strtotime("+$i days"));
+    $display = date('M d', strtotime($date));
+    $dayName = date('D',   strtotime($date));
+
+    $allSlotsQ = mysqli_query($conn, "SELECT appointment_time FROM appointment_slots WHERE appointment_date='$date' AND status='Available'");
+    $allSlots  = mysqli_fetch_all($allSlotsQ, MYSQLI_ASSOC);
+    $allTimes  = array_column($allSlots, 'appointment_time');
+
+    $bookedQ   = mysqli_query($conn, "SELECT appointment_time FROM appointments WHERE appointment_date='$date' AND status IN ('Pending','Completed')");
+    $booked    = array_column(mysqli_fetch_all($bookedQ, MYSQLI_ASSOC), 'appointment_time');
+
+    $available = array_diff($allTimes, $booked);
+
+    if (empty($allTimes))     $status = 'disabled';
+    elseif (empty($available)) $status = 'full';
+    else                       $status = 'available';
+
+    $calDays[] = ['date'=>$date,'display'=>$display,'dayName'=>$dayName,'available'=>$available,'status'=>$status];
+}
+
+/* ── Customer's appointments ── */
+$myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_id ORDER BY appointment_date DESC");
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Appointments</title>
+<div class="rh-main">
 
-<link rel="stylesheet" href="../assets/css/style.css">
-<link rel="stylesheet" href="../assets/css/customer-dashboard.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+    <!-- SUCCESS TOAST -->
+    <?php if ($showSuccess): ?>
+    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="fas fa-circle-check"></i>
+        <strong>Success!</strong> Your appointment request has been submitted.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <script>window.history.replaceState(null,'',window.location.pathname);</script>
+    <?php endif; ?>
 
-<body>
+    <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+            <h1>Appointments</h1>
+            <p>Book a schedule — <strong>Cavite &amp; Laguna branches only</strong></p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookModal">
+            <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+        </button>
+    </div>
 
-<div class="app-layout">
-
-<?php include '../includes/sidebar.php'; ?>
-<?php include '../includes/header.php'; ?>
-
-<div class="main customer-dashboard">
-
-<!-- SUCCESS -->
-<?php if ($showSuccess): ?>
-<div id="successAlert" class="success-alert">
-    Appointment request submitted successfully!
-</div>
-
-<script>
-    // Remove ?success after showing
-    window.history.replaceState(null, null, window.location.pathname);
-</script>
-<?php endif; ?>
-
-
-<!-- ===============================
-     AVAILABLE DATES
-================================ -->
-<div class="card">
-
-    <h2>Available Appointment Dates</h2>
-    <p class="card-subtitle">Check available schedule before requesting a service</p>
-
-    <div class="calendar">
-
-    <?php
-    for ($i = 0; $i < 14; $i++):
-        $date = date('Y-m-d', strtotime("+$i days"));
-        $display = date('M d', strtotime($date));
-
-        /* ALL SLOTS */
-        $slotsQuery = mysqli_query($conn, "
-            SELECT appointment_time 
-            FROM appointment_slots 
-            WHERE appointment_date = '$date'
-            AND status = 'Available'
-        ");
-
-        $allSlots = [];
-        while ($row = mysqli_fetch_assoc($slotsQuery)) {
-            $allSlots[] = trim($row['appointment_time']);
-        }
-
-        /* BOOKED */
-        $bookedQuery = mysqli_query($conn, "
-            SELECT appointment_time 
-            FROM appointments 
-            WHERE appointment_date = '$date'
-            AND status IN ('Pending','Completed')
-        ");
-
-        $bookedSlots = [];
-        while ($row = mysqli_fetch_assoc($bookedQuery)) {
-            $bookedSlots[] = trim($row['appointment_time']);
-        }
-
-        $availableSlots = array_diff($allSlots, $bookedSlots);
-
-        /* STATUS */
-        if (empty($allSlots)) {
-            $class = 'disabled';
-        } elseif (empty($availableSlots)) {
-            $class = 'full';
-        } else {
-            $class = 'available';
-        }
-    ?>
-
-    <div class="day <?= $class ?>">
-
-        <strong><?= $display ?></strong>
-
-        <?php if (empty($allSlots)): ?>
-            <span>No Schedule</span>
-
-        <?php elseif (empty($availableSlots)): ?>
-            <span>Fully Booked</span>
-
-        <?php else: ?>
-            <span>Available</span>
-        <?php endif; ?>
-
-        <?php if (!empty($availableSlots)): ?>
-            <div class="time-slots">
-                <?php foreach ($availableSlots as $time): ?>
-                    <div class="slot book-slot"
-                         data-date="<?= $date ?>"
-                         data-time="<?= htmlspecialchars($time) ?>">
-                        <?= htmlspecialchars($time) ?>
-                    </div>
+    <!-- ── 14-DAY CALENDAR GRID ── -->
+    <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-calendar me-2 text-amber"></i>Available Dates (Next 14 Days)</div>
+        <div class="card-body">
+            <div class="row g-2">
+                <?php foreach ($calDays as $day): ?>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <?php if ($day['status'] === 'available'): ?>
+                        <button class="btn btn-outline-warning w-100 py-3 day-pick"
+                                data-date="<?= $day['date'] ?>"
+                                data-slots='<?= json_encode(array_values($day['available'])) ?>'>
+                            <div class="small fw-800"><?= $day['dayName'] ?></div>
+                            <div class="fs-6"><?= $day['display'] ?></div>
+                            <div class="badge bg-success mt-1"><?= count($day['available']) ?> open</div>
+                        </button>
+                    <?php elseif ($day['status'] === 'full'): ?>
+                        <div class="btn btn-outline-danger w-100 py-3 disabled opacity-75">
+                            <div class="small fw-800"><?= $day['dayName'] ?></div>
+                            <div class="fs-6"><?= $day['display'] ?></div>
+                            <div class="badge bg-danger mt-1">Full</div>
+                        </div>
+                    <?php else: ?>
+                        <div class="btn btn-light w-100 py-3 disabled opacity-50">
+                            <div class="small fw-800"><?= $day['dayName'] ?></div>
+                            <div class="fs-6"><?= $day['display'] ?></div>
+                            <div class="badge bg-secondary mt-1">No slots</div>
+                        </div>
+                    <?php endif; ?>
+                </div>
                 <?php endforeach; ?>
             </div>
-        <?php endif; ?>
-
+        </div>
     </div>
 
-    <?php endfor; ?>
-
-    </div>
-
-    <div class="legend">
-        <span class="available">Available</span>
-        <span class="full">Fully Booked</span>
-        <span class="disabled">No Schedule</span>
-    </div>
-
-</div>
-
-
-<!-- ===============================
-     MY APPOINTMENTS (FIXED)
-================================ -->
-<div class="card">
-
-    <h2>My Appointments</h2>
-    <p class="card-subtitle">Track your scheduled appointments</p>
-
-    <?php
-    /* 🔥 FETCH HERE (IMPORTANT FIX) */
-    $result = mysqli_query($conn, "
-        SELECT a.*, b.name AS branch_name
-        FROM appointments a
-        LEFT JOIN branches b ON a.branch_id = b.id
-        WHERE a.user_id = '$user_id'
-        ORDER BY a.appointment_date DESC
-    ");
-    ?>
-
-    <div class="table-wrapper">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Branch</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-            <?php if ($result && mysqli_num_rows($result) > 0): ?>
-
-                <?php while ($row = mysqli_fetch_assoc($result)): ?>
-<tr>
-    <td><?= date('M d, Y', strtotime($row['appointment_date'])) ?></td>
-    <td><?= htmlspecialchars($row['appointment_time']) ?></td>
-    <td><?= htmlspecialchars($row['branch_name'] ?? 'N/A') ?></td>
-
-    <!-- STATUS -->
-    <td>
-        <span class="status <?= strtolower($row['status']) ?>">
-            <?= htmlspecialchars($row['status']) ?>
-        </span>
-    </td>
-
-    <!-- ✅ ACTIONS (ADD THIS) -->
-    <td>
-        <?php if ($row['status'] === 'Pending' || $row['status'] === 'Approved'): ?>
-
-            <button class="btn-reschedule"
-                data-id="<?= $row['id'] ?>"
-                data-date="<?= $row['appointment_date'] ?>"
-                data-time="<?= $row['appointment_time'] ?>">
-                Reschedule
-            </button>
-
-            <button class="btn-cancel"
-                data-id="<?= $row['id'] ?>">
-                Cancel
-            </button>
-
-        <?php else: ?>
-            —
-        <?php endif; ?>
-    </td>
-
-</tr>
-<?php endwhile; ?>
-                  
-
-            <?php else: ?>
-
-                <tr>
-                    <td colspan="5" class="empty-state">
-                        <i class="fa-solid fa-calendar-xmark"></i><br><br>
-                        No appointments yet
-                    </td>
-                </tr>
-
-            <?php endif; ?>
-
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
-</div>
-</div>
-
-
-<!-- ===============================
-     MODAL
-================================ -->
-<div id="bookingModal" class="booking-modal">
-    <div class="modal-content">
-
-        <h3>Book Appointment</h3>
-
-        <form method="POST" action="request_appointment.php">
-
-            <input type="hidden" name="appointment_date" id="modalDate">
-            <input type="hidden" name="appointment_time" id="modalTime">
-
-            <p><strong>Date:</strong> <span id="displayDate"></span></p>
-            <p><strong>Time:</strong> <span id="displayTime"></span></p>
-
-            <p><strong>Customer:</strong> <?= $_SESSION['full_name'] ?? $_SESSION['name'] ?></p>
-
-            <select name="branch_id" required class="modern-input">
-                <option value="" disabled selected>Select Branch</option>
-                <?php
-                $branchesQuery = mysqli_query($conn, "SELECT * FROM branches WHERE name LIKE '%Cavite%' OR name LIKE '%Laguna%'");
-                while ($b = mysqli_fetch_assoc($branchesQuery)):
-                ?>
-                    <option value="<?= $b['id'] ?>"><?= htmlspecialchars($b['name']) ?></option>
-                <?php endwhile; ?>
-            </select>
-
-            <textarea name="address" placeholder="Complete Address (Must be in Cavite or Laguna)" required></textarea>
-            <input type="text" name="landmark" placeholder="Landmark">
-
-            <button type="submit" class="btn-primary">Confirm Booking</button>
-            <button type="button" id="closeModal" class="btn-secondary">Cancel</button>
-
-        </form>
-
+    <!-- ── MY APPOINTMENTS ── -->
+    <div class="card">
+        <div class="card-header"><i class="fas fa-list me-2 text-amber"></i>My Appointments</div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Date</th><th>Time</th><th>Address</th><th>Landmark</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                <?php if (mysqli_num_rows($myAppts) > 0): ?>
+                    <?php while ($row = mysqli_fetch_assoc($myAppts)):
+                        $bc = 'badge-' . strtolower($row['status']); ?>
+                    <tr>
+                        <td class="fw-600"><?= date('M d, Y', strtotime($row['appointment_date'])) ?></td>
+                        <td class="small"><?= htmlspecialchars($row['appointment_time']) ?></td>
+                        <td class="small"><?= htmlspecialchars($row['address'] ?? '—') ?></td>
+                        <td class="small"><?= htmlspecialchars($row['landmark'] ?? '—') ?></td>
+                        <td><span class="badge <?= $bc ?>"><?= $row['status'] ?></span></td>
+                        <td>
+                            <?php if ($row['status'] === 'Pending'): ?>
+                                <a href="cancel_appointment.php?id=<?= $row['id'] ?>"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Cancel this appointment?')">
+                                    <i class="fas fa-times me-1"></i>Cancel
+                                </a>
+                            <?php elseif ($row['status'] === 'Approved'): ?>
+                                <span class="badge badge-approved"><i class="fas fa-check me-1"></i>Confirmed</span>
+                            <?php else: ?>
+                                <span class="text-muted small">—</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fas fa-calendar-xmark fs-2 mb-2 d-block opacity-25"></i>
+                            No appointments yet.
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
+<!-- ── BOOK APPOINTMENT MODAL ── -->
+<div class="modal fade" id="bookModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-calendar-plus me-2 text-amber"></i>Book Appointment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="request_appointment.php" method="POST">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Date</label>
+                            <input type="date" id="bookDate" name="appointment_date" class="form-control"
+                                   min="<?= date('Y-m-d') ?>" required readonly>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Time</label>
+                            <select name="appointment_time" id="bookTime" class="form-select" required>
+                                <option value="">— Select a date first —</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Branch</label>
+                            <select name="branch_id" class="form-select" required>
+                                <option value="" disabled selected>Select branch</option>
+                                <option value="1">Dasmariñas, Cavite</option>
+                                <option value="2">Biñan, Laguna</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Your Address <span class="text-muted fw-400">(Cavite or Laguna only)</span></label>
+                            <input type="text" name="address" class="form-control" placeholder="Full address" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Landmark</label>
+                            <input type="text" name="landmark" class="form-control" placeholder="Near...">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Contact Person</label>
+                            <input type="text" name="contact_person" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Request Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-<!-- ===============================
-     JS
-================================ -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+/* Calendar day → modal pre-fill */
+const allDayData = <?= json_encode(array_column($calDays, null, 'date')) ?>;
+const bookModal  = new bootstrap.Modal(document.getElementById('bookModal'));
 
-    const modal = document.getElementById('bookingModal');
-    modal.style.display = "none";
+document.querySelectorAll('.day-pick').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const date  = btn.dataset.date;
+        const slots = JSON.parse(btn.dataset.slots);
 
-    document.querySelectorAll('.book-slot').forEach(slot => {
-        slot.addEventListener('click', function () {
-
-            document.getElementById('modalDate').value = this.dataset.date;
-            document.getElementById('modalTime').value = this.dataset.time;
-
-            document.getElementById('displayDate').innerText = this.dataset.date;
-            document.getElementById('displayTime').innerText = this.dataset.time;
-
-            modal.style.display = 'flex';
+        document.getElementById('bookDate').value = date;
+        const sel = document.getElementById('bookTime');
+        sel.innerHTML = '';
+        slots.forEach(s => {
+            const o = document.createElement('option');
+            o.value = o.textContent = s;
+            sel.appendChild(o);
         });
-    });
-
-    document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
-
-    window.onclick = (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-    };
-
-    /* SUCCESS AUTO HIDE */
-    const alertBox = document.getElementById('successAlert');
-    if (alertBox) {
-        setTimeout(() => {
-            alertBox.style.opacity = "0";
-            setTimeout(() => alertBox.remove(), 500);
-        }, 1500);
-    }
-
-});
-
-/* =========================
-   CANCEL APPOINTMENT
-========================= */
-document.querySelectorAll('.btn-cancel').forEach(btn => {
-    btn.addEventListener('click', function () {
-
-        const id = this.dataset.id;
-
-        if (!confirm("Are you sure you want to cancel this appointment?")) return;
-
-        fetch('cancel_appointment.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'appointment_id=' + id
-        })
-        .then(res => res.text())
-        .then(() => {
-            location.reload(); // refresh after cancel
-        });
-    });
-});
-
-
-/* =========================
-   RESCHEDULE
-========================= */
-document.querySelectorAll('.btn-reschedule').forEach(btn => {
-    btn.addEventListener('click', function () {
-
-        const id = this.dataset.id;
-        const date = this.dataset.date;
-        const time = this.dataset.time;
-
-        if (!confirm("Reschedule this appointment? Your current slot will be cancelled.")) return;
-
-        // Cancel first
-        fetch('cancel_appointment.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'appointment_id=' + id
-        })
-        .then(() => {
-
-            // Open modal again for new booking
-            document.getElementById('modalDate').value = date;
-            document.getElementById('modalTime').value = '';
-
-            document.getElementById('displayDate').innerText = date;
-            document.getElementById('displayTime').innerText = "Select new time";
-
-            document.getElementById('bookingModal').style.display = 'flex';
-
-        });
+        bookModal.show();
     });
 });
 </script>
-
-</body>
-</html>
+</body></html>

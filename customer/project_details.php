@@ -2,302 +2,182 @@
 include __DIR__ . '/../includes/auth_check.php';
 include __DIR__ . '/../config/database.php';
 include __DIR__ . '/../includes/header.php';
-
-if ($_SESSION['role'] !== 'customer') {
-    header("Location: ../dashboard/index.php");
-    exit;
-}
-
-$projectId = $_GET['id'] ?? null;
-if (!$projectId) {
-    header("Location: my_projects.php");
-    exit;
-}
-
-// Fetch Project Details
-$stmt = $conn->prepare("SELECT * FROM custom_orders WHERE id = ? AND customer_id = ?");
-$stmt->bind_param("ii", $projectId, $_SESSION['user_id']);
-$stmt->execute();
-$project = $stmt->get_result()->fetch_assoc();
-
-if (!$project) {
-    header("Location: my_projects.php");
-    exit;
-}
-
-// Fetch Assigned Staff (Welders)
-$stmt = $conn->prepare("SELECT u.name FROM tasks t JOIN users u ON t.assigned_to = u.id WHERE t.order_id = ?");
-$stmt->bind_param("i", $projectId);
-$stmt->execute();
-$staff = $stmt->get_result();
-
-// Fetch Materials Breakdown
-$stmt = $conn->prepare("SELECT oi.*, i.name AS item_name FROM order_items oi JOIN items i ON oi.item_id = i.id WHERE oi.order_id = ?");
-$stmt->bind_param("i", $projectId);
-$stmt->execute();
-$materials = $stmt->get_result();
-
-$totalMaterials = 0;
-
 include __DIR__ . '/../includes/sidebar.php';
+
+if ($_SESSION['role'] !== 'customer') { header("Location: ../index.php"); exit; }
+$cid = $_SESSION['user_id'];
+$pid = (int)($_GET['id'] ?? 0);
+if (!$pid) { header("Location: my_projects.php"); exit; }
+
+$stmt = $conn->prepare("SELECT * FROM custom_orders WHERE id = ? AND customer_id = ?");
+$stmt->bind_param("ii",$pid,$cid); $stmt->execute();
+$p = $stmt->get_result()->fetch_assoc();
+if (!$p) { header("Location: my_projects.php"); exit; }
+
+$welders = $conn->prepare("SELECT u.name FROM tasks t JOIN users u ON u.id=t.assigned_to WHERE t.order_id=?");
+$welders->bind_param("i",$pid); $welders->execute();
+$welderRows = $welders->get_result()->fetch_all(MYSQLI_ASSOC);
+
+$mats = $conn->prepare("SELECT oi.*,i.name item_name FROM order_items oi JOIN items i ON i.id=oi.item_id WHERE oi.order_id=?");
+$mats->bind_param("i",$pid); $mats->execute();
+$matRows = $mats->get_result()->fetch_all(MYSQLI_ASSOC);
+$matTotal = array_sum(array_column($matRows,'total_amount'));
+
+$pct = ['Appointment'=>10,'Initial Payment'=>30,'On-going'=>60,'For Delivery'=>85,'Backjobs'=>50,'Completed'=>100][$p['status']] ?? 0;
+$cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
 ?>
 
-<div class="main customer-dashboard">
+<div class="rh-main">
 
-    <div class="dashboard-header">
-        <a href="my_projects.php" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Projects</a>
-        <h1>PROJECT DETAILS</h1>
+    <!-- BACK + HEADER -->
+    <div class="rh-page-header">
+        <a href="my_projects.php" class="btn btn-sm btn-outline-secondary mb-2">
+            <i class="fas fa-arrow-left me-1"></i>Back to Projects
+        </a>
+        <h1>Project Details</h1>
     </div>
 
-    <div class="details-grid">
-        
-        <!-- LEFT: INFO & MATERIALS -->
-        <div class="details-left">
-            
-            <div class="card glass-premium">
-                <div class="project-header-info">
-                    <h2><?= htmlspecialchars($project['project_name'] ?? 'Custom Project') ?></h2>
-                    <span class="status-badge status-<?= strtolower(str_replace(' ','-',$project['status'])) ?>">
-                        <?= $project['status'] ?>
-                    </span>
+    <div class="row g-4">
+
+        <!-- LEFT COL -->
+        <div class="col-12 col-lg-7">
+
+            <!-- PROJECT INFO CARD -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-info-circle me-2 text-amber"></i>Project Information</span>
+                    <span class="badge <?= $cls ?>"><?= $p['status'] ?></span>
                 </div>
-                
-                <div class="info-list">
-                    <div class="info-item">
-                        <label>Category</label>
-                        <span><?= htmlspecialchars($project['category'] ?? 'N/A') ?></span>
-                    </div>
-                    <div class="info-item">
-                        <label>Materials</label>
-                        <span><?= htmlspecialchars($project['material'] ?? 'N/A') ?></span>
-                    </div>
-                    <div class="info-item">
-                        <label>Dimensions</label>
-                        <span><?= htmlspecialchars($project['dimensions'] ?? 'N/A') ?></span>
-                    </div>
-                    <div class="info-item">
-                        <label>Estimated Completion</label>
-                        <span><?= $project['estimated_completion'] ? date('M d, Y', strtotime($project['estimated_completion'])) : 'TBD' ?></span>
-                    </div>
-                </div>
+                <div class="card-body">
+                    <h4 class="fw-800 mb-1"><?= htmlspecialchars($p['project_name'] ?? 'Custom Project') ?></h4>
+                    <p class="text-muted small mb-3">Submitted <?= date('F d, Y',strtotime($p['created_at'])) ?></p>
 
-                <div class="description-box">
-                    <label>Description</label>
-                    <p><?= nl2br(htmlspecialchars($project['description'] ?? $project['instructions'] ?? 'No description provided.')) ?></p>
-                </div>
-            </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;font-weight:800;">Category</div>
+                            <div class="fw-600"><?= htmlspecialchars($p['category'] ?? 'N/A') ?></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;font-weight:800;">Material</div>
+                            <div class="fw-600"><?= htmlspecialchars($p['material'] ?? 'N/A') ?></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;font-weight:800;">Dimensions</div>
+                            <div class="fw-600"><?= htmlspecialchars($p['dimensions'] ?? 'N/A') ?></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted" style="font-size:.7rem;text-transform:uppercase;font-weight:800;">Est. Completion</div>
+                            <div class="fw-600"><?= $p['estimated_completion'] ? date('M d, Y',strtotime($p['estimated_completion'])) : 'TBD' ?></div>
+                        </div>
+                    </div>
 
-            <div class="card glass-premium">
-                <h3><i class="fas fa-list-ul"></i> Materials Breakdown</h3>
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th>Material</th>
-                            <th>Qty</th>
-                            <th>Unit Price</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($materials->num_rows > 0): ?>
-                            <?php while($m = $materials->fetch_assoc()): ?>
-                                <?php $totalMaterials += $m['total_amount']; ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($m['item_name']) ?></td>
-                                    <td><?= $m['quantity'] ?></td>
-                                    <td>₱<?= number_format($m['price'], 2) ?></td>
-                                    <td>₱<?= number_format($m['total_amount'], 2) ?></td>
-                                </tr>
-                            <?php endwhile; ?>
-                            <tr class="total-row">
-                                <td colspan="3">Total Material Cost</td>
-                                <td>₱<?= number_format($totalMaterials, 2) ?></td>
-                            </tr>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="4" class="empty">No materials listed yet.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <!-- PROGRESS -->
+                    <div class="d-flex justify-content-between mb-1" style="font-size:.8rem;font-weight:700;">
+                        <span>Progress</span><span><?= $pct ?>%</span>
+                    </div>
+                    <div class="progress mb-3" style="height:10px;">
+                        <div class="progress-bar" style="width:<?= $pct ?>%"></div>
+                    </div>
 
-        </div>
-
-        <!-- RIGHT: PROGRESS & VISUALS -->
-        <div class="details-right">
-            
-            <div class="card glass-premium">
-                <h3><i class="fas fa-tasks"></i> Project Team</h3>
-                <div class="staff-list">
-                    <?php if ($staff->num_rows > 0): ?>
-                        <?php while($s = $staff->fetch_assoc()): ?>
-                            <div class="staff-item">
-                                <i class="fas fa-user-cog"></i>
-                                <span><?= htmlspecialchars($s['name']) ?> (Welder)</span>
-                            </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <p class="empty">Personnel not yet assigned.</p>
+                    <?php if ($p['description'] || $p['instructions']): ?>
+                    <div class="bg-light rounded-3 p-3">
+                        <div class="text-muted mb-1" style="font-size:.7rem;font-weight:800;text-transform:uppercase;">Description</div>
+                        <p class="mb-0 small"><?= nl2br(htmlspecialchars($p['description'] ?? $p['instructions'] ?? '')) ?></p>
+                    </div>
                     <?php endif; ?>
                 </div>
             </div>
 
-            <div class="card glass-premium">
-                <h3><i class="fas fa-eye"></i> Expectation vs Reality</h3>
-                <div class="visual-comparison">
-                    <div class="visual-box">
-                        <label>Expectation (Reference)</label>
-                        <img src="../<?= $project['image'] ?? 'assets/images/no-image.png' ?>" alt="Expectation">
-                    </div>
-                    <div class="visual-box">
-                        <label>Reality (Actual Progress)</label>
-                        <img src="../<?= $project['reference_image'] ?? 'assets/images/no-image.png' ?>" alt="Reality">
+            <!-- MATERIALS TABLE -->
+            <div class="card mb-4">
+                <div class="card-header"><i class="fas fa-list-ul me-2 text-amber"></i>Materials Breakdown</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr><th>Material</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>
+                        </thead>
+                        <tbody>
+                        <?php if (empty($matRows)): ?>
+                            <tr><td colspan="4" class="text-center text-muted py-4">No materials listed yet.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($matRows as $m): ?>
+                            <tr>
+                                <td class="fw-600"><?= htmlspecialchars($m['item_name']) ?></td>
+                                <td><?= $m['quantity'] ?></td>
+                                <td>₱<?= number_format($m['price'],2) ?></td>
+                                <td>₱<?= number_format($m['total_amount'],2) ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <tr class="table-warning fw-800">
+                                <td colspan="3">Total Material Cost</td>
+                                <td>₱<?= number_format($matTotal,2) ?></td>
+                            </tr>
+                        <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COL -->
+        <div class="col-12 col-lg-5">
+
+            <!-- ASSIGNED TEAM -->
+            <div class="card mb-4">
+                <div class="card-header"><i class="fas fa-hard-hat me-2 text-amber"></i>Assigned Team</div>
+                <div class="card-body">
+                    <?php if (empty($welderRows)): ?>
+                        <p class="text-muted small mb-0">No personnel assigned yet.</p>
+                    <?php else: ?>
+                        <?php foreach ($welderRows as $w): ?>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="rh-avatar" style="width:32px;height:32px;font-size:.75rem;">
+                                <?= strtoupper(substr($w['name'],0,1)) ?>
+                            </div>
+                            <div><div class="fw-700 small"><?= htmlspecialchars($w['name']) ?></div>
+                                 <div class="text-muted" style="font-size:.7rem;">Welder</div></div>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- EXPECTATION VS REALITY -->
+            <div class="card mb-4">
+                <div class="card-header"><i class="fas fa-eye me-2 text-amber"></i>Expectation vs Reality</div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="text-muted mb-1" style="font-size:.7rem;font-weight:800;text-transform:uppercase;">Reference</div>
+                            <img src="../<?= $p['image'] ?? 'assets/images/no-image.png' ?>"
+                                 class="img-fluid rounded-3 border" style="height:120px;width:100%;object-fit:cover;"
+                                 onerror="this.src='../assets/images/no-image.png'" alt="Expectation">
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted mb-1" style="font-size:.7rem;font-weight:800;text-transform:uppercase;">Actual Progress</div>
+                            <img src="../<?= $p['reference_image'] ?? 'assets/images/no-image.png' ?>"
+                                 class="img-fluid rounded-3 border" style="height:120px;width:100%;object-fit:cover;"
+                                 onerror="this.src='../assets/images/no-image.png'" alt="Reality">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card glass-premium">
-                <h3><i class="fas fa-credit-card"></i> Payment</h3>
-                <div class="payment-info">
-                    <p>Total Balance: <span class="price">₱<?= number_format($totalMaterials * 1.5, 2) ?></span> <small>(incl. labor)</small></p>
-                    <a href="add_payment.php?id=<?= $project['id'] ?>" class="btn-modern w-full">
-                        <i class="fas fa-upload"></i> Upload Payment Proof
+            <!-- PAYMENT -->
+            <div class="card">
+                <div class="card-header"><i class="fas fa-credit-card me-2 text-amber"></i>Payment</div>
+                <div class="card-body text-center">
+                    <div class="mb-1 text-muted small">Estimated Total</div>
+                    <div class="fw-800 fs-4 mb-3">₱<?= number_format($matTotal*1.5,2) ?> <small class="text-muted fs-6">incl. labor</small></div>
+                    <a href="add_payment.php?id=<?= $p['id'] ?>" class="btn btn-primary w-100">
+                        <i class="fas fa-upload me-2"></i>Upload Payment Proof
                     </a>
                 </div>
             </div>
 
         </div>
-
     </div>
-
 </div>
 
-<script src="/rholance_pms/assets/js/darkmode.js"></script>
-<style>
-.btn-back {
-    text-decoration: none;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 10px;
-    display: block;
-}
-.details-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 25px;
-    margin-top: 20px;
-}
-.project-header-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 25px;
-}
-.project-header-info h2 {
-    margin: 0;
-    font-size: 24px;
-    color: var(--primary);
-}
-.info-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 25px;
-}
-.info-item {
-    display: flex;
-    flex-direction: column;
-}
-.info-item label {
-    font-size: 12px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    font-weight: 700;
-}
-.info-item span {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-}
-.description-box {
-    padding: 15px;
-    background: #F8FAFC;
-    border-radius: 10px;
-}
-.description-box label {
-    font-size: 12px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: block;
-}
-.description-box p {
-    font-size: 14px;
-    line-height: 1.6;
-    margin: 0;
-}
-.staff-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.staff-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 600;
-    color: var(--text);
-}
-.staff-item i {
-    color: var(--accent);
-}
-.visual-comparison {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-.visual-box label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-    display: block;
-}
-.visual-box img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-}
-.payment-info {
-    text-align: center;
-}
-.payment-info p {
-    margin-bottom: 15px;
-    font-weight: 600;
-}
-.payment-info .price {
-    font-size: 20px;
-    color: var(--primary);
-}
-.w-full {
-    width: 100%;
-    justify-content: center;
-}
-.total-row {
-    font-weight: 700;
-    background: #F1F5F9;
-}
-@media (max-width: 1024px) {
-    .details-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
-</body>
-</html>
+</body></html>
