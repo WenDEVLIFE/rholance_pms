@@ -6,18 +6,12 @@ Password for all: innovatechph
 
 1. ADMIN
    Email: admin@rholance.com
-   Link:  http://localhost/rholance_pms/admin/dashboard.php
 
 2. STAFF (CASHIER/MANAGEMENT)
    Email: staff@rholance.com
-   Link:  http://localhost/rholance_pms/staff/dashboard.php
 
 3. WELDER
    Email: welder@rholance.com
-   Link:  http://localhost/rholance_pms/staff/welder_dashboard.php
 
 4. CUSTOMER
    Email: customer@rholance.com
-   Link:  http://localhost/rholance_pms/customer/dashboard.php
-
-Note: Authentication is FULLY ENABLED. Please login through the landing page first.

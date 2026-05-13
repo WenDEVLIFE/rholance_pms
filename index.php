@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <title>Rholance Trading | Metal & Industrial Materials</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/output.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/output.css">
     <link rel="icon" href="<?= BASE_URL ?>favicon2.ico">
     <link rel="shortcut icon" href="<?= BASE_URL ?>favicon2.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -19,7 +19,7 @@
     <!-- LEFT: LOGO -->
 <div class="nav-left">
     <a href="#" class="logo-link" data-section="home">
-        <img src="assets/images/logoo.png" class="logo">
+        <img src="<?= BASE_URL ?>assets/images/logoo.png" class="logo">
     </a>
 </div>
 
@@ -77,9 +77,9 @@
 
                 <div class="carousel-viewport">
                     <div class="carousel-track" id="heroTrack">
-                        <img src="assets/images/products/h1.png" class="slide">
-                        <img src="assets/images/products/h2.png" class="slide active">
-                        <img src="assets/images/products/h3.png" class="slide">
+                        <img src="<?= BASE_URL ?>assets/images/products/h1.png" class="slide">
+                        <img src="<?= BASE_URL ?>assets/images/products/h2.png" class="slide active">
+                        <img src="<?= BASE_URL ?>assets/images/products/h3.png" class="slide">
                     </div>
                 </div>
 
@@ -125,7 +125,7 @@
 
         <!-- IMAGE -->
         <div class="about-image">
-            <img src="assets/images/about.jpg" alt="Rholance Trading">
+            <img src="<?= BASE_URL ?>assets/images/about.jpg" alt="Rholance Trading">
         </div>
 
     </div>
@@ -164,75 +164,75 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 <div id="p2Carousel" class="p2-carousel">
 
 <!-- ================= INDUSTRIAL ================= -->
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Corrugated Roof.png"><h3>Corrugated Roof</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Roof ridge cap.png"><h3>Roof Ridge Cap</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Wall flashing.png"><h3>Wall Flashing</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Perforated metal plates.png"><h3>Perforated Metal Plates</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Stainless plain sheet.png"><h3>Stainless Plain Sheet</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Round tube.png"><h3>Round Tube</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Square tube.png"><h3>Square Tube</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Twisted Steel Bars .png"><h3>Twisted Steel Bars</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Welded wire mesh panels.png"><h3>Welded Wire Mesh Panels</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Metal Pall Rings.png"><h3>Metal Pall Rings</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Roller Chain.png"><h3>Roller Chain</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Corrugated Roof.png"><h3>Corrugated Roof</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Roof ridge cap.png"><h3>Roof Ridge Cap</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Wall flashing.png"><h3>Wall Flashing</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Perforated metal plates.png"><h3>Perforated Metal Plates</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Stainless plain sheet.png"><h3>Stainless Plain Sheet</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Round tube.png"><h3>Round Tube</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Square tube.png"><h3>Square Tube</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Twisted Steel Bars .png"><h3>Twisted Steel Bars</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Welded wire mesh panels.png"><h3>Welded Wire Mesh Panels</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Metal Pall Rings.png"><h3>Metal Pall Rings</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Roller Chain.png"><h3>Roller Chain</h3></div>
 
 <!-- FASTENERS -->
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Hex Bolts.png"><h3>Hex Bolts</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Hex Coupling.png"><h3>Hex Coupling</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Flange Nuts.png"><h3>Flange Nuts</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Flange square cover.png"><h3>Flange Square Cover</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Flange cover.png"><h3>Flange Cover</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Flange base.png"><h3>Flange Base</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Flat Washers.png"><h3>Flat Washers</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Galvanized Eye Bolts.png"><h3>Galvanized Eye Bolts</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Self-Tapping Screws.png"><h3>Self-Tapping Screws</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Tekscrews.png"><h3>Tekscrews</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Wire Nails.png"><h3>Wire Nails</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Black Drywall Screws.png"><h3>Black Drywall Screws</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Expand nails with screw.png"><h3>Expand Nails with Screw</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Blind Rivet.png"><h3>Blind Rivet</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Locking rings.png"><h3>Locking Rings</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="assets/images/products/Tie Wire.png"><h3>Tie Wire</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Hex Bolts.png"><h3>Hex Bolts</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Hex Coupling.png"><h3>Hex Coupling</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange Nuts.png"><h3>Flange Nuts</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange square cover.png"><h3>Flange Square Cover</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange cover.png"><h3>Flange Cover</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange base.png"><h3>Flange Base</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flat Washers.png"><h3>Flat Washers</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Galvanized Eye Bolts.png"><h3>Galvanized Eye Bolts</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Self-Tapping Screws.png"><h3>Self-Tapping Screws</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Tekscrews.png"><h3>Tekscrews</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Wire Nails.png"><h3>Wire Nails</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Black Drywall Screws.png"><h3>Black Drywall Screws</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Expand nails with screw.png"><h3>Expand Nails with Screw</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Blind Rivet.png"><h3>Blind Rivet</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Locking rings.png"><h3>Locking Rings</h3></div>
+<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Tie Wire.png"><h3>Tie Wire</h3></div>
 
 <!-- ================= TOOLS ================= -->
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Combination Wrench.png"><h3>Combination Wrench</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/L-Type Socket Wrench.png"><h3>L-Type Socket Wrench</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Magnetic Nut Setter Set.png"><h3>Magnetic Nut Setter Set</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Paint brush.png"><h3>Paint Brush</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Chalk line reel.png"><h3>Chalk Line Reel</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Hand Riveter.png"><h3>Hand Riveter</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Combination Wrench.png"><h3>Combination Wrench</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/L-Type Socket Wrench.png"><h3>L-Type Socket Wrench</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Magnetic Nut Setter Set.png"><h3>Magnetic Nut Setter Set</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Paint brush.png"><h3>Paint Brush</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Chalk line reel.png"><h3>Chalk Line Reel</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Hand Riveter.png"><h3>Hand Riveter</h3></div>
 
 <!-- CUTTING -->
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Abrasive Flap Wheel.png"><h3>Abrasive Flap Wheel</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Cutting Wheel (Abrasive Cutting Disc).png"><h3>Cutting Wheel</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Diamond Cutting Disc.png"><h3>Diamond Cutting Disc</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Sintered Diamond Cutting Disc.png"><h3>Sintered Diamond Cutting Disc</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Carbide Multi-Wheel Cutting Disc.png"><h3>Carbide Cutting Disc</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="assets/images/products/Buffing pad.png"><h3>Buffing Pad</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Abrasive Flap Wheel.png"><h3>Abrasive Flap Wheel</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Cutting Wheel (Abrasive Cutting Disc).png"><h3>Cutting Wheel</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Diamond Cutting Disc.png"><h3>Diamond Cutting Disc</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Sintered Diamond Cutting Disc.png"><h3>Sintered Diamond Cutting Disc</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Carbide Multi-Wheel Cutting Disc.png"><h3>Carbide Cutting Disc</h3></div>
+<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Buffing pad.png"><h3>Buffing Pad</h3></div>
 
 <!-- ================= EQUIPMENT ================= -->
-<div class="product-card p2-card" data-category="equipment"><img src="assets/images/products/Sliding Window Roller Assembly (35mm).png"><h3>Sliding Window Roller</h3></div>
-<div class="product-card p2-card" data-category="equipment"><img src="assets/images/products/Toggle Clamp Latch.png"><h3>Toggle Clamp Latch</h3></div>
-<div class="product-card p2-card" data-category="equipment"><img src="assets/images/products/Stainless Steel Hasp and Staple Lock.png"><h3>Hasp & Staple Lock</h3></div>
-<div class="product-card p2-card" data-category="equipment"><img src="assets/images/products/Stainless Steel Butt Hinge (4x4).png"><h3>Butt Hinge</h3></div>
+<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Sliding Window Roller Assembly (35mm).png"><h3>Sliding Window Roller</h3></div>
+<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Toggle Clamp Latch.png"><h3>Toggle Clamp Latch</h3></div>
+<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Stainless Steel Hasp and Staple Lock.png"><h3>Hasp & Staple Lock</h3></div>
+<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Stainless Steel Butt Hinge (4x4).png"><h3>Butt Hinge</h3></div>
 
 <!-- ================= FINISHED ================= -->
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Ball caps.png"><h3>Ball Caps</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Ball finial.png"><h3>Ball Finial</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Conical finials.png"><h3>Conical Finials</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Ornamental metal finials.png"><h3>Ornamental Finials</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Ornamental scrolls.png"><h3>Ornamental Scrolls</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Ornamental baluster.png"><h3>Ornamental Baluster</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Decorative socket collars.png"><h3>Socket Collars</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/Stainless steel numbers.png"><h3>Steel Numbers</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="assets/images/products/triple-basin kitchen sink.png"><h3>Kitchen Sink</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ball caps.png"><h3>Ball Caps</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ball finial.png"><h3>Ball Finial</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Conical finials.png"><h3>Conical Finials</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ornamental metal finials.png"><h3>Ornamental Finials</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ornamental scrolls.png"><h3>Ornamental Scrolls</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ornamental baluster.png"><h3>Ornamental Baluster</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Decorative socket collars.png"><h3>Socket Collars</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Stainless steel numbers.png"><h3>Steel Numbers</h3></div>
+<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/triple-basin kitchen sink.png"><h3>Kitchen Sink</h3></div>
 
 <!-- ================= CUSTOMIZED ================= -->
-<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/gate.png"><h3>Modern Gate</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/railing.png"><h3>Stainless Railing</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/grills.png"><h3>Window Grills</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/truss.png"><h3>Steel Trusses</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="assets/images/products/furniture.png"><h3>Industrial Furniture</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h1.png"><h3>Modern Gate</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h2.png"><h3>Stainless Railing</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h3.png"><h3>Window Grills</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h4.png"><h3>Steel Trusses</h3></div>
+<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h1.png"><h3>Industrial Furniture</h3></div>
 
 </div>
 
@@ -340,7 +340,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 
         <!-- RIGHT IMAGE -->
         <div class="faq-right">
-            <img src="assets/images/faq.png" alt="FAQ Illustration">
+            <img src="<?= BASE_URL ?>assets/images/faq.png" alt="FAQ Illustration">
         </div>
 
     </div>
@@ -452,7 +452,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 
         <!-- LOGO HEADER -->
         <div class="login-header">
-            <img src="assets/images/logoo.png" alt="Rholance Logo">
+            <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Rholance Logo">
             <h2>Welcome Back!</h2>
             <p>Please login to your account</p>
         </div>
@@ -523,7 +523,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
         <button class="login-modal-close" id="closeRegisterModal">&times;</button>
 
         <div class="login-header">
-            <img src="assets/images/logoo.png" alt="Rholance Logo">
+            <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Rholance Logo">
             <h2>Create Account</h2>
             <p>Join Rholance and start managing your orders</p>
         </div>

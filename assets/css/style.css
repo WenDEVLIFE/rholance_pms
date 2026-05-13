@@ -1944,7 +1944,7 @@ body {
     padding: 0 40px; /* keep horizontal only */
     overflow: hidden;
 
-    background: url('/rholance_pms/metal-bg.png') center/cover no-repeat;
+    background: url('../../metal-bg.png') center/cover no-repeat;
 }
 
 /* BACKGROUND IMAGE */
@@ -2170,7 +2170,7 @@ body {
     position: absolute;
     inset: 0;
 
-     background: url('/rholance_pms/metal-bg.png') center/cover no-repeat;
+     background: url('../../metal-bg.png') center/cover no-repeat;
 
     filter: blur(1px) brightness(1);
     transform: none;
@@ -2272,7 +2272,7 @@ body {
 
     background:
         linear-gradient(rgba(2, 6, 23, 0.85), rgba(2, 6, 23, 0.9)), /* DARK OVERLAY */
-        url('/rholance_pms/metal-bg.png') center/cover no-repeat,       /* YOUR IMAGE */
+        url('../../metal-bg.png') center/cover no-repeat,       /* YOUR IMAGE */
         radial-gradient(circle at 15% 20%, rgba(0, 123, 255, 0.25), transparent 40%),
         radial-gradient(circle at 85% 80%, rgba(255, 165, 0, 0.2), transparent 40%),
         linear-gradient(135deg, #020617, #06142b, #020617);
@@ -2467,7 +2467,7 @@ body {
 
 .contact-bg {
     position: relative;
-    background:url('/rholance_pms/metal-bg.png') center/cover no-repeat;
+    background:url('../../metal-bg.png') center/cover no-repeat;
     filter: brightness(0.8);
     position: relative;
     overflow: hidden;
@@ -2480,7 +2480,7 @@ body {
     position: absolute;
     inset: 0;
 
-    background:url('/rholance_pms/metal-bg.png') center/cover no-repeat;
+    background:url('../../metal-bg.png') center/cover no-repeat;
 
     filter: blur(6px) brightness(0.8);
     transform: scale(1.1); /* prevents edge cut after blur */
@@ -3140,7 +3140,7 @@ body.modal-open {
 
     background:
         linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.8)),
-        url('/rholance_pms/metal-bg.png') center/cover no-repeat;
+        url('../../metal-bg.png') center/cover no-repeat;
 
     padding: 80px 20px;
     min-height: calc(100vh - 72px);
@@ -4515,7 +4515,7 @@ P2 PRODUCTS FINAL STYLE
 
     background:
         linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.9)), /* brightness control */
-        url('/rholance_pms/metal-bg.png') center/cover no-repeat;
+        url('../../metal-bg.png') center/cover no-repeat;
 
     padding: 100px 20px;
     scroll-margin-top: 90px;

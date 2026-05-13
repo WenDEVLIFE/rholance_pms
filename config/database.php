@@ -18,26 +18,31 @@ $db   = "rholance_pms";
 $conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
+    // If connection fails, show a clear message for the user
+    die("Database Connection Error: " . $conn->connect_error . ". Please check your Hostinger MySQL settings.");
 }
 
 if (!$conn->connect_error) {
     $conn->set_charset("utf8mb4");
 }
 
-/* ── DYNAMIC BASE URL ── */
+/* ── DYNAMIC BASE URL (FIXED FOR ALL PAGES) ── */
 if (!defined('BASE_URL')) {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
     $server_host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     
-    // Get the directory of the current script, then go up one level to reach project root
-    // Since this file is in /config/database.php, we need to remove 'config/database.php' from the path
-    $script_path = $_SERVER['SCRIPT_NAME'] ?? '';
-    $project_root = str_replace('config/database.php', '', $script_path);
+    // Get the physical path of the project root
+    $project_root_path = realpath(__DIR__ . '/..');
+    $doc_root = realpath($_SERVER['DOCUMENT_ROOT']);
     
-    // Ensure it ends with a single slash
-    $project_root = rtrim($project_root, '/') . '/';
+    // Calculate the web path by removing the document root from the project root path
+    $web_path = str_replace($doc_root, '', $project_root_path);
     
-    define('BASE_URL', $protocol . $server_host . $project_root);
+    // Clean up slashes
+    $web_path = str_replace('\\', '/', $web_path);
+    $web_path = '/' . trim($web_path, '/') . '/';
+    if ($web_path === '//') $web_path = '/';
+    
+    define('BASE_URL', $protocol . $server_host . $web_path);
 }
 ?>
