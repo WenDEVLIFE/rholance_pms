@@ -2,24 +2,30 @@
 date_default_timezone_set('Asia/Manila');
 mysqli_report(MYSQLI_REPORT_OFF);
 
-/* ── PRODUCTION CREDENTIALS ── */
-$host = "localhost";
-$user = "u467106394_rholance";
-$pass = "/dY11wbIoPg4";
-$db   = "u467106394_rholance";
+$isLocal = false;
+$server_host = $_SERVER['HTTP_HOST'] ?? '';
+if (empty($server_host) || strpos($server_host, 'localhost') !== false || strpos($server_host, '127.0.0.1') !== false || php_sapi_name() === 'cli') {
+    $isLocal = true;
+}
 
-/* ── LOCALHOST (DEVELOPMENT) ── 
-$host = "localhost";
-$user = "root";
-$pass = "innovatechph";
-$db   = "rholance_pms";
-*/
+if ($isLocal) {
+    /* ── LOCALHOST (DEVELOPMENT) ── */
+    $host = "localhost";
+    $user = "root";
+    $pass = "innovatechph";
+    $db   = "rholance_pms";
+} else {
+    /* ── HOSTINGER PRODUCTION ── */
+    $host = "localhost";
+    $user = "u467106394_rholance";
+    $pass = "/dY11wbIoPg4";
+    $db   = "u467106394_rholance";
+}
 
 $conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    // If connection fails, show a clear message for the user
-    die("Database Connection Error: " . $conn->connect_error . ". Please check your Hostinger MySQL settings.");
+    die("Database Connection Error: " . $conn->connect_error . ". Please check your MySQL settings.");
 }
 
 if (!$conn->connect_error) {

@@ -7,6 +7,7 @@ include '../includes/sidebar.php';
 
 $user_id    = $_SESSION['user_id'];
 $showSuccess = isset($_GET['success']);
+$prefilledService = $_GET['service'] ?? '';
 
 /* ── Build 14-day availability grid ── */
 $calDays = [];
@@ -40,8 +41,8 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
     <!-- SUCCESS TOAST -->
     <?php if ($showSuccess): ?>
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert">
-        <i class="fas fa-circle-check"></i>
-        <strong>Success!</strong> Your appointment request has been submitted.
+        <i class="fas fa-check-circle"></i>
+        <strong>Success!</strong> Your fabrication appointment has been booked. Assigned welder will meet you shortly to finalize details.
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <script>window.history.replaceState(null,'',window.location.pathname);</script>
@@ -49,18 +50,28 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
 
     <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div>
-            <h1>Appointments</h1>
-            <p>Book a schedule — <strong>Cavite &amp; Laguna branches only</strong></p>
+            <h1>Book fabrication Appointment</h1>
+            <p>Book a slot — <strong>Laguna &amp; Cavite branches only</strong></p>
         </div>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookModal">
-            <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+        <button class="btn btn-primary fw-800" data-bs-toggle="modal" data-bs-target="#bookModal">
+            <i class="fas fa-calendar-plus me-2"></i>Book Consultation
         </button>
     </div>
 
+    <!-- PREFILLED INFO ALERT -->
+    <?php if (!empty($prefilledService)): ?>
+        <div class="alert alert-info border-0 shadow-sm d-flex align-items-center gap-3 mb-4" style="background: rgba(14,165,233,0.08); color: var(--rh-blue);">
+            <i class="fas fa-info-circle fs-5"></i>
+            <div>
+                You are booking an appointment specifically for: <strong><?= htmlspecialchars($prefilledService) ?></strong> customization. We have pre-filled this choice inside the booking card!
+            </div>
+        </div>
+    <?php endif; ?>
+
     <!-- ── 14-DAY CALENDAR GRID ── -->
-    <div class="card mb-4">
-        <div class="card-header"><i class="fas fa-calendar me-2 text-amber"></i>Available Dates (Next 14 Days)</div>
-        <div class="card-body">
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-0"><i class="fas fa-calendar me-2 text-amber"></i>Available Dates (Next 14 Days)</div>
+        <div class="card-body border-top">
             <div class="row g-2">
                 <?php foreach ($calDays as $day): ?>
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
@@ -79,9 +90,9 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
                             <div class="badge bg-danger mt-1">Full</div>
                         </div>
                     <?php else: ?>
-                        <div class="btn btn-light w-100 py-3 disabled opacity-50">
-                            <div class="small fw-800"><?= $day['dayName'] ?></div>
-                            <div class="fs-6"><?= $day['display'] ?></div>
+                        <div class="btn-light w-100 py-3 disabled opacity-50 text-center rounded border d-block">
+                            <div class="small fw-800 text-muted"><?= $day['dayName'] ?></div>
+                            <div class="fs-6 text-muted"><?= $day['display'] ?></div>
                             <div class="badge bg-secondary mt-1">No slots</div>
                         </div>
                     <?php endif; ?>
@@ -92,22 +103,29 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
     </div>
 
     <!-- ── MY APPOINTMENTS ── -->
-    <div class="card">
-        <div class="card-header"><i class="fas fa-list me-2 text-amber"></i>My Appointments</div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-0"><i class="fas fa-list me-2 text-amber"></i>My Booked Consultations</div>
+        <div class="table-responsive border-top">
+            <table class="table table-hover mb-0 align-middle">
                 <thead>
-                    <tr><th>Date</th><th>Time</th><th>Address</th><th>Landmark</th><th>Status</th><th>Actions</th></tr>
+                    <tr>
+                        <th>Consultation Date</th>
+                        <th>Preferred Time</th>
+                        <th>Address / Loc</th>
+                        <th>Project Requested</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
                 <?php if (mysqli_num_rows($myAppts) > 0): ?>
                     <?php while ($row = mysqli_fetch_assoc($myAppts)):
                         $bc = 'badge-' . strtolower($row['status']); ?>
                     <tr>
-                        <td class="fw-600"><?= date('M d, Y', strtotime($row['appointment_date'])) ?></td>
+                        <td class="fw-600 text-light-emphasis"><?= date('M d, Y', strtotime($row['appointment_date'])) ?></td>
                         <td class="small"><?= htmlspecialchars($row['appointment_time']) ?></td>
                         <td class="small"><?= htmlspecialchars($row['address'] ?? '—') ?></td>
-                        <td class="small"><?= htmlspecialchars($row['landmark'] ?? '—') ?></td>
+                        <td class="fw-700 text-amber small"><?= htmlspecialchars($row['requested_project'] ?? 'Custom Project Consultation') ?></td>
                         <td><span class="badge <?= $bc ?>"><?= $row['status'] ?></span></td>
                         <td>
                             <?php if ($row['status'] === 'Pending'): ?>
@@ -117,7 +135,7 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
                                     <i class="fas fa-times me-1"></i>Cancel
                                 </a>
                             <?php elseif ($row['status'] === 'Approved'): ?>
-                                <span class="badge badge-approved"><i class="fas fa-check me-1"></i>Confirmed</span>
+                                <span class="badge badge-approved text-success"><i class="fas fa-check me-1"></i>Confirmed</span>
                             <?php else: ?>
                                 <span class="text-muted small">—</span>
                             <?php endif; ?>
@@ -127,8 +145,8 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
                 <?php else: ?>
                     <tr>
                         <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="fas fa-calendar-xmark fs-2 mb-2 d-block opacity-25"></i>
-                            No appointments yet.
+                            <i class="fas fa-calendar-xmark fs-2 mb-2 d-block opacity-25 text-amber"></i>
+                            You have no consultations scheduled. Choose a customized design from Products gallery to request one.
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -141,51 +159,60 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
 <!-- ── BOOK APPOINTMENT MODAL ── -->
 <div class="modal fade" id="bookModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-calendar-plus me-2 text-amber"></i>Book Appointment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-800"><i class="fas fa-calendar-plus me-2 text-amber"></i>Book consultation slot</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="request_appointment.php" method="POST">
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Date</label>
+                            <label class="form-label small fw-700">Consultation Date</label>
                             <input type="date" id="bookDate" name="appointment_date" class="form-control"
                                    min="<?= date('Y-m-d') ?>" required readonly>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Time</label>
+                            <label class="form-label small fw-700">Preferred Time Slot</label>
                             <select name="appointment_time" id="bookTime" class="form-select" required>
                                 <option value="">— Select a date first —</option>
                             </select>
                         </div>
+
+                        <!-- PROJECT DESIGN REQUESTED INPUT -->
                         <div class="col-12">
-                            <label class="form-label">Branch</label>
+                            <label class="form-label small fw-700">Project Requested for Customization</label>
+                            <input type="text" name="requested_project" class="form-control fw-700 text-amber" 
+                                   value="<?= htmlspecialchars($prefilledService) ?>" 
+                                   placeholder="e.g. Customized Stainless Steel Gate" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-700">Inspected Address <span class="text-muted font-normal">(Laguna or Cavite only)</span></label>
+                            <input type="text" name="address" class="form-control" placeholder="Complete address for site inspection" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-700">Address Landmark</label>
+                            <input type="text" name="landmark" class="form-control" placeholder="e.g. Near Brgy. Hall / House Color">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-700">Contact Person Name</label>
+                            <input type="text" name="contact_person" class="form-control" placeholder="Name of person welder will meet at site" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-700">Fabrication Branch</label>
                             <select name="branch_id" class="form-select" required>
-                                <option value="" disabled selected>Select branch</option>
-                                <option value="1">Dasmariñas, Cavite</option>
-                                <option value="2">Biñan, Laguna</option>
+                                <option value="" disabled selected>-- Choose Branch --</option>
+                                <option value="1">Dasmariñas, Cavite Branch</option>
+                                <option value="2">Biñan, Laguna Branch</option>
                             </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Your Address <span class="text-muted fw-400">(Cavite or Laguna only)</span></label>
-                            <input type="text" name="address" class="form-control" placeholder="Full address" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">Landmark</label>
-                            <input type="text" name="landmark" class="form-control" placeholder="Near...">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">Contact Person</label>
-                            <input type="text" name="contact_person" class="form-control" placeholder="Name">
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2"></i>Request Appointment
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-outline-secondary px-3 fw-700" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-800">
+                        <i class="fas fa-paper-plane me-2"></i>Book Consultation Slot
                     </button>
                 </div>
             </form>
@@ -195,7 +222,6 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
 
 <script>
 /* Calendar day → modal pre-fill */
-const allDayData = <?= json_encode(array_column($calDays, null, 'date')) ?>;
 const bookModal  = new bootstrap.Modal(document.getElementById('bookModal'));
 
 document.querySelectorAll('.day-pick').forEach(btn => {
@@ -211,8 +237,17 @@ document.querySelectorAll('.day-pick').forEach(btn => {
             o.value = o.textContent = s;
             sel.appendChild(o);
         });
+        
+        // Show modal
         bookModal.show();
     });
 });
+
+// Auto-trigger modal opening if service pre-filled
+<?php if (!empty($prefilledService)): ?>
+window.addEventListener('DOMContentLoaded', () => {
+    // If a service is pre-filled, we automatically prompt the user to choose an available date button
+});
+<?php endif; ?>
 </script>
 </body></html>

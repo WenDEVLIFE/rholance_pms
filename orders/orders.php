@@ -111,7 +111,7 @@ $pageTitle = match($sf) { 'active'=>'Active Orders', 'completed'=>'Completed Ord
                         </td>
                         <td>
                             <div class="d-flex gap-1">
-                                <?php if ($_SESSION['role'] === 'staff' || $_SESSION['role'] === 'admin'): ?>
+                                <?php if ($_SESSION['role'] === 'staff'): ?>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                         Status

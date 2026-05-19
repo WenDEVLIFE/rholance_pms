@@ -108,11 +108,6 @@ if ($user_id && isset($conn)) {
                         <i class="fa-solid fa-user-gear me-2 text-amber"></i> Profile Settings
                     </a>
                 </li>
-                <li>
-                    <a class="dropdown-item" href="<?= BASE_URL ?>profile/avatar.php">
-                        <i class="fa-solid fa-image me-2 text-amber"></i> Upload Avatar
-                    </a>
-                </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item text-danger" href="<?= BASE_URL ?>auth/logout.php">

@@ -22,11 +22,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $sql = "INSERT INTO transactions (order_id, payment_method, remarks, payment_proof, status) 
-            VALUES ($orderId, '$method', '$remarks', '$proofPath', 'Pending')";
+    $sql = "INSERT INTO transactions (order_id, payment_method, remarks, payment_proof, status, created_at) 
+            VALUES ($orderId, '$method', '$remarks', '$proofPath', 'Paid', NOW())";
     
     if ($conn->query($sql)) {
-        header("Location: ../transactions.php?msg=Payment proof submitted! Pending verification.");
+        // Dynamically advance custom order status to Fabrication On-going upon downpayment submission!
+        $updateOrder = $conn->prepare("
+            UPDATE custom_orders 
+            SET status = 'On-going', updated_at = NOW() 
+            WHERE id = ? AND status = 'Initial Payment'
+        ");
+        $updateOrder->bind_param("i", $orderId);
+        $updateOrder->execute();
+
+        header("Location: ../transactions.php?msg=Payment proof submitted! Project status advanced to: On-going.");
     } else {
         echo "Error: " . $conn->error;
     }

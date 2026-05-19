@@ -10,11 +10,13 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 /* GET DATA */
-$date = $_POST['appointment_date'];
-$time = $_POST['appointment_time'];
-$address = $_POST['address'];
-$landmark = $_POST['landmark'] ?? null;
-$branch_id = $_POST['branch_id'] ?? null;
+$date = mysqli_real_escape_string($conn, $_POST['appointment_date']);
+$time = mysqli_real_escape_string($conn, $_POST['appointment_time']);
+$address = mysqli_real_escape_string($conn, $_POST['address']);
+$landmark = mysqli_real_escape_string($conn, $_POST['landmark'] ?? '');
+$contactPerson = mysqli_real_escape_string($conn, $_POST['contact_person'] ?? '');
+$branch_id = (int)$_POST['branch_id'];
+$requestedProject = mysqli_real_escape_string($conn, $_POST['requested_project'] ?? 'Custom Project');
 
 /* AUTO NAME FROM SESSION */
 $customer_name = $_SESSION['full_name'] ?? $_SESSION['name'] ?? 'Customer';
@@ -33,14 +35,15 @@ if (mysqli_num_rows($check) > 0) {
     exit;
 }
 
-/* ✅ INSERT WITH CORRECT USER ID */
+/* ✅ INSERT WITH CORRECT USER ID AND REQUESTED PROJECT TYPE */
 mysqli_query($conn, "
     INSERT INTO appointments 
-    (customer_name, appointment_date, appointment_time, address, landmark, branch_id, user_id, status)
+    (customer_name, appointment_date, appointment_time, address, landmark, contact_person, branch_id, user_id, status, requested_project, source)
     VALUES 
-    ('$customer_name', '$date', '$time', '$address', '$landmark', '$branch_id', '$user_id', 'Pending')
+    ('$customer_name', '$date', '$time', '$address', '$landmark', '$contactPerson', '$branch_id', '$user_id', 'Pending', '$requestedProject', 'Online')
 ");
 
 /* ✅ REDIRECT WITH SUCCESS */
 header("Location: available_appointments.php?success=1");
 exit;
+?>

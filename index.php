@@ -3,14 +3,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Rholance Trading | Metal & Industrial Materials</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rholance Trading PMS - Metal and industrial materials management and custom metal fabrication projects.">
+    <title>Rholance Trading | Metal &amp; Industrial Materials</title>
 
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/output.css">
     <link rel="icon" href="<?= BASE_URL ?>favicon2.ico">
     <link rel="shortcut icon" href="<?= BASE_URL ?>favicon2.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/landing-dark.css">
 </head>
 <body>
 
@@ -38,6 +41,11 @@
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" placeholder="Search material...">
     </div>
+
+    <!-- DARK MODE TOGGLE -->
+    <button class="landing-theme-btn" id="landingThemeToggle" title="Toggle dark/light mode" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
 
     <i class="fa-solid fa-user user-icon user-link" id="openLoginModal"></i>
 </div>
@@ -132,115 +140,151 @@
 
 </section>
 
-<!-- =========================
-PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
-========================= -->
 <section id="products" class="products-section">
+    <div class="products-wrapper">
+        <div class="p2-container">
+            <!-- HEADER -->
+            <div class="p2-header">
+                <h2>Customized Fabricated Projects</h2>
+                <p>Tailored high-quality metal and stainless steel works created to match your exact specifications and designs.</p>
+            </div>
 
-<div class="products-wrapper">
-<div class="p2-container">
+            <!-- PROJECTS GRID -->
+            <div class="projects-grid">
+                <!-- 1. Gate -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/gate.png" alt="Gate">
+                    </div>
+                    <div class="product-info">
+                        <h3>1. Gate</h3>
+                        <p>Durable gates designed with modern elegance and high-quality structural steel or stainless steel components.</p>
+                    </div>
+                </div>
 
-<!-- HEADER -->
-<div class="p2-header">
-    <h2>Our Products</h2>
-    <p>High-quality metal and industrial materials for every need</p>
-</div>
+                <!-- 2. Water Tank (Stainless) -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/water_tank.png" alt="Water Tank (Stainless)">
+                    </div>
+                    <div class="product-info">
+                        <h3>2. Water Tank (Stainless)</h3>
+                        <p>Corrosion-resistant stainless steel water storage tanks fabricated for maximum structural life and purity.</p>
+                    </div>
+                </div>
 
-<!-- FILTER -->
-<div class="p2-filters">
-    <button class="p2-btn active" data-filter="all">All</button>
-    <button class="p2-btn" data-filter="industrial">Industrial</button>
-    <button class="p2-btn" data-filter="tools">Tools</button>
-    <button class="p2-btn" data-filter="equipment">Equipment</button>
-    <button class="p2-btn" data-filter="finished">Finished</button>
-    <button class="p2-btn" data-filter="customized">Customized</button>
-</div>
+                <!-- 3. Table -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/table.png" alt="Table">
+                    </div>
+                    <div class="product-info">
+                        <h3>3. Table</h3>
+                        <p>Beautifully crafted customized metal and stainless steel frame tables suitable for dining, office, or industrial use.</p>
+                    </div>
+                </div>
 
-<!-- CAROUSEL -->
-<div class="p2-carousel-wrapper">
+                <!-- 4. Lababo (Sink) -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/lababo.jpg" alt="Lababo (Sink)">
+                    </div>
+                    <div class="product-info">
+                        <h3>4. Lababo (Sink)</h3>
+                        <p>Premium customized single, double, or triple basin stainless steel sinks, perfect for commercial kitchens or residential spaces.</p>
+                    </div>
+                </div>
 
-<button class="p2-nav left" id="p2Prev"><i class="fa-solid fa-chevron-left"></i></button>
+                <!-- 5. Stainless Letters -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/stainless_letters.png" alt="Stainless Letters">
+                    </div>
+                    <div class="product-info">
+                        <h3>5. Stainless Letters</h3>
+                        <p>Polished or brushed custom 3D stainless steel signage letters for modern professional building facades or reception displays.</p>
+                    </div>
+                </div>
 
-<div id="p2Carousel" class="p2-carousel">
+                <!-- 6. Windows (Metal Frame) -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/windows.png" alt="Windows (Metal Frame)">
+                    </div>
+                    <div class="product-info">
+                        <h3>6. Windows (Metal Frame)</h3>
+                        <p>Robust window metal structures and secure frames designed with aesthetic charm and heavy-duty durability.</p>
+                    </div>
+                </div>
 
-<!-- ================= INDUSTRIAL ================= -->
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Corrugated Roof.png"><h3>Corrugated Roof</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Roof ridge cap.png"><h3>Roof Ridge Cap</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Wall flashing.png"><h3>Wall Flashing</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Perforated metal plates.png"><h3>Perforated Metal Plates</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Stainless plain sheet.png"><h3>Stainless Plain Sheet</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Round tube.png"><h3>Round Tube</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Square tube.png"><h3>Square Tube</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Twisted Steel Bars .png"><h3>Twisted Steel Bars</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Welded wire mesh panels.png"><h3>Welded Wire Mesh Panels</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Metal Pall Rings.png"><h3>Metal Pall Rings</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Roller Chain.png"><h3>Roller Chain</h3></div>
+                <!-- 7. Handrail -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/handrail.jpg" alt="Handrail">
+                    </div>
+                    <div class="product-info">
+                        <h3>7. Handrail</h3>
+                        <p>Elegant stainless steel or wrought iron handrails fabricated perfectly for safe stairs, terraces, and commercial walkspaces.</p>
+                    </div>
+                </div>
 
-<!-- FASTENERS -->
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Hex Bolts.png"><h3>Hex Bolts</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Hex Coupling.png"><h3>Hex Coupling</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange Nuts.png"><h3>Flange Nuts</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange square cover.png"><h3>Flange Square Cover</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange cover.png"><h3>Flange Cover</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flange base.png"><h3>Flange Base</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Flat Washers.png"><h3>Flat Washers</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Galvanized Eye Bolts.png"><h3>Galvanized Eye Bolts</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Self-Tapping Screws.png"><h3>Self-Tapping Screws</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Tekscrews.png"><h3>Tekscrews</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Wire Nails.png"><h3>Wire Nails</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Black Drywall Screws.png"><h3>Black Drywall Screws</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Expand nails with screw.png"><h3>Expand Nails with Screw</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Blind Rivet.png"><h3>Blind Rivet</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Locking rings.png"><h3>Locking Rings</h3></div>
-<div class="product-card p2-card" data-category="industrial"><img src="<?= BASE_URL ?>assets/images/products/Tie Wire.png"><h3>Tie Wire</h3></div>
+                <!-- 8. Push Cart -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/push_cart.jpg" alt="Push Cart">
+                    </div>
+                    <div class="product-info">
+                        <h3>8. Push Cart</h3>
+                        <p>Sturdy multi-purpose push carts built for medical clinics, high-end salons, industrial warehouses, or catering use.</p>
+                    </div>
+                </div>
 
-<!-- ================= TOOLS ================= -->
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Combination Wrench.png"><h3>Combination Wrench</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/L-Type Socket Wrench.png"><h3>L-Type Socket Wrench</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Magnetic Nut Setter Set.png"><h3>Magnetic Nut Setter Set</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Paint brush.png"><h3>Paint Brush</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Chalk line reel.png"><h3>Chalk Line Reel</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Hand Riveter.png"><h3>Hand Riveter</h3></div>
+                <!-- 9. Carrier (Push Cart) -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/carrier.jpg" alt="Carrier (Push Cart)">
+                    </div>
+                    <div class="product-info">
+                        <h3>9. Carrier (Push Cart)</h3>
+                        <p>Heavy-duty flatbed towable utility carrier carts fabricated to handle massive loads and rough outdoor terrains.</p>
+                    </div>
+                </div>
 
-<!-- CUTTING -->
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Abrasive Flap Wheel.png"><h3>Abrasive Flap Wheel</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Cutting Wheel (Abrasive Cutting Disc).png"><h3>Cutting Wheel</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Diamond Cutting Disc.png"><h3>Diamond Cutting Disc</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Sintered Diamond Cutting Disc.png"><h3>Sintered Diamond Cutting Disc</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Carbide Multi-Wheel Cutting Disc.png"><h3>Carbide Cutting Disc</h3></div>
-<div class="product-card p2-card" data-category="tools"><img src="<?= BASE_URL ?>assets/images/products/Buffing pad.png"><h3>Buffing Pad</h3></div>
+                <!-- 10. Terrace (Metal Structure) -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/terrace.png" alt="Terrace (Metal Structure)">
+                    </div>
+                    <div class="product-info">
+                        <h3>10. Terrace (Metal Structure)</h3>
+                        <p>Structural metal framing, reliable trusses, and safety deck structures for balconies, rooftops, and outdoor terraces.</p>
+                    </div>
+                </div>
 
-<!-- ================= EQUIPMENT ================= -->
-<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Sliding Window Roller Assembly (35mm).png"><h3>Sliding Window Roller</h3></div>
-<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Toggle Clamp Latch.png"><h3>Toggle Clamp Latch</h3></div>
-<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Stainless Steel Hasp and Staple Lock.png"><h3>Hasp & Staple Lock</h3></div>
-<div class="product-card p2-card" data-category="equipment"><img src="<?= BASE_URL ?>assets/images/products/Stainless Steel Butt Hinge (4x4).png"><h3>Butt Hinge</h3></div>
+                <!-- 11. Upuan (Chair) -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/upuan.jpg" alt="Upuan (Chair)">
+                    </div>
+                    <div class="product-info">
+                        <h3>11. Upuan (Chair)</h3>
+                        <p>Custom polished minimal stainless steel chairs built with sleek silhouettes, modern geometry, and extreme lifetime durability.</p>
+                    </div>
+                </div>
 
-<!-- ================= FINISHED ================= -->
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ball caps.png"><h3>Ball Caps</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ball finial.png"><h3>Ball Finial</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Conical finials.png"><h3>Conical Finials</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ornamental metal finials.png"><h3>Ornamental Finials</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ornamental scrolls.png"><h3>Ornamental Scrolls</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Ornamental baluster.png"><h3>Ornamental Baluster</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Decorative socket collars.png"><h3>Socket Collars</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/Stainless steel numbers.png"><h3>Steel Numbers</h3></div>
-<div class="product-card p2-card" data-category="finished"><img src="<?= BASE_URL ?>assets/images/products/triple-basin kitchen sink.png"><h3>Kitchen Sink</h3></div>
-
-<!-- ================= CUSTOMIZED ================= -->
-<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h1.png"><h3>Modern Gate</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h2.png"><h3>Stainless Railing</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h3.png"><h3>Window Grills</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h4.png"><h3>Steel Trusses</h3></div>
-<div class="product-card p2-card" data-category="customized"><img src="<?= BASE_URL ?>assets/images/products/h1.png"><h3>Industrial Furniture</h3></div>
-
-</div>
-
-<button class="p2-nav right" id="p2Next"><i class="fa-solid fa-chevron-right"></i></button>
-
-</div>
-</div>
-</div>
+                <!-- 12. Laboratory Cabinet -->
+                <div class="product-card">
+                    <div class="img-wrapper">
+                        <img src="<?= BASE_URL ?>assets/images/products/customized/cabinet.jpg" alt="Laboratory Cabinet">
+                    </div>
+                    <div class="product-info">
+                        <h3>12. Laboratory Cabinet</h3>
+                        <p>Hygienic, chemical-resistant custom industrial stainless steel cabinets designed for modern laboratories and medical labs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- FAQ SECTION -->
@@ -267,73 +311,111 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 
 <div class="faq-item">
     <button class="faq-question">
-        <span class="faq-text">
-            What products does Rholance Trading offer?
-        </span>
+        <span class="faq-text">1. What products does Rholance Trading offer?</span>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-        <p>We supply stainless steel, aluminum, iron, copper, and other industrial metal materials, including custom-fabricated products.</p>
+        <p>Rholance Trading offers metal and industrial materials such as stainless steel, aluminum, iron, and customized fabricated products.</p>
     </div>
 </div>
 
 <div class="faq-item">
     <button class="faq-question">
-        <span class="faq-text">
-            Do you accept custom fabrication requests?
-        </span>
+        <span class="faq-text">2. Do you accept custom fabrication requests?</span>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-        <p>Yes. Customers can submit custom orders through our system, and our team will review and process them accordingly.</p>
+        <p>Yes, we accept customized projects based on your required design, size, and specifications.</p>
     </div>
 </div>
 
 <div class="faq-item">
     <button class="faq-question">
-        <span class="faq-text">
-            How long does it take to complete a custom order?
-        </span>
+        <span class="faq-text">3. How can I request a custom order?</span>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-        <p>Standard custom fabrication typically takes 2–3 working days, depending on complexity and material availability.</p>
+        <p>You can submit a custom order through the system by providing your project details, materials, and specifications.</p>
     </div>
 </div>
 
 <div class="faq-item">
     <button class="faq-question">
-        <span class="faq-text">
-            Can I track my order status?
-        </span>
+        <span class="faq-text">4. Can I choose the project location for customized projects?</span>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-        <p>Yes. Registered users can monitor their order status through their dashboard in real time.</p>
+        <p>Yes, you can specify the project location when submitting a customized project request. However, the system is only applicable for projects located in Cavite and Laguna branches.</p>
     </div>
 </div>
 
 <div class="faq-item">
     <button class="faq-question">
-        <span class="faq-text">
-            What payment methods are accepted?
-        </span>
+        <span class="faq-text">5. How long does it take to complete a custom order?</span>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-        <p>We accept cash payments and agreed business transactions depending on the order arrangement.</p>
+        <p>The completion time usually takes 2–3 days, depending on the complexity of the project.</p>
     </div>
 </div>
 
 <div class="faq-item">
     <button class="faq-question">
-        <span class="faq-text">
-            Is there a minimum order requirement?
-        </span>
+        <span class="faq-text">6. Can I track my order status?</span>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-        <p>Minimum order requirements may vary depending on the product type and availability. Please contact us for details.</p>
+        <p>Yes, you can track your order through the system dashboard under the Order Tracking section.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <button class="faq-question">
+        <span class="faq-text">7. What payment methods are accepted?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+        <p>We accept cash payments and GCash payments. For GCash, you need to upload a screenshot as proof of payment.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <button class="faq-question">
+        <span class="faq-text">8. Do I need to pay before the project starts?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+        <p>Yes, an initial downpayment is required before the project starts, and the remaining balance is paid after completion or installation.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <button class="faq-question">
+        <span class="faq-text">9. Can I schedule an appointment?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+        <p>Yes, you can set an appointment through the system for consultation, measurement, or project discussion.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <button class="faq-question">
+        <span class="faq-text">10. Where are your branches located?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+        <p>We have branches in Dasmariñas, Cavite and Langkiwa, Laguna.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <button class="faq-question">
+        <span class="faq-text">11. What happens if there is an issue with my order?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+        <p>If there is a problem, the project may be reviewed and corrected (backjob) to meet the agreed requirements.</p>
     </div>
 </div>
 </div>
@@ -452,7 +534,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 
         <!-- LOGO HEADER -->
         <div class="login-header">
-            <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Rholance Logo">
+            <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Rholance Logo" style="display:block;margin:0 auto 12px;">
             <h2>Welcome Back!</h2>
             <p>Please login to your account</p>
         </div>
@@ -523,7 +605,7 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
         <button class="login-modal-close" id="closeRegisterModal">&times;</button>
 
         <div class="login-header">
-            <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Rholance Logo">
+            <img src="<?= BASE_URL ?>assets/images/logoo.png" alt="Rholance Logo" style="display:block;margin:0 auto 12px;">
             <h2>Create Account</h2>
             <p>Join Rholance and start managing your orders</p>
         </div>
@@ -601,12 +683,41 @@ PRODUCT SECTION (COMPLETE - ALL ITEMS INCLUDED)
 <script src="<?= BASE_URL ?>assets/js/app.js"></script>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById("landingThemeToggle");
+    const themeIcon = document.getElementById("themeIcon");
 
+    // Initialize from local storage or system preference
+    if (localStorage.getItem("theme") === "dark" || (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.body.classList.add("dark");
+        if (themeIcon) {
+            themeIcon.classList.replace("fa-moon", "fa-sun");
+        }
+    } else {
+        document.body.classList.remove("dark");
+        if (themeIcon) {
+            themeIcon.classList.replace("fa-sun", "fa-moon");
+        }
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            if (document.body.classList.contains("dark")) {
+                localStorage.setItem("theme", "dark");
+                if (themeIcon) themeIcon.classList.replace("fa-moon", "fa-sun");
+            } else {
+                localStorage.setItem("theme", "light");
+                if (themeIcon) themeIcon.classList.replace("fa-sun", "fa-moon");
+            }
+        });
+    }
+
+    const params = new URLSearchParams(window.location.search);
     if (params.get("login") === "success") {
         const loginModal = document.getElementById("loginModal");
         if (loginModal) {
-            loginModal.style.display = "flex";
+            loginModal.classList.add("active");
         }
     }
 </script>

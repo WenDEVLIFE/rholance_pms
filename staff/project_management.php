@@ -32,16 +32,18 @@ $itemList = $items->fetch_all(MYSQLI_ASSOC);
 
 $statuses = ['all'=>'All','Appointment'=>'Appointment','Initial Payment'=>'Initial Payment',
              'On-going'=>'On-going','For Delivery'=>'For Delivery','Backjobs'=>'Backjobs',
-             'Completed'=>'Completed','Cancelled'=>'Cancelled'];
+             'Completed'=>'Completed'];
 ?>
 
 <div class="rh-main">
-    <div class="rh-page-header">
-        <h1>Project Management</h1>
-        <p>Assign welders, materials, and track all custom orders.</p>
+    <div class="rh-page-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <h1>Fabrication Project Management</h1>
+            <p>Track active designs, assign expert welders, and monitor real-time completion stages.</p>
+        </div>
     </div>
 
-    <!-- STATUS TABS -->
+    <!-- STATUS FILTERS -->
     <div class="rh-tabs mb-4">
         <?php foreach ($statuses as $k => $v): ?>
             <a href="?status=<?= urlencode($k) ?>" class="rh-tab <?= $sf===$k?'active':'' ?>"><?= $v ?></a>
@@ -49,49 +51,75 @@ $statuses = ['all'=>'All','Appointment'=>'Appointment','Initial Payment'=>'Initi
     </div>
 
     <!-- PROJECT GRID -->
-    <div class="row g-3">
+    <div class="row g-4">
     <?php if ($orders && $orders->num_rows > 0): ?>
         <?php while ($o = $orders->fetch_assoc()):
-            $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$o['status'])); ?>
+            $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$o['status'])); 
+            $progressPercent = [
+                'Appointment' => 10,
+                'Initial Payment' => 30,
+                'On-going' => 60,
+                'For Delivery' => 85,
+                'Backjobs' => 50,
+                'Completed' => 100,
+                'Cancelled' => 0
+            ][$o['status']] ?? 0;
+        ?>
         <div class="col-12 col-md-6 col-xl-4">
-            <div class="rh-proj-card">
-                <div class="rh-proj-thumb">
+            <div class="rh-proj-card border-0 shadow-sm">
+                <div class="rh-proj-thumb position-relative" style="height: 180px; overflow: hidden; border-radius: 8px 8px 0 0;">
                     <img src="../<?= $o['image'] ?? 'assets/images/no-image.png' ?>"
-                         onerror="this.src='../assets/images/no-image.png'" alt="">
-                    <span class="badge <?= $cls ?> status-float"><?= $o['status'] ?></span>
+                         onerror="this.src='../assets/images/no-image.png'" class="w-100 h-100 object-fit-cover" alt="Project Design">
+                    <span class="badge <?= $cls ?> status-float position-absolute top-0 end-0 m-3 fs-7 shadow-sm"><?= $o['status'] ?></span>
                 </div>
-                <div class="rh-proj-body">
-                    <h6><?= htmlspecialchars($o['project_name'] ?? 'Project #'.$o['id']) ?></h6>
-                    <p class="proj-meta">
-                        <i class="fas fa-user fa-xs text-amber"></i> <?= htmlspecialchars($o['customer_name'] ?? '—') ?>
-                        &nbsp;·&nbsp;
-                        <i class="fas fa-map-marker-alt fa-xs text-amber"></i> <?= htmlspecialchars($o['branch_name'] ?? '—') ?>
-                    </p>
-
-                    <?php if ($o['welders']): ?>
-                        <div class="badge badge-role-welder mb-2"><i class="fas fa-hard-hat me-1"></i><?= htmlspecialchars($o['welders']) ?></div>
-                    <?php else: ?>
-                        <div class="text-muted small mb-2">No welder assigned</div>
-                    <?php endif; ?>
-
-                    <?php if ($o['estimated_completion']): ?>
-                        <div class="small text-muted mb-2"><i class="far fa-calendar me-1"></i>Due: <?= date('M d, Y',strtotime($o['estimated_completion'])) ?></div>
-                    <?php endif; ?>
-
-                    <div class="rh-proj-footer">
-                        <div class="d-flex gap-2 flex-wrap">
-                            <button class="btn btn-sm btn-dark" onclick='openAssign(<?= json_encode(["id"=>$o["id"],"name"=>$o["project_name"]??"Project #".$o["id"]]) ?>)'>
-                                <i class="fas fa-user-plus me-1"></i>Assign
-                            </button>
-                            <button class="btn btn-sm btn-outline-info" onclick='openStatus(<?= $o["id"] ?>, "<?= $o["status"] ?>")'>
-                                <i class="fas fa-exchange-alt me-1"></i>Status
-                            </button>
-                            <?php if (!in_array($o['status'],['Completed','Cancelled'])): ?>
-                            <button class="btn btn-sm btn-outline-danger" onclick="cancelProject(<?= $o['id'] ?>)">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                            <?php endif; ?>
+                <div class="rh-proj-body p-4 bg-white" style="border-radius: 0 0 8px 8px;">
+                    <span class="text-muted d-block small fw-700 mb-1" style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px;"><?= htmlspecialchars($o['category'] ?? 'Customized Metal') ?></span>
+                    <h5 class="fw-800 text-light-emphasis mb-2"><?= htmlspecialchars($o['project_name'] ?? 'Project #'.$o['id']) ?></h5>
+                    
+                    <div class="d-flex flex-column gap-2 mb-3">
+                        <!-- Customer -->
+                        <div class="d-flex align-items-center gap-2 small text-muted">
+                            <i class="fas fa-user-circle text-amber" style="width:16px;"></i>
+                            <span>Client: <strong><?= htmlspecialchars($o['customer_name'] ?? 'Guest Customer') ?></strong></span>
                         </div>
+                        <!-- Welder Team -->
+                        <div class="d-flex align-items-center gap-2 small text-muted">
+                            <i class="fas fa-hard-hat text-amber" style="width:16px;"></i>
+                            <span>Welder: <strong><?= htmlspecialchars($o['welders'] ?? 'None Assigned') ?></strong></span>
+                        </div>
+                        <!-- Expected Date -->
+                        <div class="d-flex align-items-center gap-2 small text-muted">
+                            <i class="far fa-calendar-alt text-amber" style="width:16px;"></i>
+                            <span>Due Date: <strong><?= $o['estimated_completion'] ? date('M d, Y', strtotime($o['estimated_completion'])) : 'TBD' ?></strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1 small fw-700 text-light-emphasis">
+                            <span>Project Progress</span>
+                            <span><?= $progressPercent ?>%</span>
+                        </div>
+                        <div class="progress" style="height:6px; border-radius:3px;">
+                            <div class="progress-bar bg-amber" style="width: <?= $progressPercent ?>%; border-radius:3px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="rh-proj-footer pt-3 border-top d-flex gap-2">
+                        <!-- View details page -->
+                        <a href="../orders/view_order.php?id=<?= $o['id'] ?>" class="btn btn-sm btn-outline-dark fw-700 flex-grow-1">
+                            <i class="fas fa-eye me-1"></i>View Full Specifications
+                        </a>
+                        
+                        <!-- Assign Welder / Materials -->
+                        <button class="btn btn-sm btn-amber fw-700 px-3" onclick='openAssign(<?= json_encode(["id"=>$o["id"],"name"=>$o["project_name"]??"Project #".$o["id"]]) ?>)'>
+                            <i class="fas fa-edit"></i> Assign
+                        </button>
+                        
+                        <!-- Update status dropdown -->
+                        <button class="btn btn-sm btn-light border fw-700" onclick='openStatus(<?= $o["id"] ?>, "<?= $o["status"] ?>")'>
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -99,9 +127,9 @@ $statuses = ['all'=>'All','Appointment'=>'Appointment','Initial Payment'=>'Initi
         <?php endwhile; ?>
     <?php else: ?>
         <div class="col-12">
-            <div class="card p-5 text-center text-muted">
-                <i class="fas fa-folder-open fs-1 mb-3 opacity-25 d-block"></i>
-                No projects found.
+            <div class="card p-5 text-center text-muted border-0 shadow-sm">
+                <i class="fas fa-folder-open fs-1 mb-3 opacity-25 d-block text-amber"></i>
+                No active projects found in this filter branch.
             </div>
         </div>
     <?php endif; ?>
@@ -111,19 +139,23 @@ $statuses = ['all'=>'All','Appointment'=>'Appointment','Initial Payment'=>'Initi
 <!-- ASSIGN MODAL -->
 <div class="modal fade" id="assignModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-user-plus me-2 text-amber"></i>Assign Project: <span id="assignName"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-800"><i class="fas fa-user-plus me-2 text-amber"></i>Assign Project Setup</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="api/assign_project.php" method="POST">
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <input type="hidden" name="order_id" id="assignId">
+                    <div class="mb-3">
+                        <label class="form-label small fw-700">Project Selected</label>
+                        <input type="text" id="assignNameInput" class="form-control" readonly>
+                    </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Assign Welder</label>
-                        <select name="welder_id" class="form-select">
-                            <option value="">-- Select Welder --</option>
+                        <label class="form-label small fw-700">Assign Welder</label>
+                        <select name="welder_id" class="form-select" required>
+                            <option value="">-- Choose Fabrication Welder --</option>
                             <?php foreach ($welderList as $w): ?>
                             <option value="<?= $w['id'] ?>"><?= htmlspecialchars($w['name']) ?></option>
                             <?php endforeach; ?>
@@ -131,38 +163,38 @@ $statuses = ['all'=>'All','Appointment'=>'Appointment','Initial Payment'=>'Initi
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Estimated Completion</label>
-                        <input type="date" name="estimated_completion" class="form-control">
+                        <label class="form-label small fw-700">Estimated Completion Date</label>
+                        <input type="date" name="estimated_completion" class="form-control" required>
                     </div>
 
                     <div class="mb-2">
-                        <label class="form-label">Materials to Use</label>
+                        <label class="form-label small fw-700">Allocate Initial Raw Materials</label>
                         <div id="matRows">
-                            <div class="row g-2 mb-2 mat-row">
+                            <div class="row g-2 mb-2 mat-row align-items-center">
                                 <div class="col-7">
                                     <select name="item_id[]" class="form-select form-select-sm">
-                                        <option value="">-- Select --</option>
+                                        <option value="">-- Select Material --</option>
                                         <?php foreach ($itemList as $i): ?>
                                         <option value="<?= $i['id'] ?>"><?= htmlspecialchars($i['name']) ?> (<?= $i['stock'] ?> in stock)</option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
                                 <div class="col-3">
-                                    <input type="number" name="quantity[]" class="form-control form-control-sm" value="1" min="1" placeholder="Qty">
+                                    <input type="number" name="quantity[]" class="form-control form-control-sm" value="1" min="1">
                                 </div>
                                 <div class="col-2">
                                     <button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="this.closest('.mat-row').remove()">✕</button>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-warning mt-1" onclick="addMatRow()">
-                            <i class="fas fa-plus me-1"></i>Add Material
+                        <button type="button" class="btn btn-sm btn-outline-amber mt-2" onclick="addMatRow()">
+                            <i class="fas fa-plus me-1"></i>Add Material Row
                         </button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Assignment</button>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary px-3 fw-700" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-800"><i class="fas fa-save me-1"></i>Save Assignment</button>
                 </div>
             </form>
         </div>
@@ -172,23 +204,23 @@ $statuses = ['all'=>'All','Appointment'=>'Appointment','Initial Payment'=>'Initi
 <!-- STATUS MODAL -->
 <div class="modal fade" id="statusModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-exchange-alt me-2 text-amber"></i>Update Status</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-800"><i class="fas fa-exchange-alt me-2 text-amber"></i>Update Status</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="api/update_project_status.php" method="POST">
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <input type="hidden" name="order_id" id="statusId">
-                    <label class="form-label">New Status</label>
-                    <select name="status" id="statusSel" class="form-select">
-                        <?php foreach (['Appointment','Initial Payment','On-going','For Delivery','Backjobs','Completed','Cancelled'] as $st): ?>
+                    <label class="form-label small fw-700">Project Status</label>
+                    <select name="status" id="statusSel" class="form-select fw-700">
+                        <?php foreach (['Appointment','Initial Payment','On-going','For Delivery','Backjobs','Completed'] as $st): ?>
                         <option value="<?= $st ?>"><?= $st ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary w-100"><i class="fas fa-save me-1"></i>Update</button>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-primary w-100 fw-800 py-2"><i class="fas fa-save me-1"></i>Update Project Phase</button>
                 </div>
             </form>
         </div>
@@ -202,7 +234,7 @@ const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
 
 function openAssign(d) {
     document.getElementById('assignId').value = d.id;
-    document.getElementById('assignName').textContent = d.name;
+    document.getElementById('assignNameInput').value = d.name;
     assignModal.show();
 }
 function openStatus(id, cur) {
@@ -210,15 +242,10 @@ function openStatus(id, cur) {
     document.getElementById('statusSel').value = cur;
     statusModal.show();
 }
-function cancelProject(id) {
-    if (!confirm('Cancel this project?')) return;
-    fetch('api/update_project_status.php', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'order_id='+id+'&status=Cancelled'})
-        .then(() => location.reload());
-}
 function addMatRow() {
     const opts = itemData.map(i => `<option value="${i.id}">${i.name} (${i.stock} in stock)</option>`).join('');
     const row = document.createElement('div');
-    row.className = 'row g-2 mb-2 mat-row';
+    row.className = 'row g-2 mb-2 mat-row align-items-center';
     row.innerHTML = `
         <div class="col-7"><select name="item_id[]" class="form-select form-select-sm"><option value="">-- Select --</option>${opts}</select></div>
         <div class="col-3"><input type="number" name="quantity[]" class="form-control form-control-sm" value="1" min="1"></div>

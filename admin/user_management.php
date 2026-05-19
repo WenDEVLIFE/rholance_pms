@@ -6,16 +6,15 @@ include '../includes/sidebar.php';
 
 if ($_SESSION['role'] !== 'admin') { header("Location: ../index.php"); exit; }
 
-// Basic Action Processing (Block/Unblock/Archive)
+// Process Archive/Unarchive Action
 if (isset($_GET['action'], $_GET['id'])) {
     $uid = (int)$_GET['id'];
     match($_GET['action']) {
-        'block'   => $conn->query("UPDATE users SET status='blocked'  WHERE id=$uid"),
-        'unblock' => $conn->query("UPDATE users SET status='active'   WHERE id=$uid"),
-        'archive' => $conn->query("UPDATE users SET status='archived' WHERE id=$uid"),
-        default   => null
+        'archive'   => $conn->query("UPDATE users SET status='archived' WHERE id=$uid"),
+        'unarchive' => $conn->query("UPDATE users SET status='active' WHERE id=$uid"),
+        default     => null
     };
-    header("Location: user_management.php"); exit;
+    header("Location: user_management.php?msg=User status updated successfully"); exit;
 }
 
 $roleF   = $conn->real_escape_string($_GET['role']   ?? 'all');
@@ -25,7 +24,7 @@ $q       = $conn->real_escape_string($_GET['q'] ?? '');
 $where = "WHERE u.id != {$_SESSION['user_id']}";
 if ($roleF !== 'all') $where .= " AND u.role='$roleF'";
 if ($branchF)         $where .= " AND u.branch_id=$branchF";
-if ($q)               $where .= " AND (u.name LIKE '%$q%' OR u.email LIKE '%$q%')";
+if ($q)               $where .= " AND (u.name LIKE '%$q%' OR u.email LIKE '%$q%' OR u.phone LIKE '%$q%' OR u.address LIKE '%$q%')";
 
 $users = $conn->query("
     SELECT u.*, b.name AS branch_name,
@@ -44,17 +43,20 @@ if ($roleCounts) {
 <div class="rh-main">
     <div class="rh-page-header d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h1>User Management</h1>
-            <p>Manage accounts across all roles and branches.</p>
+            <h1>User Account Management</h1>
+            <p>Monitor and view accounts, details, and access logs across all branches.</p>
         </div>
         <button class="btn btn-primary px-4 fw-800 shadow-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="prepAdd()">
-            <i class="fas fa-user-plus me-2"></i>Add New User
+            <i class="fas fa-user-plus me-2"></i>Add New Account
         </button>
     </div>
 
-    <!-- FEEDBACK -->
+    <!-- FEEDBACK MESSAGES -->
     <?php if (isset($_GET['msg'])): ?>
-        <div class="alert alert-success border-0 shadow-sm mb-4"><?= htmlspecialchars($_GET['msg']) ?></div>
+        <div class="alert alert-success border-0 shadow-sm mb-4"><i class="fas fa-check-circle me-2"></i><?= htmlspecialchars($_GET['msg']) ?></div>
+    <?php endif; ?>
+    <?php if (isset($_GET['err'])): ?>
+        <div class="alert alert-danger border-0 shadow-sm mb-4"><i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($_GET['err']) ?></div>
     <?php endif; ?>
 
     <!-- SUMMARY CARDS -->
@@ -63,7 +65,7 @@ if ($roleCounts) {
         foreach ($summaries as [$role,$label,$bg]): ?>
         <div class="col-6 col-md-3">
             <div class="rh-stat-card border-0 shadow-sm">
-                <div class="rh-stat-icon <?= $bg ?>"><i class="fas fa-user"></i></div>
+                <div class="rh-stat-icon <?= $bg ?> text-white"><i class="fas fa-user-shield"></i></div>
                 <div>
                     <div class="rh-stat-label"><?= $label ?>s</div>
                     <div class="rh-stat-value"><?= $counts[$role] ?></div>
@@ -73,16 +75,16 @@ if ($roleCounts) {
         <?php endforeach; ?>
     </div>
 
-    <!-- FILTER FORM -->
+    <!-- FILTER BAR -->
     <div class="card mb-4 border-0 shadow-sm">
         <div class="card-body">
             <form method="GET" class="row g-2 align-items-end">
                 <div class="col-12 col-md-4">
-                    <label class="form-label small fw-700">Search</label>
-                    <input type="text" name="q" class="form-control" placeholder="Name or email..." value="<?= htmlspecialchars($_GET['q']??'') ?>">
+                    <label class="form-label small fw-700">Search Accounts</label>
+                    <input type="text" name="q" class="form-control" placeholder="Name, email, phone, address..." value="<?= htmlspecialchars($_GET['q']??'') ?>">
                 </div>
                 <div class="col-6 col-md-3">
-                    <label class="form-label small fw-700">Role</label>
+                    <label class="form-label small fw-700">Filter Role</label>
                     <select name="role" class="form-select">
                         <option value="all">All Roles</option>
                         <?php foreach (['admin','staff','welder','customer'] as $r): ?>
@@ -91,7 +93,7 @@ if ($roleCounts) {
                     </select>
                 </div>
                 <div class="col-6 col-md-3">
-                    <label class="form-label small fw-700">Branch</label>
+                    <label class="form-label small fw-700">Filter Branch</label>
                     <select name="branch" class="form-select">
                         <option value="0">All Branches</option>
                         <option value="1" <?= $branchF==1?'selected':'' ?>>Cavite (Bautista)</option>
@@ -99,18 +101,25 @@ if ($roleCounts) {
                     </select>
                 </div>
                 <div class="col-12 col-md-2">
-                    <button type="submit" class="btn btn-dark w-100"><i class="fas fa-search me-1"></i>Filter</button>
+                    <button type="submit" class="btn btn-dark w-100 fw-700"><i class="fas fa-search me-1"></i>Filter</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- TABLE -->
+    <!-- DATA TABLE -->
     <div class="card border-0 shadow-sm">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
-                    <tr><th class="ps-4">User</th><th>Role</th><th>Branch</th><th>Orders</th><th>Status</th><th class="text-end pe-4">Actions</th></tr>
+                    <tr>
+                        <th class="ps-4">User Info</th>
+                        <th>Role</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
                 <?php if ($users && $users->num_rows > 0): ?>
@@ -120,37 +129,53 @@ if ($roleCounts) {
                             <div class="d-flex align-items-center gap-2">
                                 <div class="rh-avatar">
                                     <?php if (!empty($u['avatar'])): ?>
-                                        <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($u['avatar']) ?>" alt="">
+                                        <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($u['avatar']) ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                                     <?php else: ?>
                                         <?= strtoupper(substr($u['name'],0,1)) ?>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <div class="fw-700 small"><?= htmlspecialchars($u['name']) ?></div>
-                                    <div class="text-muted" style="font-size:.75rem;"><?= htmlspecialchars($u['email']) ?></div>
+                                    <div class="fw-700 small text-light-emphasis"><?= htmlspecialchars($u['name']) ?></div>
+                                    <div class="text-muted small" style="font-size:.75rem;"><?= htmlspecialchars($u['email']) ?></div>
                                 </div>
                             </div>
                         </td>
                         <td><span class="badge badge-role-<?= $u['role'] ?>"><?= ucfirst($u['role']) ?></span></td>
-                        <td class="small"><?= htmlspecialchars($u['branch_name'] ?? '—') ?></td>
-                        <td><?= $u['orders'] ?></td>
-                        <td><span class="badge badge-status-<?= $u['status'] ?>"><?= ucfirst($u['status']) ?></span></td>
+                        <td class="small text-light-emphasis"><?= htmlspecialchars($u['phone'] ?? '—') ?></td>
+                        <td class="small text-light-emphasis text-truncate" style="max-width: 180px;" title="<?= htmlspecialchars($u['address'] ?? '') ?>">
+                            <?= htmlspecialchars($u['address'] ?? '—') ?>
+                        </td>
+                        <td>
+                            <span class="badge bg-<?= $u['status'] === 'active' ? 'success' : 'secondary' ?>-subtle text-<?= $u['status'] === 'active' ? 'success' : 'secondary' ?>">
+                                <?= ucfirst($u['status']) ?>
+                            </span>
+                        </td>
                         <td class="text-end pe-4">
-                            <div class="d-flex gap-1 justify-content-end">
-                                <button class="btn btn-sm btn-outline-dark" onclick='prepEdit(<?= json_encode($u) ?>)'>
+                            <div class="d-flex gap-1 justify-content-end align-items-center">
+                                <!-- View Info Button -->
+                                <button class="btn btn-sm btn-outline-info" onclick='viewInfo(<?= json_encode($u) ?>)' title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <!-- Edit Account Button -->
+                                <button class="btn btn-sm btn-outline-dark" onclick='prepEdit(<?= json_encode($u) ?>)' title="Edit Account">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <?php if ($u['status']==='active'): ?>
-                                    <a href="?action=block&id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-danger" title="Block User"><i class="fas fa-ban"></i></a>
+                                <!-- Archive Button (Replaced Block with Archive) -->
+                                <?php if ($u['status'] === 'active'): ?>
+                                    <a href="?action=archive&id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-danger" title="Archive User" onclick="return confirm('Are you sure you want to archive this user?')">
+                                        <i class="fas fa-archive"></i>
+                                    </a>
                                 <?php else: ?>
-                                    <a href="?action=unblock&id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-success" title="Unblock User"><i class="fas fa-check"></i></a>
+                                    <a href="?action=unarchive&id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-success" title="Unarchive User">
+                                        <i class="fas fa-undo"></i>
+                                    </a>
                                 <?php endif; ?>
                             </div>
                         </td>
                     </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <tr><td colspan="6" class="text-center py-5 text-muted">No users found.</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No accounts found.</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>
@@ -158,12 +183,52 @@ if ($roleCounts) {
     </div>
 </div>
 
-<!-- USER MODAL (ADD/EDIT) -->
+<!-- USER DETAILS VIEW MODAL -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-800"><i class="fas fa-user-circle me-2 text-amber"></i>Account Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <div class="rh-avatar mx-auto mb-3" style="width:90px;height:90px;font-size:2.5rem;" id="detAvatar">U</div>
+                    <h4 class="fw-800 m-0" id="detName">—</h4>
+                    <span class="badge id="detRoleBadge" style="margin-top:5px; font-size: 0.8rem;">—</span>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12 border-bottom pb-2">
+                        <span class="text-muted d-block small fw-700">EMAIL ADDRESS</span>
+                        <span class="fw-600 text-light-emphasis" id="detEmail">—</span>
+                    </div>
+                    <div class="col-6 border-bottom pb-2">
+                        <span class="text-muted d-block small fw-700">PHONE NUMBER</span>
+                        <span class="fw-600 text-light-emphasis" id="detPhone">—</span>
+                    </div>
+                    <div class="col-6 border-bottom pb-2">
+                        <span class="text-muted d-block small fw-700">BRANCH</span>
+                        <span class="fw-600 text-light-emphasis" id="detBranch">—</span>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted d-block small fw-700">HOME ADDRESS</span>
+                        <span class="fw-600 text-light-emphasis" id="detAddress">—</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary px-4 fw-700" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- USER CREATE/EDIT MODAL -->
 <div class="modal fade" id="userModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title fw-800" id="modalTitle">Add New User</h5>
+                <h5 class="modal-title fw-800" id="modalTitle">Add New Account</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="process_user.php" method="POST">
@@ -178,6 +243,14 @@ if ($roleCounts) {
                         <div class="col-12">
                             <label class="form-label small fw-700">Email Address</label>
                             <input type="email" name="email" id="formEmail" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-700">Phone Number</label>
+                            <input type="text" name="phone" id="formPhone" class="form-control" placeholder="e.g. 09171234567">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-700">Home Address</label>
+                            <textarea name="address" id="formAddress" class="form-control" rows="2" placeholder="Full residential address..."></textarea>
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-700">Role</label>
@@ -204,7 +277,7 @@ if ($roleCounts) {
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary px-4 fw-700" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary px-4 fw-800 shadow-sm" id="submitBtn">Create User</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-800 shadow-sm" id="submitBtn">Create Account</button>
                 </div>
             </form>
         </div>
@@ -213,27 +286,56 @@ if ($roleCounts) {
 
 <script>
 const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+const detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+
+function viewInfo(u) {
+    document.getElementById('detName').textContent = u.name;
+    document.getElementById('detEmail').textContent = u.email;
+    document.getElementById('detPhone').textContent = u.phone ? u.phone : '—';
+    document.getElementById('detAddress').textContent = u.address ? u.address : '—';
+    document.getElementById('detBranch').textContent = u.branch_id == 1 ? 'Cavite' : 'Laguna';
+    
+    // Set role badge
+    const badge = document.getElementById('detRoleBadge');
+    badge.textContent = u.role.toUpperCase();
+    badge.className = 'badge badge-role-' + u.role;
+
+    // Avatar setup
+    const av = document.getElementById('detAvatar');
+    if (u.avatar) {
+        av.innerHTML = `<img src="${BASE_URL}uploads/${u.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+        av.textContent = u.name.substring(0, 1).toUpperCase();
+        av.innerHTML = u.name.substring(0, 1).toUpperCase();
+    }
+    
+    detailsModal.show();
+}
 
 function prepAdd() {
-    document.getElementById('modalTitle').textContent = 'Add New User';
+    document.getElementById('modalTitle').textContent = 'Add New Account';
     document.getElementById('formAction').value = 'create';
-    document.getElementById('submitBtn').textContent = 'Create User';
+    document.getElementById('submitBtn').textContent = 'Create Account';
     document.getElementById('formUserId').value = '';
     document.getElementById('formName').value = '';
     document.getElementById('formEmail').value = '';
+    document.getElementById('formPhone').value = '';
+    document.getElementById('formAddress').value = '';
     document.getElementById('formRole').value = 'customer';
     document.getElementById('formBranch').value = '1';
     document.getElementById('formPass').required = true;
-    document.getElementById('passHint').textContent = 'Required for new users.';
+    document.getElementById('passHint').textContent = 'Required for new accounts.';
 }
 
 function prepEdit(u) {
-    document.getElementById('modalTitle').textContent = 'Edit User';
+    document.getElementById('modalTitle').textContent = 'Edit Account';
     document.getElementById('formAction').value = 'update';
     document.getElementById('submitBtn').textContent = 'Save Changes';
     document.getElementById('formUserId').value = u.id;
     document.getElementById('formName').value = u.name;
     document.getElementById('formEmail').value = u.email;
+    document.getElementById('formPhone').value = u.phone ? u.phone : '';
+    document.getElementById('formAddress').value = u.address ? u.address : '';
     document.getElementById('formRole').value = u.role;
     document.getElementById('formBranch').value = u.branch_id;
     document.getElementById('formPass').required = false;

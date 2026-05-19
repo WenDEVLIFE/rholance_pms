@@ -1,0 +1,361 @@
+/* Rholance Landing Page Premium Styling (Light & Dark Theme support) */
+
+:root {
+    --navbar-bg: rgba(255, 255, 255, 0.9);
+    --navbar-border: rgba(226, 232, 240, 0.8);
+    --navbar-text: #334155;
+    --section-bg-about: #f8fafc;
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
+    --card-text: #1e293b;
+    --card-subtext: #64748b;
+    --faq-bg: #ffffff;
+    --faq-border: #e2e8f0;
+    --faq-text: #1e293b;
+    --faq-ans-bg: #f8fafc;
+    --theme-btn-bg: #f1f5f9;
+    --theme-btn-text: #475569;
+}
+
+/* Dark Mode Variables */
+body.dark {
+    --bg: #0b0f19;
+    --navbar-bg: rgba(11, 15, 25, 0.85);
+    --navbar-border: rgba(255, 255, 255, 0.08);
+    --navbar-text: #f1f5f9;
+    --section-bg-about: #0d1220;
+    --card-bg: rgba(20, 27, 45, 0.75);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --card-text: #f8fafc;
+    --card-subtext: #94a3b8;
+    --faq-bg: rgba(20, 27, 45, 0.7);
+    --faq-border: rgba(255, 255, 255, 0.06);
+    --faq-text: #f8fafc;
+    --faq-ans-bg: rgba(13, 18, 30, 0.5);
+    --theme-btn-bg: rgba(255, 255, 255, 0.08);
+    --theme-btn-text: #fbbf24;
+}
+
+body {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Theme Button Styling */
+.landing-theme-btn {
+    border: none;
+    outline: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--theme-btn-bg);
+    color: var(--theme-btn-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.landing-theme-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    background: #f59e0b;
+    color: #ffffff;
+}
+
+/* Navbar Upgrades */
+.navbar {
+    background: var(--navbar-bg) !important;
+    border-bottom: 1px solid var(--navbar-border) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+.nav-center a {
+    color: var(--navbar-text) !important;
+    font-weight: 600 !important;
+}
+
+.nav-center a:hover, .nav-center a.active {
+    color: #f59e0b !important;
+}
+
+.brand-name {
+    color: var(--navbar-text) !important;
+}
+
+.user-icon {
+    color: var(--navbar-text) !important;
+}
+
+/* About Section Adaptability */
+.about-section {
+    background-color: var(--section-bg-about) !important;
+    transition: background-color 0.4s ease;
+}
+
+.about-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--card-text) !important;
+    transition: all 0.4s ease;
+}
+
+.about-text h2 {
+    color: var(--card-text) !important;
+}
+
+.about-text p {
+    color: var(--card-subtext) !important;
+}
+
+.about-highlights span {
+    color: var(--card-text) !important;
+}
+
+/* Custom Grid for 12 Products */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.products-section {
+    padding: 80px 4% !important;
+}
+
+.p2-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 12px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.p2-header p {
+    font-size: 16px;
+    color: #94a3b8;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+.product-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card .img-wrapper {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+    background: #f1f5f9;
+}
+
+body.dark .product-card .img-wrapper {
+    background: #0f172a;
+}
+
+.product-card .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .img-wrapper img {
+    transform: scale(1.08);
+}
+
+.product-card .product-info {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    white-space: normal;
+}
+
+.product-card .product-info h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--card-text) !important;
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+.product-card .product-info p {
+    font-size: 13px;
+    color: var(--card-subtext) !important;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* FAQ Theme Customization */
+.faq-subtitle {
+    color: #f59e0b !important;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.faq-title {
+    color: var(--faq-text) !important;
+    font-family: 'Outfit', sans-serif;
+}
+
+.faq-item {
+    background: var(--faq-bg) !important;
+    border: 1px solid var(--faq-border) !important;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-question {
+    width: 100%;
+    background: transparent !important;
+    border: none;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    text-align: left;
+}
+
+.faq-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faq-text) !important;
+}
+
+.faq-question i {
+    color: var(--faq-text);
+    transition: transform 0.3s ease;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+    background: var(--faq-ans-bg);
+}
+
+.faq-answer p {
+    padding: 20px 24px;
+    font-size: 14px;
+    color: var(--card-subtext) !important;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 500px;
+    transition: max-height 0.3s cubic-bezier(1, 0, 1, 0);
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+    color: #f59e0b;
+}
+
+/* Clean up search box in navbar */
+.search-box {
+    background: var(--theme-btn-bg) !important;
+    box-shadow: none !important;
+    border: 1px solid var(--navbar-border) !important;
+}
+
+.search-box input {
+    color: var(--navbar-text) !important;
+}
+
+/* =========================================
+   AUTOFILL & PLACEHOLDER FIXES
+   ========================================= */
+
+/* Chrome/Safari AutoFill styling */
+.login-modal-content input:-webkit-autofill,
+.login-modal-content input:-webkit-autofill:hover,
+.login-modal-content input:-webkit-autofill:focus,
+.login-modal-content input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Firefox AutoFill styling override */
+.login-modal-content input:autofill {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Input Fields styling */
+.login-modal-content input {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box;
+}
+
+.login-modal-content input:focus {
+    border-color: #f59e0b !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15) !important;
+    outline: none !important;
+}
+
+/* High contrast placeholders that are highly visible in both states */
+.login-modal-content input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    opacity: 1 !important;
+}
+
+.login-modal-content input::-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Center Logo inside modal headers */
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.login-header img {
+    margin: 0 auto 16px !important;
+    display: block !important;
+}
+
+/* Quick Links and Contacts adaptivity */
+#faq {
+    background: var(--bg);
+}
+
+@media (max-width: 900px) {
+    .nav-center {
+        display: none; /* simple responsive fallback */
+    }
+    .navbar {
+        padding: 0 20px;
+    }
+}

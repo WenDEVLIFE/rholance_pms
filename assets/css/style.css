@@ -2921,8 +2921,9 @@ body {
 =============================== */
 
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.12) inset !important;
-    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .login-modal-content input,
@@ -5620,9 +5621,10 @@ MODERN STAT CARD UPGRADE
 .login-modal-content input:-webkit-autofill,
 .login-modal-content input:-webkit-autofill:hover,
 .login-modal-content input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.12) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
     -webkit-text-fill-color: #ffffff !important;
     caret-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 /* =========================================
    🚀 CUSTOMER DASHBOARD (CLEAN MODERN UI)

@@ -4,186 +4,143 @@ include __DIR__ . '/../config/database.php';
 include __DIR__ . '/../includes/header.php';
 include __DIR__ . '/../includes/sidebar.php';
 
-/* =========================
-   PAGINATION
-========================= */
-$limit = 12;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$page = max($page, 1);
-$offset = ($page - 1) * $limit;
-
-/* =========================
-   CATEGORY FILTER
-========================= */
-$type = isset($_GET['type']) ? $_GET['type'] : 'industrial';
-
-if ($type === 'custom') {
-    $categoryFilter = "WHERE category = 'Fabricated Product'";
-    $title = "Customized Products";
-} else {
-    $categoryFilter = "WHERE category = 'Industrial Materials'";
-    $title = "Industrial Materials";
-}
-
-/* =========================
-   FETCH PRODUCTS
-========================= */
-$products = $conn->query("
-    SELECT id, name, category, image, price
-    FROM items
-    $categoryFilter
-    ORDER BY name
-    LIMIT $limit OFFSET $offset
-");
-
-$total = $conn->query("SELECT COUNT(*) as total FROM items $categoryFilter")->fetch_assoc()['total'];
-$totalPages = ceil($total / $limit);
+$customCatalog = [
+    [
+        'name' => 'Gate',
+        'img'  => 'assets/images/products/customized/gate.png',
+        'desc' => 'Premium customized metal/stainless security gates. Integrated hinges and anti-rust base painting.',
+        'spec' => 'Square tubes, Flat/Angle bars, Primer paint, Lockset options'
+    ],
+    [
+        'name' => 'Water Tank (Stainless)',
+        'img'  => 'assets/images/products/customized/water_tank.png',
+        'desc' => 'Heavy duty grade 304 stainless steel water storage tanks. Highly resilient to corrosion.',
+        'spec' => 'Stainless steel sheets, Inlet/Outlet pipes, Valves, Sealed welding'
+    ],
+    [
+        'name' => 'Table',
+        'img'  => 'assets/images/products/customized/table.png',
+        'desc' => 'Sturdy industrial workbenches and dining table frames designed with clean modern finishes.',
+        'spec' => 'Mild/Stainless frame, Angle bars, Protective footpads'
+    ],
+    [
+        'name' => 'Lababo (Sink)',
+        'img'  => 'assets/images/products/customized/lababo.jpg',
+        'desc' => 'Single or multiple basin stainless kitchen sinks. Perfect for restaurants and home use.',
+        'spec' => 'Stainless plates, drain fittings, brackets, protective sealant'
+    ],
+    [
+        'name' => 'Stainless Letters',
+        'img'  => 'assets/images/products/customized/stainless_letters.png',
+        'desc' => 'Customized modern 3D signages and laser cut letters. Weatherproof and ideal for business storefronts.',
+        'spec' => 'Polished or hairline finish sheets, mounting brackets'
+    ],
+    [
+        'name' => 'Windows (Metal Frame)',
+        'img'  => 'assets/images/products/customized/windows.png',
+        'desc' => 'High-security metallic frame window grilles and architectural structural casings.',
+        'spec' => 'Square tubes, security steel bars, premium hinges, primer coat'
+    ],
+    [
+        'name' => 'Handrail',
+        'img'  => 'assets/images/products/customized/handrail.jpg',
+        'desc' => 'Polished stainless steel staircases and terrace handrails. Built for heavy structural support.',
+        'spec' => 'Stainless circular/square pipes, brackets, heavy-duty anchors'
+    ],
+    [
+        'name' => 'Push Cart',
+        'img'  => 'assets/images/products/customized/push_cart.jpg',
+        'desc' => 'Industrial flatbed material handling carts. Equipped with high-weight load bearing casters.',
+        'spec' => 'Heavy-duty angle bars, handle grips, industrial caster wheels'
+    ],
+    [
+        'name' => 'Carrier (Push Cart)',
+        'img'  => 'assets/images/products/customized/carrier.jpg',
+        'desc' => 'Luggage and heavy inventory logistics carriers. Custom welded framework for specific warehouses.',
+        'spec' => 'Tubular framing, support reinforcement plates, bearing wheels'
+    ],
+    [
+        'name' => 'Terrace (Metal Structure)',
+        'img'  => 'assets/images/products/customized/terrace.png',
+        'desc' => 'Full architectural balcony structural frame. Pre-welded elements for quick on-site installation.',
+        'spec' => 'Heavy structural I-beams, metal sheets, supporting rods'
+    ],
+    [
+        'name' => 'Upuan (Chair)',
+        'img'  => 'assets/images/products/customized/upuan.jpg',
+        'desc' => 'Sleek metal counter stools and heavy industrial shop chairs. Ergonomic welds.',
+        'spec' => 'Round metal tubes, protective powder finish, customized back support'
+    ],
+    [
+        'name' => 'Laboratory Cabinet',
+        'img'  => 'assets/images/products/customized/cabinet.jpg',
+        'desc' => 'Chemical and medical-grade cleanroom stainless cabinets. Dustproof tight hinges.',
+        'spec' => 'Corrosion-proof sheets, handles, slide drawers, lock modules'
+    ]
+];
 ?>
 
 <div class="rh-main">
-    <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+    
+    <!-- PAGE HEADER -->
+    <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-            <h1><?= htmlspecialchars($title) ?></h1>
-            <p>Browse our collection of high-quality materials and products.</p>
+            <h1>Available Customizations</h1>
+            <p>Browse our 12 premium fabricated structures. Select any model to book your design consultation slot!</p>
         </div>
-        <div class="d-flex gap-2">
-            <?php if ($_SESSION['role'] === 'admin'): ?>
-                <button class="btn btn-dark fw-800" data-bs-toggle="modal" data-bs-target="#prodModal" onclick="prepAddProd()">
-                    <i class="fas fa-plus me-2"></i>Add Product
-                </button>
-            <?php elseif ($_SESSION['role'] === 'customer'): ?>
-                <a href="<?= BASE_URL ?>customer/customize.php" class="btn btn-warning fw-800">
-                    <i class="fas fa-pen-ruler me-2"></i>Request Custom Design
+    </div>
+
+    <!-- CATALOG INTRO CARD -->
+    <div class="card bg-dark text-white border-0 shadow-sm p-4 mb-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4 class="fw-800 text-amber mb-2"><i class="fas fa-hammer me-2"></i>Fabrication Consultations</h4>
+                <p class="mb-0 text-secondary" style="font-size:0.9rem;">We don't use simple e-commerce add-to-cart checkouts because every single project is custom tailored! Choose any product design below to book a consultation slot. Our branch welder will visit your site, log dimensions, and finalize your specs!</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="<?= BASE_URL ?>customer/available_appointments.php" class="btn btn-warning fw-800 text-dark px-4 py-2">
+                    <i class="fas fa-calendar-check me-2"></i>General Appointment
                 </a>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
 
-    <!-- CATEGORY SWITCH -->
-    <div class="rh-tabs mb-4">
-        <a href="?type=industrial" class="rh-tab <?= $type=='industrial'?'active':'' ?>">Industrial Materials</a>
-        <a href="?type=custom" class="rh-tab <?= $type=='custom'?'active':'' ?>">Fabricated Products</a>
-    </div>
-
-    <!-- PRODUCT GRID -->
-    <?php if ($products && $products->num_rows > 0): ?>
-    <div class="row g-4 mb-4">
-        <?php while($p = $products->fetch_assoc()): ?>
-        <div class="col-6 col-md-4 col-xl-3">
-            <div class="card h-100 rh-proj-card border-0 shadow-sm">
-                <div class="rh-proj-thumb" style="height: 180px;">
-                    <img src="<?= BASE_URL ?>assets/images/products/<?= htmlspecialchars($p['name']) ?>.png"
-                         onerror="this.src='<?= BASE_URL ?>assets/images/no-image.png'" alt="">
-                    <span class="badge bg-dark status-float">₱<?= number_format($p['price'],0) ?></span>
-                </div>
-                <div class="card-body p-3">
-                    <h6 class="fw-800 mb-1"><?= htmlspecialchars($p['name']) ?></h6>
-                    <div class="text-muted small"><?= htmlspecialchars($p['category']) ?></div>
-                </div>
-                <div class="card-footer bg-transparent border-0 p-3 pt-0">
-                    <?php if ($_SESSION['role'] === 'customer'): ?>
-                        <a href="<?= BASE_URL ?>customer/customize.php?template=<?= $p['id'] ?>" class="btn btn-sm btn-outline-warning w-100 fw-700">Customize This</a>
-                    <?php elseif ($_SESSION['role'] === 'admin'): ?>
-                        <div class="d-flex gap-1">
-                            <button class="btn btn-sm btn-outline-dark w-100" onclick='prepEditProd(<?= json_encode($p) ?>)'>Edit</button>
-                            <form action="process_products.php" method="POST" onsubmit="return confirm('Delete item?')" class="w-100">
-                                <input type="hidden" name="action" value="delete_product">
-                                <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">Del</button>
-                            </form>
+    <!-- 12 CUSTOMIZED PRODUCTS GRID -->
+    <div class="row g-4 mb-5">
+        <?php foreach ($customCatalog as $p): ?>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 rh-proj-card border-0 shadow-sm d-flex flex-column justify-content-between" style="overflow:hidden; border-radius:12px;">
+                <div>
+                    <!-- Thumbnail container with absolute overlay and status float -->
+                    <div class="rh-proj-thumb position-relative" style="height: 200px; overflow:hidden;">
+                        <img src="<?= BASE_URL ?><?= htmlspecialchars($p['img']) ?>"
+                             class="w-100 h-100 object-fit-cover"
+                             onerror="this.src='<?= BASE_URL ?>assets/images/no-image.png'" alt="<?= htmlspecialchars($p['name']) ?>">
+                        <span class="badge bg-amber text-dark status-float position-absolute top-0 end-0 m-3 fw-800 shadow-sm">Custom Build</span>
+                    </div>
+                    
+                    <div class="card-body p-4 bg-white">
+                        <h5 class="fw-800 text-light-emphasis mb-2"><?= htmlspecialchars($p['name']) ?></h5>
+                        <p class="text-muted mb-3" style="font-size:0.85rem; line-height:1.4; height: 60px; overflow:hidden;">
+                            <?= htmlspecialchars($p['desc']) ?>
+                        </p>
+                        
+                        <div class="p-3 rounded-3" style="background: rgba(0,0,0,0.02); font-size:0.75rem;">
+                            <span class="d-block fw-800 text-light-emphasis mb-1"><i class="fas fa-layer-group text-amber me-1"></i>CORE MATERIALS INCLUDED:</span>
+                            <span class="text-muted"><?= htmlspecialchars($p['spec']) ?></span>
                         </div>
-                    <?php else: ?>
-                        <a href="#" class="btn btn-sm btn-outline-dark w-100 disabled">View Info</a>
-                    <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white border-0 p-4 pt-0">
+                    <a href="<?= BASE_URL ?>customer/available_appointments.php?service=<?= urlencode($p['name']) ?>" 
+                       class="btn btn-warning w-100 fw-800 text-dark py-2">
+                        <i class="fas fa-calendar-plus me-1"></i>Customize <?= htmlspecialchars($p['name']) ?>
+                    </a>
                 </div>
             </div>
         </div>
-        <?php endwhile; ?>
-    </div>
-
-    <!-- PAGINATION -->
-    <?php if ($totalPages > 1): ?>
-    <nav class="d-flex justify-content-center">
-        <ul class="pagination pagination-sm">
-            <?php for($i = 1; $i <= $totalPages; $i++): ?>
-            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                <a class="page-link" href="?type=<?= $type ?>&page=<?= $i ?>"><?= $i ?></a>
-            </li>
-            <?php endfor; ?>
-        </ul>
-    </nav>
-    <?php endif; ?>
-
-    <?php else: ?>
-    <div class="card p-5 text-center text-muted border-0 shadow-sm">
-        <i class="fas fa-box-open fs-1 mb-3 opacity-25"></i>
-        <h4>No Items Found</h4>
-        <p>There are no items listed in this category yet.</p>
-    </div>
-    <?php endif; ?>
-
-    <!-- FEEDBACK -->
-    <?php if (isset($_GET['msg'])): ?>
-        <div class="alert alert-success border-0 shadow-sm mt-4"><?= htmlspecialchars($_GET['msg']) ?></div>
-    <?php endif; ?>
-
-</div>
-
-<!-- PRODUCT MODAL -->
-<div class="modal fade" id="prodModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title fw-800" id="prodModalTitle">Add Product</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="process_products.php" method="POST">
-                <input type="hidden" name="action" id="prodAction" value="add_product">
-                <input type="hidden" name="product_id" id="prodId">
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="form-label small fw-700">Name</label>
-                        <input type="text" name="name" id="prodName" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-700">Category</label>
-                        <select name="category" id="prodCat" class="form-select" required>
-                            <option value="Industrial Materials">Industrial Materials</option>
-                            <option value="Fabricated Product">Fabricated Product</option>
-                        </select>
-                    </div>
-                    <div class="mb-0">
-                        <label class="form-label small fw-700">Price (₱)</label>
-                        <input type="number" step="0.01" name="price" id="prodPrice" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary w-100 fw-800" id="prodSubmitBtn">Save Product</button>
-                </div>
-            </form>
-        </div>
+        <?php endforeach; ?>
     </div>
 </div>
-
-<script>
-const prodModal = new bootstrap.Modal(document.getElementById('prodModal'));
-
-function prepAddProd() {
-    document.getElementById('prodModalTitle').textContent = 'Add New Product';
-    document.getElementById('prodAction').value = 'add_product';
-    document.getElementById('prodId').value = '';
-    document.getElementById('prodName').value = '';
-    document.getElementById('prodPrice').value = '';
-}
-
-function prepEditProd(p) {
-    document.getElementById('prodModalTitle').textContent = 'Edit Product';
-    document.getElementById('prodAction').value = 'update_product';
-    document.getElementById('prodId').value = p.id;
-    document.getElementById('prodName').value = p.name;
-    document.getElementById('prodCat').value = p.category;
-    document.getElementById('prodPrice').value = p.price;
-    prodModal.show();
-}
-</script>
 </body></html>
