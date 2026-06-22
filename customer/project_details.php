@@ -193,4 +193,37 @@ $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
     </div>
 </div>
 
+<!-- INITIAL PAYMENT MODAL -->
+<?php if ($p['status'] === 'Initial Payment' && !isset($_GET['success'])): ?>
+<div class="modal fade" id="initialPaymentModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-800"><i class="fas fa-credit-card me-2"></i>Initial Payment Required</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="mb-1 text-muted small">Your project has been inspected and quoted! A 50% Downpayment is required to begin fabrication.</div>
+                <h3 class="fw-800 text-success mb-3">₱<?= number_format(($matTotal > 0 ? $matTotal * 1.5 : 5000) / 2, 2) ?></h3>
+                
+                <div class="alert bg-primary-subtle text-primary border-0 text-start small mb-4">
+                    <i class="fas fa-info-circle me-1"></i>Please transfer via GCash to: <strong>0995 774 2174 (Rholance Trading)</strong>. Then upload your transaction receipt.
+                </div>
+                
+                <a href="add_payment.php?id=<?= $p['id'] ?>" class="btn btn-primary w-100 py-3 fw-800 fs-5 mb-2">
+                    <i class="fas fa-upload me-2"></i>Upload Payment Screenshot
+                </a>
+                <button type="button" class="btn btn-outline-secondary w-100 fw-600" data-bs-dismiss="modal">I'll do this later</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var initialPaymentModal = new bootstrap.Modal(document.getElementById('initialPaymentModal'));
+    initialPaymentModal.show();
+});
+</script>
+<?php endif; ?>
+
 </body></html>

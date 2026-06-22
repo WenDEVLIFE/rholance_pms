@@ -15,9 +15,12 @@ $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("
     SELECT 
         a.*,
-        COALESCE(b.name, 'No Branch') AS branch_name
+        COALESCE(b.name, 'No Branch') AS branch_name,
+        u.name AS welder_name,
+        u.phone AS welder_phone
     FROM appointments a
     LEFT JOIN branches b ON a.branch_id = b.id
+    LEFT JOIN users u ON a.welder_id = u.id
     WHERE a.user_id = ?
     AND a.status IN ('Pending', 'Approved')
     ORDER BY a.appointment_date DESC
@@ -157,6 +160,7 @@ $appointments = $result->fetch_all(MYSQLI_ASSOC);
                             <th>Date</th>
                             <th>Time</th>
                             <th>Branch</th>
+                            <th>Welder Info</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -175,6 +179,15 @@ $appointments = $result->fetch_all(MYSQLI_ASSOC);
                                 <td><?= date('M d, Y', strtotime($row['appointment_date'])) ?></td>
                                 <td><?= htmlspecialchars($row['appointment_time'] ?? '-') ?></td>
                                 <td><?= htmlspecialchars($row['branch_name']) ?></td>
+                                
+                                <td>
+                                    <?php if ($status === 'approved' && !empty($row['welder_name'])): ?>
+                                        <div style="font-size: 13px; font-weight: 600;"><?= htmlspecialchars($row['welder_name']) ?></div>
+                                        <div style="font-size: 11px; opacity: 0.8;"><i class="fas fa-phone-alt me-1"></i><?= htmlspecialchars($row['welder_phone'] ?? 'N/A') ?></div>
+                                    <?php else: ?>
+                                        <span class="no-action">Not Assigned</span>
+                                    <?php endif; ?>
+                                </td>
 
                                 <td>
                                     <span class="status <?= $status ?>">

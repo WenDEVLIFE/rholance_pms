@@ -164,7 +164,7 @@ $myAppts = mysqli_query($conn, "SELECT * FROM appointments WHERE user_id=$user_i
                 <h5 class="modal-title fw-800"><i class="fas fa-calendar-plus me-2 text-amber"></i>Book consultation slot</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="request_appointment.php" method="POST">
+            <form id="bookForm" action="request_appointment.php" method="POST">
                 <div class="modal-body p-4">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
@@ -249,5 +249,14 @@ window.addEventListener('DOMContentLoaded', () => {
     // If a service is pre-filled, we automatically prompt the user to choose an available date button
 });
 <?php endif; ?>
+
+// Address validation for Cavite & Laguna
+document.getElementById('bookForm').addEventListener('submit', function(e) {
+    const address = document.querySelector('input[name="address"]').value.toLowerCase();
+    if (!address.includes('cavite') && !address.includes('laguna')) {
+        e.preventDefault();
+        alert('We only accept appointments for locations around Cavite and Laguna. Please provide a valid address in these areas.');
+    }
+});
 </script>
 </body></html>

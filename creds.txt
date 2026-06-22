@@ -15,3 +15,44 @@ Password for all: innovatechph
 
 4. CUSTOMER
    Email: customer@rholance.com
+
+
+=== NEWLY SEEDED ACCOUNTS ===
+** Note: Default Password for all seeded accounts is: password123 **
+
+[ BRANCH 1 - BAUTISTA (CAVITE) ]
+Welders:
+- dondon.cruz@rholance.com
+- ryan.vulin@rholance.com
+- jovie.santos@rholance.com
+- robert.mangubat@rholance.com
+- ryan.delfin@rholance.com
+- marlon.sica@rholance.com
+
+Staff (Cashiers):
+- nicole.sanchez@rholance.com
+- lhoraine.leonado@rholance.com
+
+[ BRANCH 2 - LAGUNA ]
+Welders:
+- raymond.reves@rholance.com
+- manly.maascardo@rholance.com
+- jeffrey.billon@rholance.com
+- allan.berting@rholance.com
+- berto.gimbla@rholance.com
+- paul.terez@rholance.com
+- mundo.lins@rholance.com
+- itlog.treces@rholance.com
+- jared.makabinta@rholance.com
+- mac.allunos@rholance.com
+- mekaniko.seta@rholance.com
+- derick.vulla@rholance.com
+- bilog.villaluz@rholance.com
+- tiki.mani@rholance.com
+- chris.malinao@rholance.com
+
+Staff (Cashiers):
+- lea.auther@rholance.com
+- ella.sivla@rholance.com
+- edrelyn.rufuela@rholance.com
+- nicole.thunder@rholance.com

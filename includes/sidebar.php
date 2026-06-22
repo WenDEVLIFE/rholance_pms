@@ -65,6 +65,7 @@ function rh_nav($href, $icon, $label, $active) {
     <div class="rh-sidebar-section">Management</div>
     <nav class="flex-column">
         <?php rh_nav(BASE_URL . 'admin/user_management.php', 'fas fa-users',        'User Management', strpos($_SERVER['REQUEST_URI'],'user_management')!==false); ?>
+        <?php rh_nav(BASE_URL . 'admin/custom_variants.php', 'fas fa-palette',      'Custom Variants', strpos($_SERVER['REQUEST_URI'],'custom_variants')!==false); ?>
         <?php rh_nav(BASE_URL . 'orders/orders.php',         'fas fa-file-lines',   'Custom Orders',   $cur_dir==='orders'); ?>
         <?php rh_nav(BASE_URL . 'inventory/index.php',       'fas fa-boxes-stacked','Inventory',       $cur_dir==='inventory'); ?>
         <?php rh_nav(BASE_URL . 'staff/project_management.php','fas fa-diagram-project','Projects',    strpos($_SERVER['REQUEST_URI'],'project_management')!==false); ?>

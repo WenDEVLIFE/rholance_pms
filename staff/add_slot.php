@@ -16,5 +16,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->execute();
 
-    header("Location: appointment.php");
+    header("Location: appointment.php?success=slot_added");
 }

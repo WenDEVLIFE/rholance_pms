@@ -162,7 +162,12 @@ function statusBadge($s) {
                         </td>
 
                         <!-- Status Badge -->
-                        <td><?= statusBadge($row['status']) ?></td>
+                        <td>
+                            <?= statusBadge($row['status']) ?>
+                            <?php if ($row['status'] === 'Pending'): ?>
+                                <div class="badge bg-danger text-white d-block mt-1" style="font-size:0.6rem;"><i class="fas fa-bell me-1"></i>New Booking - Needs Welder Assignment</div>
+                            <?php endif; ?>
+                        </td>
 
                         <!-- Actions (Staff cannot cancel or reject, only approve, assign welder, and complete to ongoing) -->
                         <td class="text-end pe-4">
@@ -325,4 +330,28 @@ function openApprovalModal(appt) {
     approvalModal.show();
 }
 </script>
+
+<!-- SLOT ADDED SUCCESS MODAL -->
+<?php if (isset($_GET['success']) && $_GET['success'] === 'slot_added'): ?>
+<div class="modal fade" id="slotSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg text-center p-4">
+            <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+            <h5 class="fw-800 mb-1">Slot Added!</h5>
+            <p class="text-muted small mb-3">The available time slot has been successfully posted for customers.</p>
+            <button type="button" class="btn btn-success fw-700 w-100" data-bs-dismiss="modal">Okay</button>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var slotSuccessModal = new bootstrap.Modal(document.getElementById('slotSuccessModal'));
+    slotSuccessModal.show();
+    
+    // Clean up URL
+    window.history.replaceState(null, '', window.location.pathname);
+});
+</script>
+<?php endif; ?>
+
 </body></html>

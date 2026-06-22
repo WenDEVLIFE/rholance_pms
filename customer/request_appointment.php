@@ -18,6 +18,13 @@ $contactPerson = mysqli_real_escape_string($conn, $_POST['contact_person'] ?? ''
 $branch_id = (int)$_POST['branch_id'];
 $requestedProject = mysqli_real_escape_string($conn, $_POST['requested_project'] ?? 'Custom Project');
 
+/* 🔒 LOCATION VALIDATION */
+$addr_lower = strtolower($address);
+if (strpos($addr_lower, 'cavite') === false && strpos($addr_lower, 'laguna') === false) {
+    header("Location: available_appointments.php?error=invalid_location");
+    exit;
+}
+
 /* AUTO NAME FROM SESSION */
 $customer_name = $_SESSION['full_name'] ?? $_SESSION['name'] ?? 'Customer';
 

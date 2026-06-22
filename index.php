@@ -680,6 +680,20 @@
     </div>
 </div>
 
+<!-- ================= VARIANTS MODAL ================= -->
+<div id="variantsModal" class="login-modal">
+    <div class="login-modal-content variants-modal-content">
+        <span class="close-btn" id="closeVariantsModal" style="cursor:pointer;float:right;font-size:24px;">&times;</span>
+        <div class="login-header">
+            <h2 id="variantsTitle">Product Variants</h2>
+            <p>Select your preferred design variation</p>
+        </div>
+        <div id="variantsContainer" class="variants-grid">
+            <!-- Dynamic variants will be injected here -->
+        </div>
+    </div>
+</div>
+
 <script src="<?= BASE_URL ?>assets/js/app.js"></script>
 
 <script>
@@ -719,5 +733,61 @@
         if (loginModal) {
             loginModal.classList.add("active");
         }
+    }
+
+    // Product Variants Logic
+    document.addEventListener("DOMContentLoaded", () => {
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            const h3 = card.querySelector('.product-info h3');
+            if (h3) {
+                // Remove numbers like "1. Gate" -> "Gate"
+                let productName = h3.innerText.replace(/^\d+\.\s*/, '').trim();
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => {
+                    openVariantsModal(productName);
+                });
+            }
+        });
+
+        document.getElementById('closeVariantsModal')?.addEventListener('click', () => {
+            document.getElementById('variantsModal').classList.remove('active');
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('variantsModal')) {
+                document.getElementById('variantsModal').classList.remove('active');
+            }
+        });
+    });
+
+    function openVariantsModal(productName) {
+        document.getElementById('variantsTitle').innerText = productName + ' Variants';
+        document.getElementById('variantsContainer').innerHTML = '<p style="text-align:center;width:100%;color:var(--card-text);">Loading variants...</p>';
+        document.getElementById('variantsModal').classList.add('active');
+
+        fetch('<?= BASE_URL ?>api/get_variants.php?product_name=' + encodeURIComponent(productName))
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.variants.length > 0) {
+                    let html = '';
+                    data.variants.forEach(v => {
+                        html += `
+                            <div class="variant-card">
+                                <img src="${v.image_url}" alt="${v.variant_name}">
+                                <h4>${v.variant_name}</h4>
+                                <p>${v.description}</p>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('variantsContainer').innerHTML = html;
+                } else {
+                    document.getElementById('variantsContainer').innerHTML = '<p style="text-align:center;width:100%;color:var(--card-text);">No variants available for this product yet.</p>';
+                }
+            })
+            .catch(err => {
+                document.getElementById('variantsContainer').innerHTML = '<p style="text-align:center;width:100%;color:red;">Error loading variants.</p>';
+            });
     }
 </script>
