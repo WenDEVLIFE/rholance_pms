@@ -41,6 +41,19 @@ function rh_nav($href, $icon, $label, $active) {
         </form>
     </div>
     <div class="rh-divider"></div>
+    <?php elseif (in_array($_role, ['staff', 'welder'])): ?>
+    <div class="branch-select px-3 py-2">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text"
+                  style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#CBD5E1;">
+                <i class="fas fa-code-branch"></i>
+            </span>
+            <input type="text" class="form-control form-control-sm" readonly
+                   style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);color:#CBD5E1;"
+                   value="<?= ($_SESSION['branch_id'] ?? 1) == 1 ? 'Dasmariñas, Cavite' : 'Biñan, Laguna' ?>">
+        </div>
+    </div>
+    <div class="rh-divider"></div>
     <?php endif; ?>
 
     <!-- ── CUSTOMER NAVIGATION ── -->

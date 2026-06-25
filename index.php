@@ -1,4 +1,9 @@
-<?php include 'config/database.php'; ?>
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include 'config/database.php'; 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

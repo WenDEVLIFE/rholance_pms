@@ -28,10 +28,14 @@ function e($s) { return htmlspecialchars($s ?? '', ENT_QUOTES); }
 <div class="rh-main">
 
     <!-- PAGE HEADER -->
+    <?php
+        $branch_id = $_SESSION['branch_id'] ?? 1;
+        $branch_name = $branch_id == 1 ? 'Bautista (Cavite)' : 'Laguna (Biñan)';
+    ?>
     <div class="rh-page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div>
             <h1>Staff Dashboard</h1>
-            <p>Today is <strong><?= date('l, F d, Y') ?></strong></p>
+            <p>Today is <strong><?= date('l, F d, Y') ?></strong> | Branch: <strong><i class="fas fa-code-branch me-1 text-amber"></i><?= $branch_name ?></strong></p>
         </div>
         <div class="d-flex gap-2">
             <a href="appointment.php" class="btn btn-primary">
