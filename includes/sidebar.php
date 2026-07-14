@@ -75,14 +75,6 @@ function rh_nav($href, $icon, $label, $active) {
         <?php rh_nav(BASE_URL . 'admin/dashboard.php',       'fas fa-gauge-high',   'Dashboard',       strpos($_SERVER['REQUEST_URI'],'admin/dashboard')!==false); ?>
         <?php rh_nav(BASE_URL . 'admin/sales_reports.php',   'fas fa-chart-line',   'Sales Reports',   strpos($_SERVER['REQUEST_URI'],'sales_reports')!==false); ?>
     </nav>
-    <div class="rh-sidebar-section">Management</div>
-    <nav class="flex-column">
-        <?php rh_nav(BASE_URL . 'admin/user_management.php', 'fas fa-users',        'User Management', strpos($_SERVER['REQUEST_URI'],'user_management')!==false); ?>
-        <?php rh_nav(BASE_URL . 'admin/custom_variants.php', 'fas fa-palette',      'Custom Variants', strpos($_SERVER['REQUEST_URI'],'custom_variants')!==false); ?>
-        <?php rh_nav(BASE_URL . 'orders/orders.php',         'fas fa-file-lines',   'Custom Orders',   $cur_dir==='orders'); ?>
-        <?php rh_nav(BASE_URL . 'inventory/index.php',       'fas fa-boxes-stacked','Inventory',       $cur_dir==='inventory'); ?>
-        <?php rh_nav(BASE_URL . 'staff/project_management.php','fas fa-diagram-project','Projects',    strpos($_SERVER['REQUEST_URI'],'project_management')!==false); ?>
-    </nav>
     <?php endif; ?>
 
     <!-- ── STAFF NAVIGATION ── -->
@@ -92,9 +84,15 @@ function rh_nav($href, $icon, $label, $active) {
         <?php rh_nav(BASE_URL . 'staff/dashboard.php',             'fas fa-gauge-high',     'Dashboard',        $cur_page==='dashboard.php'); ?>
         <?php rh_nav(BASE_URL . 'staff/appointment.php',           'fas fa-calendar-check', 'Appointments',     $cur_page==='appointment.php'); ?>
         <?php rh_nav(BASE_URL . 'staff/project_management.php',    'fas fa-diagram-project','Projects',         $cur_page==='project_management.php'); ?>
+        <?php rh_nav(BASE_URL . 'orders/orders.php',               'fas fa-file-lines',     'Custom Orders',    $cur_dir==='orders'); ?>
         <?php rh_nav(BASE_URL . 'inventory/index.php',             'fas fa-boxes-stacked',  'Inventory',        $cur_dir==='inventory'); ?>
         <?php rh_nav(BASE_URL . 'staff/pos/index.php',             'fas fa-cash-register',  'POS Terminal',     $cur_dir==='pos'); ?>
         <?php rh_nav(BASE_URL . 'tasks/index.php',                 'fas fa-list-check',     'Task Management',  $cur_dir==='tasks'); ?>
+    </nav>
+    <div class="rh-sidebar-section">Management</div>
+    <nav class="flex-column">
+        <?php rh_nav(BASE_URL . 'admin/user_management.php',       'fas fa-users',          'User Management',  strpos($_SERVER['REQUEST_URI'],'user_management')!==false); ?>
+        <?php rh_nav(BASE_URL . 'admin/custom_variants.php',       'fas fa-palette',        'Custom Variants',  strpos($_SERVER['REQUEST_URI'],'custom_variants')!==false); ?>
     </nav>
     <?php endif; ?>
 

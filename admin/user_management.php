@@ -4,7 +4,7 @@ include '../config/database.php';
 include '../includes/header.php';
 include '../includes/sidebar.php';
 
-if ($_SESSION['role'] !== 'admin') { header("Location: ../index.php"); exit; }
+if (!in_array($_SESSION['role'], ['admin', 'staff'])) { header("Location: ../index.php"); exit; }
 
 // Process Archive/Unarchive Action
 if (isset($_GET['action'], $_GET['id'])) {

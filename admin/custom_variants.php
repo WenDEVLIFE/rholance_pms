@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/auth_check.php';
-if ($_SESSION['role'] !== 'admin') { header("Location: ../index.php"); exit; }
+if (!in_array($_SESSION['role'], ['admin', 'staff'])) { header("Location: ../index.php"); exit; }
 
 include '../config/database.php';
 include '../includes/header.php';
