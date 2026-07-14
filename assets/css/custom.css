@@ -572,3 +572,26 @@ body.dark .rh-user-name { color: #F1F5F9; }
 /* Load bar (staff performance) */
 .rh-load-bar { height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; }
 .rh-load-fill { height: 100%; background: linear-gradient(90deg, var(--rh-accent), var(--rh-accent-hover)); }
+
+/* ── SIDEBAR NOTIFICATION BADGE ── */
+.rh-nav-link { position: relative; }
+.rh-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    margin-left: auto;
+    flex-shrink: 0;
+    animation: rh-badge-pulse 2s ease-in-out infinite;
+}
+@keyframes rh-badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+    50%       { box-shadow: 0 0 0 4px rgba(239,68,68,0); }
+}

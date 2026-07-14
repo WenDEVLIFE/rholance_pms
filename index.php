@@ -639,6 +639,70 @@ include 'config/database.php';
                 <input type="email" name="email" placeholder="Email" required>
             </div>
 
+            <!-- ADDRESS -->
+            <div class="form-group">
+                <select name="address" class="form-control" style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#E2E8F0; border-radius:4px; margin-bottom:15px;" required>
+                    <option value="" disabled selected>Select City/Municipality (Cavite & Laguna only)</option>
+                    <optgroup label="Cavite">
+                        <option value="Alfonso, Cavite">Alfonso</option>
+                        <option value="Amadeo, Cavite">Amadeo</option>
+                        <option value="Bacoor, Cavite">Bacoor</option>
+                        <option value="Carmona, Cavite">Carmona</option>
+                        <option value="Cavite City, Cavite">Cavite City</option>
+                        <option value="Dasmariñas, Cavite">Dasmariñas</option>
+                        <option value="General Emilio Aguinaldo, Cavite">General Emilio Aguinaldo</option>
+                        <option value="General Mariano Alvarez, Cavite">General Mariano Alvarez</option>
+                        <option value="General Trias, Cavite">General Trias</option>
+                        <option value="Imus, Cavite">Imus</option>
+                        <option value="Indang, Cavite">Indang</option>
+                        <option value="Kawit, Cavite">Kawit</option>
+                        <option value="Magallanes, Cavite">Magallanes</option>
+                        <option value="Maragondon, Cavite">Maragondon</option>
+                        <option value="Mendez, Cavite">Mendez</option>
+                        <option value="Naic, Cavite">Naic</option>
+                        <option value="Noveleta, Cavite">Noveleta</option>
+                        <option value="Rosario, Cavite">Rosario</option>
+                        <option value="Silang, Cavite">Silang</option>
+                        <option value="Tagaytay, Cavite">Tagaytay</option>
+                        <option value="Tanza, Cavite">Tanza</option>
+                        <option value="Ternate, Cavite">Ternate</option>
+                        <option value="Trece Martires, Cavite">Trece Martires</option>
+                    </optgroup>
+                    <optgroup label="Laguna">
+                        <option value="Alaminos, Laguna">Alaminos</option>
+                        <option value="Bay, Laguna">Bay</option>
+                        <option value="Biñan, Laguna">Biñan</option>
+                        <option value="Cabuyao, Laguna">Cabuyao</option>
+                        <option value="Calamba, Laguna">Calamba</option>
+                        <option value="Calauan, Laguna">Calauan</option>
+                        <option value="Cavinti, Laguna">Cavinti</option>
+                        <option value="Famy, Laguna">Famy</option>
+                        <option value="Kalayaan, Laguna">Kalayaan</option>
+                        <option value="Liliw, Laguna">Liliw</option>
+                        <option value="Los Baños, Laguna">Los Baños</option>
+                        <option value="Luisiana, Laguna">Luisiana</option>
+                        <option value="Lumban, Laguna">Lumban</option>
+                        <option value="Mabitac, Laguna">Mabitac</option>
+                        <option value="Magdalena, Laguna">Magdalena</option>
+                        <option value="Majayjay, Laguna">Majayjay</option>
+                        <option value="Nagcarlan, Laguna">Nagcarlan</option>
+                        <option value="Paete, Laguna">Paete</option>
+                        <option value="Pagsanjan, Laguna">Pagsanjan</option>
+                        <option value="Pakil, Laguna">Pakil</option>
+                        <option value="Pangil, Laguna">Pangil</option>
+                        <option value="Pila, Laguna">Pila</option>
+                        <option value="Rizal, Laguna">Rizal</option>
+                        <option value="San Pablo, Laguna">San Pablo</option>
+                        <option value="San Pedro, Laguna">San Pedro</option>
+                        <option value="Santa Cruz, Laguna">Santa Cruz</option>
+                        <option value="Santa Maria, Laguna">Santa Maria</option>
+                        <option value="Santa Rosa, Laguna">Santa Rosa</option>
+                        <option value="Siniloan, Laguna">Siniloan</option>
+                        <option value="Victoria, Laguna">Victoria</option>
+                    </optgroup>
+                </select>
+            </div>
+
             <!-- PASSWORD -->
             <div class="form-group">
                 <div class="password-wrapper">

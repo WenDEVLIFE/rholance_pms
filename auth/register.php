@@ -56,27 +56,29 @@ $expiry = date("Y-m-d H:i:s", strtotime("+5 minutes"));
 
 $branch_id = $_SESSION['branch_id'] ?? 1;
 $role = 'customer';
+$address = $_POST['address'] ?? '';
 
 $stmt = $conn->prepare("
     INSERT INTO users 
-    (name, email, password, role, branch_id, status, is_verified, verification_code, code_expiry)
-    VALUES (?, ?, ?, ?, ?, 'active', 0, ?, ?)
+    (name, email, password, role, branch_id, status, is_verified, verification_code, code_expiry, address)
+    VALUES (?, ?, ?, ?, ?, 'active', 0, ?, ?, ?)
 ");
 
 if (!$stmt) {
     die("Prepare failed: " . $conn->error);
 }
 
-/* ✅ CORRECT: 7 variables */
+/* ✅ CORRECT: 8 variables */
 $stmt->bind_param(
-    "ssssiss",
+    "ssssisss",
     $name,
     $email,
     $hashedPassword,
     $role,
     $branch_id,
     $code,
-    $expiry
+    $expiry,
+    $address
 );
 
 if (!$stmt->execute()) {

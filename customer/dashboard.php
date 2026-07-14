@@ -30,6 +30,17 @@ if (!$conn->connect_error) {
         $appt = $apptCount->get_result()->fetch_assoc()['c'];
     }
 }
+
+/* Orders needing customer action */
+$actionOrders = [];
+$aQ = $conn->prepare("
+    SELECT id, project_name, quote_status, payment_status, quoted_price, quoted_deadline, quoted_breakdown
+    FROM custom_orders
+    WHERE customer_id = ? AND status NOT IN ('Completed','Cancelled')
+      AND (quote_status = 'Approved' AND payment_status != 'Paid')
+    ORDER BY created_at DESC
+");
+if ($aQ) { $aQ->bind_param("i",$cid); $aQ->execute(); $actionOrders = $aQ->get_result()->fetch_all(MYSQLI_ASSOC); }
 ?>
 
 <div class="rh-main">
@@ -44,6 +55,27 @@ if (!$conn->connect_error) {
             <i class="fas fa-plus me-2"></i>New Custom Order
         </a>
     </div>
+
+    <?php if (!empty($actionOrders)): ?>
+    <!-- ACTION ALERTS -->
+    <?php foreach ($actionOrders as $ao): ?>
+    <div class="alert border-0 shadow-sm d-flex align-items-start gap-3 mb-3" style="background:rgba(34,197,94,0.1); border-left:4px solid #22c55e !important;">
+        <i class="fas fa-file-invoice-dollar text-success fs-4 mt-1"></i>
+        <div class="flex-grow-1">
+            <div class="fw-800">Quotation Approved — Payment Needed</div>
+            <div class="small text-muted mb-1"><?= htmlspecialchars($ao['project_name'] ?? 'Custom Project') ?></div>
+            <div class="small">
+                <strong>Quoted Price:</strong> ₱<?= number_format($ao['quoted_price'], 2) ?> &nbsp;|
+                <strong>Deadline:</strong> <?= $ao['quoted_deadline'] ? date('M d, Y', strtotime($ao['quoted_deadline'])) : 'TBD' ?>
+            </div>
+            <?php if (!empty($ao['quoted_breakdown'])): ?>
+            <div class="small text-muted mt-1"><?= nl2br(htmlspecialchars($ao['quoted_breakdown'])) ?></div>
+            <?php endif; ?>
+        </div>
+        <a href="../orders/view_order.php?id=<?= $ao['id'] ?>" class="btn btn-sm btn-success fw-700 flex-shrink-0">Upload Receipt</a>
+    </div>
+    <?php endforeach; ?>
+    <?php endif; ?>
 
     <!-- STAT CARDS -->
     <div class="row g-3 mb-4">
@@ -124,8 +156,15 @@ if (!$conn->connect_error) {
     <?php else: ?>
     <div class="row g-3">
         <?php foreach ($recProj as $p):
-            $pct = ['Appointment'=>10,'Initial Payment'=>30,'On-going'=>60,'For Delivery'=>85,'Backjobs'=>50,'Completed'=>100][$p['status']] ?? 0;
+            $pct = (int)($p['progress_percent'] ?? 0);
+            if ($pct <= 0) $pct = ['Appointment'=>10,'Initial Payment'=>30,'On-going'=>60,'For Delivery'=>85,'Backjobs'=>50,'Completed'=>100][$p['status']] ?? 0;
             $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
+            $payBadge = match($p['payment_status'] ?? 'Unpaid') {
+                'Paid'                 => '<span class="badge bg-success-subtle text-success ms-1">Paid</span>',
+                'Pending Verification' => '<span class="badge bg-warning-subtle text-warning ms-1">Verifying</span>',
+                'Approved'             => '<span class="badge bg-info-subtle text-info ms-1">Pay Now</span>',
+                default                => ''
+            };
         ?>
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="rh-proj-card">

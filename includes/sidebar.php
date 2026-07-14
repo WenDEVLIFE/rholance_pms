@@ -4,10 +4,26 @@ $cur_page    = basename($_SERVER['PHP_SELF']);
 $cur_dir     = basename(dirname($_SERVER['PHP_SELF']));
 $_role       = $_SESSION['role'] ?? '';          // ← safe key access (no warnings)
 
-function rh_nav($href, $icon, $label, $active) {
+function rh_nav($href, $icon, $label, $active, $badge = 0) {
     $cls = $active ? 'rh-nav-link active' : 'rh-nav-link';
-    echo "<a href=\"$href\" class=\"$cls\"><i class=\"$icon\"></i><span>$label</span></a>";
+    $badgeHtml = $badge > 0 ? "<span class=\"rh-badge\">$badge</span>" : '';
+    echo "<a href=\"$href\" class=\"$cls\"><i class=\"$icon\"></i><span>$label</span>$badgeHtml</a>";
 }
+
+/* Sidebar notification counts (staff only) */
+$_sidebarPendingQuotes   = 0;
+$_sidebarPendingPayments = 0;
+$_sidebarLowStock        = 0;
+if (($_role ?? '') === 'staff' && isset($conn) && !$conn->connect_error) {
+    $branch = $_SESSION['branch_id'] ?? 1;
+    $r = $conn->query("SELECT COUNT(*) c FROM custom_orders WHERE quote_status='Pending Review'");
+    if ($r) $_sidebarPendingQuotes = $r->fetch_assoc()['c'];
+    $r = $conn->query("SELECT COUNT(*) c FROM custom_orders WHERE payment_status='Pending Verification'");
+    if ($r) $_sidebarPendingPayments = $r->fetch_assoc()['c'];
+    $r = $conn->query("SELECT COUNT(*) c FROM inventory inv WHERE inv.branch_id=$branch AND inv.current_stock <= inv.min_stock");
+    if ($r) $_sidebarLowStock = $r->fetch_assoc()['c'];
+}
+$_sidebarOrdersBadge = $_sidebarPendingQuotes + $_sidebarPendingPayments;
 ?>
 
 <aside class="rh-sidebar" id="rhSidebar">
@@ -83,11 +99,9 @@ function rh_nav($href, $icon, $label, $active) {
     <nav class="flex-column">
         <?php rh_nav(BASE_URL . 'staff/dashboard.php',             'fas fa-gauge-high',     'Dashboard',        $cur_page==='dashboard.php'); ?>
         <?php rh_nav(BASE_URL . 'staff/appointment.php',           'fas fa-calendar-check', 'Appointments',     $cur_page==='appointment.php'); ?>
-        <?php rh_nav(BASE_URL . 'staff/project_management.php',    'fas fa-diagram-project','Projects',         $cur_page==='project_management.php'); ?>
-        <?php rh_nav(BASE_URL . 'orders/orders.php',               'fas fa-file-lines',     'Custom Orders',    $cur_dir==='orders'); ?>
-        <?php rh_nav(BASE_URL . 'inventory/index.php',             'fas fa-boxes-stacked',  'Inventory',        $cur_dir==='inventory'); ?>
+        <?php rh_nav(BASE_URL . 'orders/orders.php',               'fas fa-file-lines',     'Custom Orders & Projects',    $cur_dir==='orders', $_sidebarOrdersBadge); ?>
+        <?php rh_nav(BASE_URL . 'inventory/index.php',             'fas fa-boxes-stacked',  'Inventory',        $cur_dir==='inventory', $_sidebarLowStock); ?>
         <?php rh_nav(BASE_URL . 'staff/pos/index.php',             'fas fa-cash-register',  'POS Terminal',     $cur_dir==='pos'); ?>
-        <?php rh_nav(BASE_URL . 'tasks/index.php',                 'fas fa-list-check',     'Task Management',  $cur_dir==='tasks'); ?>
     </nav>
     <div class="rh-sidebar-section">Management</div>
     <nav class="flex-column">
@@ -101,7 +115,6 @@ function rh_nav($href, $icon, $label, $active) {
     <div class="rh-sidebar-section">Menu</div>
     <nav class="flex-column">
         <?php rh_nav(BASE_URL . 'staff/welder_dashboard.php', 'fas fa-hard-hat',    'My Projects',  $cur_page==='welder_dashboard.php'); ?>
-        <?php rh_nav(BASE_URL . 'tasks/index.php',            'fas fa-list-check',  'My Tasks',     $cur_dir==='tasks'); ?>
     </nav>
     <?php endif; ?>
 

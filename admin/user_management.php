@@ -59,18 +59,20 @@ if ($roleCounts) {
         <div class="alert alert-danger border-0 shadow-sm mb-4"><i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($_GET['err']) ?></div>
     <?php endif; ?>
 
-    <!-- SUMMARY CARDS -->
+    <!-- SUMMARY CARDS (clickable role filters) -->
     <div class="row g-3 mb-4">
         <?php $summaries = [['admin','Admin','bg-purple'],['staff','Staff','bg-blue'],['welder','Welder','bg-amber'],['customer','Customer','bg-green']];
         foreach ($summaries as [$role,$label,$bg]): ?>
         <div class="col-6 col-md-3">
-            <div class="rh-stat-card border-0 shadow-sm">
+            <a href="?role=<?= $role ?>" class="text-decoration-none">
+            <div class="rh-stat-card border-0 shadow-sm" style="cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 0 2px var(--rh-amber)'" onmouseout="this.style.boxShadow=''">
                 <div class="rh-stat-icon <?= $bg ?> text-white"><i class="fas fa-user-shield"></i></div>
                 <div>
                     <div class="rh-stat-label"><?= $label ?>s</div>
                     <div class="rh-stat-value"><?= $counts[$role] ?></div>
                 </div>
             </div>
+            </a>
         </div>
         <?php endforeach; ?>
     </div>
@@ -110,7 +112,7 @@ if ($roleCounts) {
     <!-- DATA TABLE -->
     <div class="card border-0 shadow-sm">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0" id="usersTable">
                 <thead class="bg-light">
                     <tr>
                         <th class="ps-4">User Info</th>
@@ -342,5 +344,18 @@ function prepEdit(u) {
     document.getElementById('passHint').textContent = 'Leave blank to keep current password.';
     userModal.show();
 }
+</script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#usersTable').DataTable({
+        pageLength: 20,
+        order: [[1, 'asc']],
+        columnDefs: [{ orderable: false, targets: [5] }],
+        language: { search: 'Search accounts:' }
+    });
+});
 </script>
 </body></html>
