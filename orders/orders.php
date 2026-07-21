@@ -28,7 +28,7 @@ if ($dateTo)   $where .= " AND DATE(o.created_at) <= '" . $conn->real_escape_str
 /* Orders - load all (DataTables handles pagination/search) */
 $orders = $conn->query("
     SELECT o.id, o.status, o.order_type, o.customer_name, o.created_at, o.expected_date,
-           o.payment_status, o.quote_status,
+           o.payment_status, o.quote_status, o.quoted_price, o.progress_percent, o.project_name,
            u.name staff_name,
            w.name welder_name,
            GROUP_CONCAT(CONCAT(i.name,' x',oi2.qty) SEPARATOR ', ') products
@@ -93,13 +93,14 @@ $pageTitle = match($sf) { 'active'=>'Active Projects', 'completed'=>'Completed P
                     <tr>
                         <th>#</th>
                         <th>Customer</th>
-                        <th>Items / Products</th>
-                        <th>Type</th>
+                        <th>Project</th>
+                        <th>Welder Assigned</th>
+                        <th>Estimation</th>
+                        <th>Progress</th>
+                        <th>Initial Payment</th>
+                        <th>Final Payment</th>
                         <th>Status</th>
-                        <th>Payment</th>
-                        <th>Welder</th>
                         <th>Booked</th>
-                        <th>Due Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -107,11 +108,30 @@ $pageTitle = match($sf) { 'active'=>'Active Projects', 'completed'=>'Completed P
                 <?php if ($orders && $orders->num_rows > 0): ?>
                     <?php while ($o = $orders->fetch_assoc()):
                         $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$o['status']));
-                        $payBadge = match($o['payment_status'] ?? 'Unpaid') {
-                            'Paid'                 => '<span class="badge bg-success-subtle text-success">Paid</span>',
-                            'Pending Verification' => '<span class="badge bg-warning-subtle text-warning">Awaiting Verification</span>',
+
+                        // Payment badges
+                        $payStatus = $o['payment_status'] ?? 'Unpaid';
+                        $payBadge = match($payStatus) {
+                            'Paid'                 => '<span class="badge bg-success fw-700">✔ Paid</span>',
+                            'Pending Verification' => '<span class="badge bg-warning text-dark fw-700">⏳ Verifying</span>',
                             default                => '<span class="badge bg-light text-muted border">Unpaid</span>'
                         };
+
+                        // Initial payment = has moved past "Appointment" stage
+                        $initialStatuses = ['Initial Payment','On-going','For Delivery','Backjobs','Completed'];
+                        $initialPaid = in_array($o['status'], $initialStatuses);
+                        $initialBadge = $initialPaid
+                            ? '<span class="badge bg-success fw-700">✔ Settled</span>'
+                            : '<span class="badge bg-light text-muted border">Pending</span>';
+
+                        // Project done check
+                        $isDone = $o['status'] === 'Completed';
+                        $progressPct = (int)($o['progress_percent'] ?? 0);
+
+                        // Estimation
+                        $estBadge = $o['quoted_price']
+                            ? '₱' . number_format($o['quoted_price'], 2)
+                            : '<span class="text-muted small">TBD</span>';
                     ?>
                     <tr>
                         <td class="text-muted small">#<?= $o['id'] ?></td>
@@ -119,24 +139,36 @@ $pageTitle = match($sf) { 'active'=>'Active Projects', 'completed'=>'Completed P
                             <div class="fw-700"><?= htmlspecialchars($o['customer_name'] ?? '—') ?></div>
                             <div class="text-muted small"><?= htmlspecialchars($o['staff_name'] ?? '') ?></div>
                         </td>
-                        <td style="max-width:180px;">
-                            <div class="text-truncate small" title="<?= htmlspecialchars($o['products'] ?? '') ?>">
-                                <?= htmlspecialchars($o['products'] ?? 'No items') ?>
+                        <td style="max-width:170px;">
+                            <div class="fw-700 small"><?= htmlspecialchars($o['project_name'] ?? 'Custom Fabrication') ?></div>
+                            <div class="text-muted small text-truncate" title="<?= htmlspecialchars($o['products'] ?? '') ?>"><?= htmlspecialchars($o['products'] ?? 'No items') ?></div>
+                        </td>
+                        <td class="small">
+                            <?php if (!empty($o['welder_name'])): ?>
+                                <span class="badge bg-dark"><?= htmlspecialchars($o['welder_name']) ?></span>
+                            <?php else: ?>
+                                <span class="text-muted">Not yet assigned</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="small fw-700"><?= $estBadge ?></td>
+                        <td style="min-width:110px;">
+                            <div class="d-flex align-items-center gap-1">
+                                <div class="progress flex-fill" style="height:7px;">
+                                    <div class="progress-bar <?= $isDone ? 'bg-success' : 'bg-primary' ?>" style="width:<?= $progressPct ?>%"></div>
+                                </div>
+                                <span class="small fw-700"><?= $progressPct ?>%</span>
                             </div>
+                            <?php if ($isDone): ?>
+                                <div class="small text-success fw-700 mt-1">✔ Done</div>
+                            <?php endif; ?>
                         </td>
-                        <td>
-                            <span class="badge bg-light text-dark border"><?= ucfirst($o['order_type'] ?? '—') ?></span>
-                        </td>
+                        <td><?= $initialBadge ?></td>
+                        <td><?= $payBadge ?></td>
                         <td>
                             <span class="badge <?= $cls ?>"><?= $o['status'] ?></span>
                         </td>
-                        <td><?= $payBadge ?></td>
-                        <td class="small text-muted"><?= htmlspecialchars($o['welder_name'] ?? '—') ?></td>
                         <td class="small text-muted">
                             <?= $o['created_at'] ? date('M d, Y', strtotime($o['created_at'])) : '—' ?>
-                        </td>
-                        <td class="small text-muted">
-                            <?= !empty($o['expected_date']) ? date('M d, Y', strtotime($o['expected_date'])) : '—' ?>
                         </td>
                         <td>
                             <div class="d-flex gap-1">
@@ -160,7 +192,7 @@ $pageTitle = match($sf) { 'active'=>'Active Projects', 'completed'=>'Completed P
                                     </ul>
                                 </div>
                                 <?php endif; ?>
-                                <a href="view_order.php?id=<?= $o['id'] ?>" class="btn btn-sm btn-outline-dark">
+                                <a href="view_order.php?id=<?= $o['id'] ?>" class="btn btn-sm btn-outline-dark" title="View Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -169,7 +201,7 @@ $pageTitle = match($sf) { 'active'=>'Active Projects', 'completed'=>'Completed P
                     <?php endwhile; ?>
                 <?php else: ?>
                 <tr>
-                        <td colspan="10" class="text-center py-5 text-muted">
+                        <td colspan="11" class="text-center py-5 text-muted">
                             <i class="fas fa-folder-open fs-2 mb-2 d-block opacity-25"></i>
                             No orders found.
                         </td>
@@ -188,8 +220,8 @@ $pageTitle = match($sf) { 'active'=>'Active Projects', 'completed'=>'Completed P
 $(document).ready(function() {
     $('#ordersTable').DataTable({
         pageLength: 15,
-        order: [[7, 'desc']],
-        columnDefs: [{ orderable: false, targets: [9] }],
+        order: [[9, 'desc']],
+        columnDefs: [{ orderable: false, targets: [4,5,6,7,10] }],
         language: { search: 'Quick Search:', lengthMenu: 'Show _MENU_ entries' }
     });
 });

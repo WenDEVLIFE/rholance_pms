@@ -125,6 +125,32 @@ if ($welderFilter === 'high_commission') {
 
 $staffLoad = $conn->query($staffQueryStr)->fetch_all(MYSQLI_ASSOC);
 $topCust = $conn->query("SELECT u.name,COUNT(co.id) orders,SUM(oi.total_amount) spent FROM custom_orders co JOIN users u ON u.id=co.customer_id LEFT JOIN order_items oi ON oi.order_id=co.id WHERE co.branch_id=$branch GROUP BY co.customer_id ORDER BY spent DESC LIMIT 5")->fetch_all(MYSQLI_ASSOC);
+
+// --- HIGH-VALUE PROJECTS DRILL-DOWN ---
+// Shows the top projects by quoted price + items cost, with welder & customer info
+$highValueProjects = $conn->query("
+    SELECT
+        co.id,
+        COALESCE(co.project_name, 'Custom Project') AS project_name,
+        co.category,
+        co.status,
+        co.created_at,
+        COALESCE(co.quoted_price, SUM(oi.total_amount), 0) AS project_value,
+        co.quoted_price,
+        co.quoted_deadline,
+        co.quoted_breakdown,
+        co.payment_status,
+        cust.name AS customer_name,
+        welder.name AS welder_name
+    FROM custom_orders co
+    LEFT JOIN users cust   ON cust.id = co.customer_id
+    LEFT JOIN users welder ON welder.id = co.assigned_welder_id
+    LEFT JOIN order_items oi ON oi.order_id = co.id
+    WHERE co.branch_id = $branch
+    GROUP BY co.id
+    ORDER BY project_value DESC
+    LIMIT 10
+")->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="rh-main">

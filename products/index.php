@@ -107,7 +107,10 @@ $customCatalog = [
 
     <!-- 12 CUSTOMIZED PRODUCTS GRID -->
     <div class="row g-4 mb-5">
-        <?php foreach ($customCatalog as $p): ?>
+        <?php foreach ($customCatalog as $p): 
+            $pName = $conn->real_escape_string($p['name']);
+            $variants = $conn->query("SELECT * FROM custom_product_variants WHERE product_name = '$pName' ORDER BY created_at DESC");
+        ?>
         <div class="col-12 col-md-6 col-xl-4">
             <div class="card h-100 rh-proj-card border-0 shadow-sm d-flex flex-column justify-content-between" style="overflow:hidden; border-radius:12px;">
                 <div>
@@ -119,16 +122,35 @@ $customCatalog = [
                         <span class="badge bg-amber text-dark status-float position-absolute top-0 end-0 m-3 fw-800 shadow-sm">Custom Build</span>
                     </div>
                     
-                    <div class="card-body p-4 bg-white">
+                    <div class="card-body p-4 bg-white pb-3">
                         <h5 class="fw-800 text-light-emphasis mb-2"><?= htmlspecialchars($p['name']) ?></h5>
                         <p class="text-muted mb-3" style="font-size:0.85rem; line-height:1.4; height: 60px; overflow:hidden;">
                             <?= htmlspecialchars($p['desc']) ?>
                         </p>
                         
-                        <div class="p-3 rounded-3" style="background: rgba(0,0,0,0.02); font-size:0.75rem;">
+                        <div class="p-3 rounded-3 mb-3" style="background: rgba(0,0,0,0.02); font-size:0.75rem;">
                             <span class="d-block fw-800 text-light-emphasis mb-1"><i class="fas fa-layer-group text-amber me-1"></i>CORE MATERIALS INCLUDED:</span>
                             <span class="text-muted"><?= htmlspecialchars($p['spec']) ?></span>
                         </div>
+
+                        <!-- VARIANTS PREVIEW GALLERY -->
+                        <?php if ($variants && $variants->num_rows > 0): ?>
+                            <div class="fw-800 small text-light-emphasis mb-2"><i class="fas fa-images me-1 text-amber"></i>Design Previews:</div>
+                            <div class="d-flex gap-2 pb-2" style="overflow-x: auto; scroll-snap-type: x mandatory;">
+                                <?php while($v = $variants->fetch_assoc()): ?>
+                                    <div class="flex-shrink-0" style="scroll-snap-align: start; width:80px; position:relative; group">
+                                        <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($v['image_url']) ?>" 
+                                             class="rounded border" style="width:80px; height:60px; object-fit:cover; cursor:pointer;"
+                                             onclick="previewImage(this.src, '<?= htmlspecialchars($v['variant_name'], ENT_QUOTES) ?>')"
+                                             onerror="this.src='<?= BASE_URL ?>assets/images/no-image.png'">
+                                        <div class="small fw-700 mt-1 text-truncate" style="font-size:0.65rem;" title="<?= htmlspecialchars($v['variant_name']) ?>">
+                                            <?= htmlspecialchars($v['variant_name']) ?>
+                                        </div>
+                                    </div>
+                                <?php endwhile; ?>
+                            </div>
+                        <?php endif; ?>
+
                     </div>
                 </div>
 
@@ -142,5 +164,29 @@ $customCatalog = [
         </div>
         <?php endforeach; ?>
     </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0 pb-0 justify-content-end">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center pt-0">
+                <img id="previewModalImage" src="" class="img-fluid rounded shadow-lg mb-3" style="max-height:80vh;">
+                <h4 id="previewModalTitle" class="text-white fw-800 m-0 text-shadow"></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewImage(src, title) {
+    document.getElementById('previewModalImage').src = src;
+    document.getElementById('previewModalTitle').textContent = title;
+    new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
+}
+</script>
 </div>
 </body></html>

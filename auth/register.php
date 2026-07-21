@@ -33,6 +33,14 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
+$domain = substr(strrchr($email, "@"), 1);
+if (!checkdnsrr($domain, "MX")) {
+    $_SESSION['register_error'] = "Invalid email domain. Please enter a real, existing email address.";
+    header("Location: " . BASE_URL . "index.php");
+    exit;
+}
+
+
 if ($password !== $confirm_password) {
     $_SESSION['register_error'] = "Passwords do not match.";
     header("Location: " . BASE_URL . "index.php");

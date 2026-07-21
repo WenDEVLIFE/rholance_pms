@@ -7135,3 +7135,140 @@ body.dark input[type="password"] {
 .btn-back:hover {
     background: #e5e7eb;
 }
+/* =========================
+   DARK MODE — COMPREHENSIVE TEXT CONTRAST FIX (PATCH v2)
+========================= */
+
+/* All text-muted must remain readable, not invisible */
+body.dark .text-muted {
+    color: #94a3b8 !important;
+}
+body.dark small,
+body.dark .small {
+    color: #94a3b8 !important;
+}
+
+/* Table cells — light text on dark bg */
+body.dark table thead th {
+    background: #1e293b !important;
+    color: #94a3b8 !important;
+    border-color: #334155 !important;
+}
+body.dark table tbody td {
+    background: #0f172a !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+body.dark table tbody tr:hover td {
+    background: #1e293b !important;
+}
+
+/* System ref / sublabels in inventory */
+body.dark .text-secondary,
+body.dark .text-light-emphasis {
+    color: #cbd5e1 !important;
+}
+
+/* Badges on dark bg */
+body.dark .badge.bg-light {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+}
+body.dark .badge.bg-secondary {
+    background: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+/* Filter buttons in inventory */
+body.dark .btn-outline-secondary {
+    color: #cbd5e1 !important;
+    border-color: #475569 !important;
+}
+body.dark .btn-outline-secondary:hover {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+}
+body.dark .btn-outline-dark {
+    color: #e2e8f0 !important;
+    border-color: #475569 !important;
+}
+body.dark .btn-outline-dark:hover {
+    background: #334155 !important;
+    color: #f8fafc !important;
+}
+
+/* Card headers on dark */
+body.dark .card-header {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+body.dark .card-footer {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+/* Form labels */
+body.dark label,
+body.dark .form-label {
+    color: #cbd5e1 !important;
+}
+
+/* Ensure ALL plain text is visible */
+body.dark div,
+body.dark li,
+body.dark dt,
+body.dark dd {
+    color: #e2e8f0;
+}
+
+/* Sidebar section headers */
+body.dark .rh-sidebar-section {
+    color: #64748b !important;
+}
+
+/* Topbar text */
+body.dark .rh-topbar,
+body.dark .rh-topbar * {
+    color: #e2e8f0 !important;
+}
+
+/* Page header */
+body.dark .rh-page-header h1,
+body.dark .rh-page-header p {
+    color: #f1f5f9 !important;
+}
+
+/* Override bg-white in dark mode for card-header/footer */
+body.dark .bg-white {
+    background: #1e293b !important;
+}
+body.dark .bg-light {
+    background: #1e293b !important;
+}
+
+/* Progress bar track */
+body.dark .progress {
+    background: #334155 !important;
+}
+
+/* DataTables dark fix */
+body.dark .dataTables_wrapper .dataTables_length,
+body.dark .dataTables_wrapper .dataTables_filter,
+body.dark .dataTables_wrapper .dataTables_info,
+body.dark .dataTables_wrapper .dataTables_paginate {
+    color: #94a3b8 !important;
+}
+body.dark .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: #94a3b8 !important;
+}
+body.dark .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #f59e0b !important;
+    color: #000 !important;
+    border-color: #f59e0b !important;
+}
+body.dark .dataTables_wrapper .dataTables_filter input {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}

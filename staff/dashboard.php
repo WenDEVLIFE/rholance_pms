@@ -228,4 +228,141 @@ function e($s) { return htmlspecialchars($s ?? '', ENT_QUOTES); }
 
 </div>
 
+<!-- ══════════════════════════════════════════════════════════
+     APPOINTMENT ALERT MODAL
+     Appears automatically when a new appointment is assigned
+     to this branch in the last 48 hours.
+══════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="apptAlertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+            <!-- Blue accent header bar -->
+            <div style="background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); padding: 18px 24px;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white fw-800 fs-6 mb-1">
+                            <i class="fas fa-bell me-2"></i>New Appointment Alert
+                        </div>
+                        <span id="alertDateBadge" class="badge rounded-pill px-3 py-1 fw-700"
+                              style="background:rgba(255,255,255,.2); color:#fff; font-size:.7rem; letter-spacing:.5px;">
+                            APPOINTMENT: —
+                        </span>
+                    </div>
+                    <i class="fas fa-calendar-check fa-2x" style="color:rgba(255,255,255,.3);"></i>
+                </div>
+                <div id="alertTime" class="mt-1 small" style="color:rgba(255,255,255,.75);">
+                    TIME ASSIGNED: —
+                </div>
+            </div>
+
+            <!-- Body: client details -->
+            <div class="modal-body p-4">
+                <div class="row g-3" id="alertDetails">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-0 gap-2">
+                <button type="button" class="btn fw-800 flex-fill"
+                        style="background:#10B981; color:#fff;"
+                        onclick="dismissAlert()">
+                    <i class="fas fa-door-open me-1"></i>CLOSE
+                </button>
+                <a href="#" id="alertManageBtn"
+                   class="btn fw-800 flex-fill"
+                   style="background:#EF4444; color:#fff;">
+                    <i class="fas fa-arrow-right me-1"></i>MANAGE
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+/* ── APPOINTMENT ALERT POLLER ── */
+let _alertQueue   = [];
+let _currentAlert = null;
+let _alertModal   = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    _alertModal = new bootstrap.Modal(document.getElementById('apptAlertModal'), { backdrop: 'static', keyboard: false });
+    fetchAlerts();
+    // Re-check every 2 minutes
+    setInterval(fetchAlerts, 120_000);
+});
+
+function fetchAlerts() {
+    fetch('../staff/get_appt_alerts.php')
+        .then(r => r.json())
+        .then(d => {
+            if (d.appointments && d.appointments.length > 0) {
+                _alertQueue = d.appointments;
+                showNextAlert();
+            }
+        })
+        .catch(() => {}); // Fail silently
+}
+
+function showNextAlert() {
+    if (_alertQueue.length === 0) return;
+    _currentAlert = _alertQueue.shift();
+    const a = _currentAlert;
+
+    // Header
+    document.getElementById('alertDateBadge').textContent = 'APPOINTMENT: ' + (a.date_text || '—');
+    document.getElementById('alertTime').textContent       = 'TIME ASSIGNED: ' + (a.time_text || 'TBD');
+
+    // Build detail rows
+    const rows = [
+        ['USER', 'fa-user',         a.customer_name    || '—'],
+        ['EMAIL', 'fa-envelope',    a.cust_email       || '—'],
+        ['CONTACT', 'fa-phone',     a.cust_phone       || '—'],
+        ['PROJECT', 'fa-hard-hat',  a.requested_project|| '—'],
+        ['ADDRESS', 'fa-map-pin',   a.address          || '—'],
+    ];
+
+    document.getElementById('alertDetails').innerHTML = rows.map(([lbl, ico, val]) => `
+        <div class="col-12">
+            <div class="d-flex gap-2 align-items-start">
+                <div class="flex-shrink-0 mt-1" style="width:28px; text-align:center;">
+                    <i class="fas ${ico} text-primary opacity-75"></i>
+                </div>
+                <div>
+                    <div class="fw-800" style="font-size:.65rem; color:#94A3B8; letter-spacing:.8px;">${lbl}</div>
+                    <div class="fw-600" style="font-size:.9rem;">${val}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Manage link → appointments page filtered to this appointment date
+    const dateParam = a.appointment_date || '';
+    document.getElementById('alertManageBtn').href = `appointment.php?date=${dateParam}`;
+
+    _alertModal.show();
+}
+
+function dismissAlert() {
+    if (!_currentAlert) { _alertModal.hide(); return; }
+
+    // Mark as dismissed
+    fetch('../staff/dismiss_appt_alert.php', {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body   : 'id=' + _currentAlert.id
+    }).finally(() => {
+        _currentAlert = null;
+        _alertModal.hide();
+        // Show next one in queue if any
+        setTimeout(showNextAlert, 400);
+    });
+}
+
+// Pressing MANAGE also dismisses the current alert
+document.getElementById('alertManageBtn').addEventListener('click', () => dismissAlert());
+</script>
+
 </body></html>

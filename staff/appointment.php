@@ -31,7 +31,7 @@ $stmt->execute();
 $appts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Fetch active welders in this branch for assignment
-$welderRes = $conn->query("SELECT id, name FROM users WHERE role='welder' AND branch_id=$branch AND status='active' ORDER BY name ASC");
+$welderRes = $conn->query("SELECT id, name, phone FROM users WHERE role='welder' AND branch_id=$branch AND status='active' ORDER BY name ASC");
 $welders = $welderRes ? $welderRes->fetch_all(MYSQLI_ASSOC) : [];
 
 // Date strip: 3 days before + 14 days ahead
@@ -234,41 +234,177 @@ function statusBadge($s) {
 
 </div>
 
-<!-- ASSIGN WELDER & APPROVE MODAL -->
-<div class="modal fade" id="approvalModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-success text-white border-0">
-                <h5 class="modal-title fw-800"><i class="fas fa-user-check me-2"></i>Approve Appointment</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<!-- MANAGE APPOINTMENT MODAL FLOW -->
+<div class="modal fade" id="manageApptModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            
+            <!-- HEADER -->
+            <div class="bg-dark text-white p-3 text-center position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-50 end-0 translate-middle-y me-3" data-bs-dismiss="modal"></button>
+                <div class="fw-800" style="letter-spacing:1px; font-size:.85rem;">
+                    APPOINTMENT: <span id="mDateBadge" class="text-amber">JULY 13, 2026</span>
+                </div>
             </div>
-            <form action="process_appointment.php" method="POST">
-                <input type="hidden" name="status" value="Approved">
-                <input type="hidden" name="id" id="approveApptId">
+
+            <!-- VIEW 1: SUMMARY DETAILS -->
+            <div id="viewSummary">
                 <div class="modal-body p-4">
-                    <div class="text-center mb-3">
-                        <span class="text-muted small">Approve Appointment for</span>
-                        <h5 class="fw-800 text-light-emphasis m-0" id="approveCustName">—</h5>
+                    <div class="d-flex flex-column gap-3 mb-2" id="summaryDetailsList">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 gap-2">
+                    <button type="button" class="btn flex-fill fw-800" style="background:#10B981;color:#fff;" data-bs-dismiss="modal">EXIT</button>
+                    <button type="button" class="btn flex-fill fw-800" style="background:#F43F5E;color:#fff;" onclick="toggleApptEditor(true)">MANAGE</button>
+                </div>
+            </div>
+
+            <!-- VIEW 2: ASSIGNMENT EDITOR -->
+            <div id="viewEditor" style="display:none;">
+                <form action="process_appointment.php" method="POST">
+                    <input type="hidden" name="id" id="editApptId">
+                    <input type="hidden" name="status" id="editApptStatus" value="Approved">
+                    
+                    <div class="modal-body p-4">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-800 text-success"><i class="fas fa-check-circle me-1"></i>WELDER ASSIGNED</label>
+                            <select name="welder_id" id="editWelderId" class="form-select border-success shadow-sm fw-700" required>
+                                <option value="">[SELECT WELDER]</option>
+                                <?php foreach ($welders as $welder): ?>
+                                    <option value="<?= $welder['id'] ?>"><?= htmlspecialchars($welder['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-800 text-success"><i class="fas fa-check-circle me-1"></i>CONTACT NUMBER (WELDER)</label>
+                            <input type="text" id="editWelderPhone" class="form-control border-success shadow-sm" placeholder="Auto-filled" readonly>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-800 text-success"><i class="fas fa-check-circle me-1"></i>DATE ARRIVED</label>
+                                <input type="date" name="visit_date" id="editVisitDate" class="form-control border-success shadow-sm" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-800 text-success"><i class="fas fa-check-circle me-1"></i>TIME</label>
+                                <input type="time" name="visit_time" id="editVisitTime" class="form-control border-success shadow-sm" required>
+                            </div>
+                        </div>
+
+                        <div id="initialPaymentTrigger" style="display:none;" class="mt-4 p-3 rounded bg-light border">
+                            <div class="fw-800 text-success mb-2"><i class="fas fa-money-bill-wave me-1"></i>INITIAL PAYMENT</div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="markOngoingCheck" onchange="togglePaymentBtn(this)">
+                                <label class="form-check-label small fw-700" for="markOngoingCheck">Welder confirmed layout and settled? Mark Ongoing.</label>
+                            </div>
+                            <a href="#" id="staffPaymentBtn" class="btn btn-success fw-800 w-100 disabled"><i class="fas fa-receipt me-1"></i>FOR INITIAL PAYMENT</a>
+                        </div>
+                        
                     </div>
                     
-                    <div class="mb-3">
-                        <label class="form-label small fw-700">Assign Welder for Inspection</label>
-                        <select name="welder_id" class="form-select fw-700" required>
-                            <option value="">-- Choose Welder --</option>
-                            <?php foreach ($welders as $welder): ?>
-                                <option value="<?= $welder['id'] ?>"><?= htmlspecialchars($welder['name']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        <div class="form-text small text-muted">The assigned welder will visit the customer and finalize fabrication project dimensions &amp; materials.</div>
+                    <div class="modal-footer border-0 px-4 pb-4 gap-2">
+                        <button type="button" class="btn flex-fill fw-800" style="background:#10B981;color:#fff;" onclick="toggleApptEditor(false)">BACK</button>
+                        <button type="submit" class="btn flex-fill fw-800" style="background:#10B981;color:#fff;">SAVED</button>
                     </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-success w-100 fw-800 py-2">Approve &amp; Dispatch Welder</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            
         </div>
     </div>
 </div>
+
+<script>
+const manageApptModal = new bootstrap.Modal(document.getElementById('manageApptModal'));
+let currentAppt = null;
+
+// The welders data mapped by ID for auto-filling phone
+const weldersData = {
+    <?php foreach ($welders as $w): ?>
+    "<?= $w['id'] ?>": "<?= htmlspecialchars($w['phone'] ?? '') ?>",
+    <?php endforeach; ?>
+};
+
+document.getElementById('editWelderId').addEventListener('change', function() {
+    document.getElementById('editWelderPhone').value = weldersData[this.value] || '';
+});
+
+function openApprovalModal(appt) {
+    currentAppt = appt;
+    document.getElementById('editApptId').value = appt.id;
+    
+    // Set Header Date
+    const d = new Date(appt.appointment_date);
+    document.getElementById('mDateBadge').textContent = d.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}).toUpperCase();
+
+    // Summary Details
+    const list = document.getElementById('summaryDetailsList');
+    list.innerHTML = `
+        ${summaryRow('CLIENT NAME', appt.customer_name)}
+        ${summaryRow('EMAIL', appt.cust_email || '—')}
+        ${summaryRow('CONTACT NUMBER', appt.cust_phone || '—')}
+        ${summaryRow('BOOKED ABOUT', appt.requested_project || 'Fabrication')}
+        ${summaryRow('ADDRESS', appt.address || '—')}
+    `;
+    
+    // Pre-fill Editor
+    document.getElementById('editWelderId').value = appt.welder_id || '';
+    if (appt.welder_id) document.getElementById('editWelderPhone').value = weldersData[appt.welder_id] || '';
+    
+    document.getElementById('editVisitDate').value = appt.appointment_date;
+    
+    // Convert '01:00 PM' to '13:00' for input type time
+    if (appt.appointment_time) {
+        let [time, modifier] = appt.appointment_time.split(' ');
+        let [hours, minutes] = time.split(':');
+        if (hours === '12') hours = '00';
+        if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
+        document.getElementById('editVisitTime').value = `${hours}:${minutes}`;
+    }
+
+    // Reset view
+    toggleApptEditor(false);
+    
+    // Payment Trigger Section
+    const payTrigger = document.getElementById('initialPaymentTrigger');
+    if (appt.status === 'Approved') {
+        payTrigger.style.display = 'block';
+        document.getElementById('editApptStatus').value = 'Completed'; // Marking it complete directs to project
+        document.getElementById('staffPaymentBtn').href = `process_appointment.php?id=${appt.id}&status=Completed`;
+    } else {
+        payTrigger.style.display = 'none';
+        document.getElementById('editApptStatus').value = 'Approved';
+    }
+
+    manageApptModal.show();
+}
+
+function summaryRow(label, val) {
+    return `
+    <div class="row g-0">
+        <div class="col-4 fw-800 text-muted" style="font-size:.7rem;">${label}:</div>
+        <div class="col-8 fw-700" style="font-size:.85rem;">${val}</div>
+    </div>`;
+}
+
+function toggleApptEditor(showEditor) {
+    document.getElementById('viewSummary').style.display = showEditor ? 'none' : 'block';
+    document.getElementById('viewEditor').style.display = showEditor ? 'block' : 'none';
+}
+
+function togglePaymentBtn(cb) {
+    const btn = document.getElementById('staffPaymentBtn');
+    if (cb.checked) {
+        btn.classList.remove('disabled');
+        btn.classList.add('shadow');
+    } else {
+        btn.classList.add('disabled');
+        btn.classList.remove('shadow');
+    }
+}
+</script>
 
 <!-- WALK-IN APPOINTMENT MODAL -->
 <div class="modal fade" id="walkinModal" tabindex="-1">

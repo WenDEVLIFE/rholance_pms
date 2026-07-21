@@ -79,8 +79,8 @@ $pendingProgress = count(array_filter($activeProjects, fn($p) => ($p['progress_s
     <!-- STAT CARDS -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-            <div class="rh-stat-card">
-                <div class="rh-stat-icon bg-amber"><i class="fas fa-hard-hat"></i></div>
+            <div class="rh-stat-card h-100" style="min-height:90px; align-items:flex-start;">
+                <div class="rh-stat-icon bg-amber flex-shrink-0"><i class="fas fa-hard-hat"></i></div>
                 <div>
                     <div class="rh-stat-label">Assigned Projects</div>
                     <div class="rh-stat-value"><?= $totalAssigned ?></div>
@@ -88,26 +88,26 @@ $pendingProgress = count(array_filter($activeProjects, fn($p) => ($p['progress_s
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="rh-stat-card">
-                <div class="rh-stat-icon bg-blue"><i class="fas fa-file-invoice"></i></div>
+            <div class="rh-stat-card h-100" style="min-height:90px; align-items:flex-start;">
+                <div class="rh-stat-icon bg-blue flex-shrink-0"><i class="fas fa-file-invoice"></i></div>
                 <div>
-                    <div class="rh-stat-label">Quotes Pending Review</div>
+                    <div class="rh-stat-label">Quotes to Review</div>
                     <div class="rh-stat-value"><?= $pendingQuotes ?></div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="rh-stat-card">
-                <div class="rh-stat-icon bg-purple"><i class="fas fa-chart-line"></i></div>
+            <div class="rh-stat-card h-100" style="min-height:90px; align-items:flex-start;">
+                <div class="rh-stat-icon bg-purple flex-shrink-0"><i class="fas fa-chart-line"></i></div>
                 <div>
-                    <div class="rh-stat-label">Progress Pending Approval</div>
+                    <div class="rh-stat-label">Pending Approval</div>
                     <div class="rh-stat-value"><?= $pendingProgress ?></div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="rh-stat-card">
-                <div class="rh-stat-icon bg-green"><i class="fas fa-flag-checkered"></i></div>
+            <div class="rh-stat-card h-100" style="min-height:90px; align-items:flex-start;">
+                <div class="rh-stat-icon bg-green flex-shrink-0"><i class="fas fa-flag-checkered"></i></div>
                 <div>
                     <div class="rh-stat-label">Completed</div>
                     <div class="rh-stat-value"><?= count($completedList) ?></div>
