@@ -28,16 +28,16 @@ if (strpos($addr_lower, 'cavite') === false && strpos($addr_lower, 'laguna') ===
 /* AUTO NAME FROM SESSION */
 $customer_name = $_SESSION['full_name'] ?? $_SESSION['name'] ?? 'Customer';
 
-/* 🔒 PREVENT DOUBLE BOOKING */
+/* 🔒 DAILY CAPACITY LIMIT CHECK */
+$capacity = ($branch_id == 2) ? 24 : 12;
 $check = mysqli_query($conn, "
-    SELECT * FROM appointments 
+    SELECT COUNT(*) as c FROM appointments 
     WHERE appointment_date = '$date'
-    AND appointment_time = '$time'
     AND branch_id = '$branch_id'
-    AND status IN ('Pending','Completed')
+    AND status IN ('Pending','Approved','Completed')
 ");
-
-if (mysqli_num_rows($check) > 0) {
+$row = mysqli_fetch_assoc($check);
+if ($row['c'] >= $capacity) {
     header("Location: available_appointments.php?error=slot_taken");
     exit;
 }

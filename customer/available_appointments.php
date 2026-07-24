@@ -22,14 +22,32 @@ $firstDay     = mktime(0,0,0,$calMonth,1,$calYear);
 $daysInMonth  = (int)date('t', $firstDay);
 $startWeekday = (int)date('w', $firstDay); // 0=Sun
 
+// Fetch customer's branch
+$custInfo = $conn->query("SELECT branch_id, address FROM users WHERE id = $user_id")->fetch_assoc();
+$customer_branch = (int)($custInfo['branch_id'] ?? 1);
+$customer_address = $custInfo['address'] ?? '';
+
+// Cavite=12, Laguna=24 max slots per day
+$maxSlots = ($customer_branch == 2) ? 24 : 12;
+
+$timeOptions = ['08:00 AM','09:00 AM','10:00 AM','11:00 AM','01:00 PM','02:00 PM','03:00 PM','04:00 PM'];
+
 // Availability map for entire month
 $availMap = [];
 for ($d = 1; $d <= $daysInMonth; $d++) {
     $dt  = sprintf('%04d-%02d-%02d', $calYear, $calMonth, $d);
-    $all = $conn->query("SELECT appointment_time FROM appointment_slots WHERE appointment_date='$dt' AND status='Available'")->fetch_all(MYSQLI_ASSOC);
-    $bkd = $conn->query("SELECT appointment_time FROM appointments WHERE appointment_date='$dt' AND status IN('Pending','Completed')")->fetch_all(MYSQLI_ASSOC);
-    $avail = array_diff(array_column($all,'appointment_time'), array_column($bkd,'appointment_time'));
-    $availMap[$dt] = ['slots' => array_values($avail), 'count' => count($avail), 'hasSlots' => !empty($all)];
+    
+    // Count how many appointments this branch already has for this day
+    $bkdCount = $conn->query("SELECT COUNT(*) as c FROM appointments WHERE appointment_date='$dt' AND branch_id=$customer_branch AND status IN('Pending','Approved','Completed')")->fetch_assoc()['c'];
+    
+    $availCount = max(0, $maxSlots - $bkdCount);
+    
+    // If not full, we just pass the standard time options. (We aren't strictly locking specific hours, just the daily limit).
+    $availMap[$dt] = [
+        'slots' => $availCount > 0 ? $timeOptions : [], 
+        'count' => $availCount, 
+        'hasSlots' => true
+    ];
 }
 
 /* ── Fetch customer's own appointments (with welder + order info) ── */
@@ -285,14 +303,8 @@ $monthName = date('F Y', $firstDay);
                             <label class="form-label small fw-700">Contact Person at Site</label>
                             <input type="text" name="contact_person" class="form-control" placeholder="Who will be present" required>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-700">Branch</label>
-                            <select name="branch_id" class="form-select" required>
-                                <option value="" disabled selected>-- Choose Branch --</option>
-                                <option value="1">Dasmariñas, Cavite Branch</option>
-                                <option value="2">Biñan, Laguna Branch</option>
-                            </select>
-                        </div>
+                        <!-- Branch is implicitly assigned based on customer's account branch -->
+                        <input type="hidden" name="branch_id" value="<?= $customer_branch ?>">
                     </div>
                 </div>
                 <div class="modal-footer bg-light border-0">

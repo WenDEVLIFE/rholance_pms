@@ -14,15 +14,23 @@ $today = date('Y-m-d');
 $thisMonth = date('Y-m');
 $thisYear = date('Y');
 
-$salesDay   = $conn->query("SELECT COALESCE(SUM(amount_paid),0) as t FROM pos_payments WHERE DATE(paid_at)='$today' AND branch_id=$branch")->fetch_assoc()['t'] ?? 0;
-$salesMonth = $conn->query("SELECT COALESCE(SUM(amount_paid),0) as t FROM pos_payments WHERE DATE_FORMAT(paid_at,'%Y-%m')='$thisMonth' AND branch_id=$branch")->fetch_assoc()['t'] ?? 0;
-$salesYear  = $conn->query("SELECT COALESCE(SUM(amount_paid),0) as t FROM pos_payments WHERE YEAR(paid_at)='$thisYear' AND branch_id=$branch")->fetch_assoc()['t'] ?? 0;
+$salesDay = 0;
+$salesMonth = 0;
+$salesYear = 0;
 
-// Fallback to transactions table if pos_payments doesn't exist
-if (!$conn->query("SHOW TABLES LIKE 'pos_payments'")->num_rows) {
-    $salesDay   = $conn->query("SELECT COALESCE(SUM(total_amount),0) as t FROM transactions WHERE DATE(created_at)='$today' AND status='Paid'")->fetch_assoc()['t'] ?? 0;
-    $salesMonth = $conn->query("SELECT COALESCE(SUM(total_amount),0) as t FROM transactions WHERE DATE_FORMAT(created_at,'%Y-%m')='$thisMonth' AND status='Paid'")->fetch_assoc()['t'] ?? 0;
-    $salesYear  = $conn->query("SELECT COALESCE(SUM(total_amount),0) as t FROM transactions WHERE YEAR(created_at)='$thisYear' AND status='Paid'")->fetch_assoc()['t'] ?? 0;
+$posExists = $conn->query("SHOW TABLES LIKE 'pos_payments'")->num_rows > 0;
+if ($posExists) {
+    $salesDay   = $conn->query("SELECT COALESCE(SUM(amount_paid),0) as t FROM pos_payments WHERE DATE(paid_at)='$today' AND branch_id=$branch")->fetch_assoc()['t'] ?? 0;
+    $salesMonth = $conn->query("SELECT COALESCE(SUM(amount_paid),0) as t FROM pos_payments WHERE DATE_FORMAT(paid_at,'%Y-%m')='$thisMonth' AND branch_id=$branch")->fetch_assoc()['t'] ?? 0;
+    $salesYear  = $conn->query("SELECT COALESCE(SUM(amount_paid),0) as t FROM pos_payments WHERE YEAR(paid_at)='$thisYear' AND branch_id=$branch")->fetch_assoc()['t'] ?? 0;
+} else {
+    // Fallback to transactions table if pos_payments doesn't exist
+    $txExists = $conn->query("SHOW TABLES LIKE 'transactions'")->num_rows > 0;
+    if ($txExists) {
+        $salesDay   = $conn->query("SELECT COALESCE(SUM(total_amount),0) as t FROM transactions WHERE DATE(created_at)='$today' AND status='Paid'")->fetch_assoc()['t'] ?? 0;
+        $salesMonth = $conn->query("SELECT COALESCE(SUM(total_amount),0) as t FROM transactions WHERE DATE_FORMAT(created_at,'%Y-%m')='$thisMonth' AND status='Paid'")->fetch_assoc()['t'] ?? 0;
+        $salesYear  = $conn->query("SELECT COALESCE(SUM(total_amount),0) as t FROM transactions WHERE YEAR(created_at)='$thisYear' AND status='Paid'")->fetch_assoc()['t'] ?? 0;
+    }
 }
 
 // Active projects

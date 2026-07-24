@@ -193,6 +193,9 @@ if ($aQ) { $aQ->bind_param("i",$cid); $aQ->execute(); $actionOrders = $aQ->get_r
     </div>
     <?php endif; ?>
 
+    <!-- PRODUCT CATALOG SECTION -->
+    <?php include 'dashboard_products.php'; ?>
+
 </div>
 
 </body></html>

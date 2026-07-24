@@ -360,11 +360,14 @@ body.dark .product-card .img-wrapper {
     .navbar {
         padding: 0 20px;
     }
+}
 
 /* =========================================
    VARIANTS MODAL
    ========================================= */
 .variants-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
     max-width: 800px !important;
     width: 90% !important;
     background: var(--card-bg) !important;
@@ -422,5 +425,4 @@ body.dark .variant-card img {
     color: var(--card-subtext);
     padding: 0 10px;
     margin: 5px 0 0 0;
-}
 }

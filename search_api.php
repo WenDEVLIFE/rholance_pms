@@ -54,7 +54,7 @@ if ($role === 'admin') {
                 ? $row['customer_name'] 
                 : 'Order #' . $row['id'],
             'sub' => $row['status'],
-            'link' => '<?= BASE_URL ?>admin/order_view.php?id=' . $row['id']
+            'link' => BASE_URL . 'admin/order_view.php?id=' . $row['id']
         ];
     }
 
@@ -73,7 +73,7 @@ if ($role === 'admin') {
             'type' => 'Task',
             'title' => $row['task_name'],
             'sub' => $row['status'],
-            'link' => '<?= BASE_URL ?>staff/task_view.php?task=' . urlencode($row['task_name'])
+            'link' => BASE_URL . 'staff/task_view.php?task=' . urlencode($row['task_name'])
         ];
     }
 
@@ -115,7 +115,7 @@ elseif ($role === 'staff') {
                 ? $row['customer_name'] 
                 : 'Order #' . $row['id'],
             'sub' => $row['status'],
-            'link' => '<?= BASE_URL ?>staff/order_view.php?id=' . $row['id']
+            'link' => BASE_URL . 'staff/order_view.php?id=' . $row['id']
         ];
     }
 
@@ -134,7 +134,7 @@ elseif ($role === 'staff') {
             'type' => 'Task',
             'title' => $row['task_name'],
             'sub' => $row['status'],
-            'link' => '<?= BASE_URL ?>staff/task_view.php?task=' . urlencode($row['task_name'])
+            'link' => BASE_URL . 'staff/task_view.php?task=' . urlencode($row['task_name'])
         ];
     }
 }
@@ -144,7 +144,7 @@ elseif ($role === 'customer') {
 
     $sql = "SELECT id, customer_name, status 
             FROM custom_orders 
-            WHERE user_id = '$user_id'
+            WHERE customer_id = '$user_id'
             AND (
                 customer_name LIKE '%$q%' 
                 OR status LIKE '%$q%'
@@ -160,7 +160,7 @@ elseif ($role === 'customer') {
                 ? $row['customer_name'] 
                 : 'Order #' . $row['id'],
             'sub' => $row['status'],
-            'link' => '<?= BASE_URL ?>customer/order_details.php?id=' . $row['id']
+            'link' => BASE_URL . 'customer/order_details.php?id=' . $row['id']
         ];
     }
 }

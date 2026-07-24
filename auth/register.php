@@ -62,9 +62,9 @@ $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 $code = strval(rand(100000, 999999));
 $expiry = date("Y-m-d H:i:s", strtotime("+5 minutes"));
 
-$branch_id = $_SESSION['branch_id'] ?? 1;
 $role = 'customer';
 $address = $_POST['address'] ?? '';
+$branch_id = (stripos($address, 'Laguna') !== false) ? 2 : 1;
 
 $stmt = $conn->prepare("
     INSERT INTO users 
