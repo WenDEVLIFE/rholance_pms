@@ -270,17 +270,19 @@ function statusBadge($s) {
                         
                         <div class="mb-3">
                             <label class="form-label small fw-800 text-success"><i class="fas fa-check-circle me-1"></i>WELDER ASSIGNED</label>
-                            <select name="welder_id" id="editWelderId" class="form-select border-success shadow-sm fw-700" required>
-                                <option value="">[SELECT WELDER]</option>
-                                <?php foreach ($welders as $welder): ?>
-                                    <option value="<?= $welder['id'] ?>"><?= htmlspecialchars($welder['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="hidden" name="welder_id" id="editWelderId" required>
+                            <button type="button" class="btn btn-outline-success w-100 fw-700 text-start d-flex justify-content-between align-items-center" id="assignedWelderBtn" onclick="openWelderSelector()">
+                                <span>[SELECT WELDER]</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                         
                         <div class="mb-3">
                             <label class="form-label small fw-800 text-success"><i class="fas fa-check-circle me-1"></i>CONTACT NUMBER (WELDER)</label>
-                            <input type="text" id="editWelderPhone" class="form-control border-success shadow-sm" placeholder="Auto-filled" readonly>
+                            <div class="input-group">
+                                <input type="text" id="editWelderPhone" name="welder_phone" class="form-control border-success shadow-sm" placeholder="Auto-filled / Editable">
+                                <span class="input-group-text bg-success-subtle border-success text-success fw-700" style="font-size:0.75rem;">EDIT</span>
+                            </div>
                         </div>
 
                         <div class="row g-2 mb-3">
@@ -316,9 +318,49 @@ function statusBadge($s) {
     </div>
 </div>
 
+<!-- WELDER SELECTION POPUP MODAL -->
+<div class="modal fade" id="welderSelectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="bg-dark text-white p-3 text-center">
+                <div class="fw-800" style="letter-spacing:1px; font-size:.85rem;">
+                    SELECT WELDER
+                </div>
+            </div>
+            <div class="modal-body p-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-light border"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" id="welderSearchInput" class="form-control border-start-0" placeholder="Search welder..." onkeyup="filterWeldersList()">
+                </div>
+                
+                <div class="list-group list-group-flush overflow-auto" style="max-height: 250px;" id="welderListContainer">
+                    <?php foreach ($welders as $w): ?>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center fw-600 py-2 border-0 rounded mb-1 welder-list-item" 
+                                data-id="<?= $w['id'] ?>" 
+                                data-name="<?= htmlspecialchars($w['name']) ?>" 
+                                data-phone="<?= htmlspecialchars($w['phone'] ?? '') ?>"
+                                onclick="selectWelder(this)">
+                            <span><?= htmlspecialchars($w['name']) ?></span>
+                            <span class="badge bg-success-subtle text-success fs-8 fw-700 select-status" style="display:none;">ASSIGNED</span>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-3 bg-light d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary flex-fill fw-700" data-bs-dismiss="modal">CANCEL</button>
+                <button type="button" class="btn btn-primary flex-fill fw-800" onclick="confirmWelderSelection()">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 const manageApptModal = new bootstrap.Modal(document.getElementById('manageApptModal'));
+const welderSelectModal = new bootstrap.Modal(document.getElementById('welderSelectModal'));
 let currentAppt = null;
+let selectedWelderId = '';
+let selectedWelderName = '';
+let selectedWelderPhone = '';
 
 // The welders data mapped by ID for auto-filling phone
 const weldersData = {
@@ -327,8 +369,70 @@ const weldersData = {
     <?php endforeach; ?>
 };
 
-document.getElementById('editWelderId').addEventListener('change', function() {
-    document.getElementById('editWelderPhone').value = weldersData[this.value] || '';
+function openWelderSelector() {
+    selectedWelderId = document.getElementById('editWelderId').value;
+    
+    // Highlight currently assigned
+    document.querySelectorAll('.welder-list-item').forEach(item => {
+        const itemId = item.getAttribute('data-id');
+        const badge = item.querySelector('.select-status');
+        if (itemId === selectedWelderId) {
+            item.classList.add('bg-success-subtle');
+            badge.style.display = 'block';
+        } else {
+            item.classList.remove('bg-success-subtle');
+            badge.style.display = 'none';
+        }
+    });
+
+    document.getElementById('welderSearchInput').value = '';
+    filterWeldersList();
+    
+    manageApptModal.hide();
+    welderSelectModal.show();
+}
+
+function filterWeldersList() {
+    const query = document.getElementById('welderSearchInput').value.toLowerCase();
+    document.querySelectorAll('.welder-list-item').forEach(item => {
+        const name = item.getAttribute('data-name').toLowerCase();
+        if (name.includes(query)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function selectWelder(btn) {
+    selectedWelderId = btn.getAttribute('data-id');
+    selectedWelderName = btn.getAttribute('data-name');
+    selectedWelderPhone = btn.getAttribute('data-phone');
+    
+    document.querySelectorAll('.welder-list-item').forEach(item => {
+        item.classList.remove('bg-success-subtle');
+        item.querySelector('.select-status').style.display = 'none';
+    });
+    
+    btn.classList.add('bg-success-subtle');
+    btn.querySelector('.select-status').style.display = 'block';
+}
+
+function confirmWelderSelection() {
+    if (selectedWelderId) {
+        document.getElementById('editWelderId').value = selectedWelderId;
+        document.querySelector('#assignedWelderBtn span').textContent = selectedWelderName;
+        document.getElementById('editWelderPhone').value = selectedWelderPhone;
+    }
+    welderSelectModal.hide();
+    manageApptModal.show();
+}
+
+// Close child modals gracefully back to parent
+document.getElementById('welderSelectModal').addEventListener('hidden.bs.modal', function () {
+    if (!document.getElementById('manageApptModal').classList.contains('show') && selectedWelderId === '') {
+        manageApptModal.show();
+    }
 });
 
 function openApprovalModal(appt) {
@@ -351,7 +455,18 @@ function openApprovalModal(appt) {
     
     // Pre-fill Editor
     document.getElementById('editWelderId').value = appt.welder_id || '';
-    if (appt.welder_id) document.getElementById('editWelderPhone').value = weldersData[appt.welder_id] || '';
+    if (appt.welder_id) {
+        document.getElementById('editWelderPhone').value = weldersData[appt.welder_id] || '';
+        const welderItem = document.querySelector(`.welder-list-item[data-id="${appt.welder_id}"]`);
+        if (welderItem) {
+            document.querySelector('#assignedWelderBtn span').textContent = welderItem.getAttribute('data-name');
+        } else {
+            document.querySelector('#assignedWelderBtn span').textContent = appt.welder_name || '[SELECT WELDER]';
+        }
+    } else {
+        document.getElementById('editWelderPhone').value = '';
+        document.querySelector('#assignedWelderBtn span').textContent = '[SELECT WELDER]';
+    }
     
     document.getElementById('editVisitDate').value = appt.appointment_date;
     
@@ -457,15 +572,7 @@ function togglePaymentBtn(cb) {
     </div>
 </div>
 
-<script>
-const approvalModal = new bootstrap.Modal(document.getElementById('approvalModal'));
 
-function openApprovalModal(appt) {
-    document.getElementById('approveApptId').value = appt.id;
-    document.getElementById('approveCustName').textContent = appt.customer_name;
-    approvalModal.show();
-}
-</script>
 
 <!-- SLOT ADDED SUCCESS MODAL -->
 <?php if (isset($_GET['success']) && $_GET['success'] === 'slot_added'): ?>

@@ -14,9 +14,37 @@ $stmt->bind_param("ii",$pid,$cid); $stmt->execute();
 $p = $stmt->get_result()->fetch_assoc();
 if (!$p) { header("Location: my_projects.php"); exit; }
 
+// Handle customer confirmation submit
+if (isset($_POST['confirm_details'])) {
+    $conn->query("UPDATE custom_orders SET customer_confirmed = 1 WHERE id = $pid");
+    header("Location: project_details.php?id=$pid&success=confirmed");
+    exit;
+}
+
+// Handle customer field edits
+if (isset($_POST['edit_customer_details'])) {
+    $name = $conn->real_escape_string($_POST['customer_name']);
+    $email = $conn->real_escape_string($_POST['customer_email']);
+    $phone = $conn->real_escape_string($_POST['customer_phone']);
+    $address = $conn->real_escape_string($_POST['customer_address']);
+    $category = $conn->real_escape_string($_POST['category']);
+    
+    $conn->query("UPDATE users SET name='$name', email='$email', phone='$phone', address='$address' WHERE id=$cid");
+    $conn->query("UPDATE custom_orders SET customer_name='$name', category='$category', address='$address' WHERE id=$pid");
+    header("Location: project_details.php?id=$pid&msg=DetailsUpdated");
+    exit;
+}
+
 $welders = $conn->prepare("SELECT u.name FROM tasks t JOIN users u ON u.id=t.assigned_to WHERE t.order_id=?");
 $welders->bind_param("i",$pid); $welders->execute();
 $welderRows = $welders->get_result()->fetch_all(MYSQLI_ASSOC);
+
+$welderInfo = null;
+if (!empty($p['assigned_welder_id'])) {
+    $welderInfo = $conn->query("SELECT id, name, phone FROM users WHERE id = " . (int)$p['assigned_welder_id'])->fetch_assoc();
+}
+
+$progressList = $conn->query("SELECT * FROM project_progress WHERE project_id = $pid ORDER BY percentage ASC")->fetch_all(MYSQLI_ASSOC);
 
 $mats = $conn->prepare("SELECT oi.*,i.name item_name FROM order_items oi JOIN items i ON i.id=oi.item_id WHERE oi.order_id=?");
 $mats->bind_param("i",$pid); $mats->execute();
@@ -189,6 +217,35 @@ $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
             </div>
             <?php endif; ?>
 
+            <!-- PROGRESS HISTORY TIMELINE -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <span class="fw-800 text-light-emphasis"><i class="fas fa-history me-2 text-amber"></i>Fabrication Progress History</span>
+                </div>
+                <div class="card-body border-top p-3">
+                    <?php if (empty($progressList)): ?>
+                        <div class="text-center text-muted py-3 small">No progress updates submitted by the welder yet.</div>
+                    <?php else: ?>
+                        <div class="d-flex flex-column gap-3">
+                            <?php foreach ($progressList as $item): ?>
+                            <div class="p-3 border rounded bg-white">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-success-subtle text-success fs-8 fw-800"><?= $item['percentage'] ?>% COMPLETE</span>
+                                    <small class="text-muted"><?= date('M d, Y h:i A', strtotime($item['created_at'])) ?></small>
+                                </div>
+                                <p class="small text-muted mb-2"><?= htmlspecialchars($item['description']) ?></p>
+                                <?php if (!empty($item['image_path'])): ?>
+                                <a href="../<?= htmlspecialchars($item['image_path']) ?>" target="_blank">
+                                    <img src="../<?= htmlspecialchars($item['image_path']) ?>" class="img-fluid rounded border mt-1" style="max-height: 150px;">
+                                </a>
+                                <?php endif; ?>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -222,6 +279,95 @@ $cls = 'badge-'.strtolower(str_replace([' ','/'],'-',$p['status']));
 document.addEventListener("DOMContentLoaded", function() {
     var initialPaymentModal = new bootstrap.Modal(document.getElementById('initialPaymentModal'));
     initialPaymentModal.show();
+});
+</script>
+<?php endif; ?>
+
+<!-- 3. CUSTOMER REVIEW & CONFIRMATION MODAL -->
+<?php if ($p['status'] === 'Appointment' && (int)$p['welder_confirmed'] === 1 && (int)$p['customer_confirmed'] === 0): ?>
+<div class="modal fade" id="customerReviewModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="bg-dark text-white p-3 text-center">
+                <div class="fw-800" style="letter-spacing:1.5px; font-size:.85rem;">REVIEW APPOINTMENT DETAILS</div>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert bg-success-subtle text-success border-0 small mb-4 text-center py-2 fw-700">
+                    HI <?= strtoupper(htmlspecialchars($p['customer_name'])) ?>! WE RECEIVED YOUR APPOINTMENT. PLEASE CHECK THE INFO OF YOUR APPOINTMENT:
+                </div>
+                
+                <!-- Editable customer information form -->
+                <form method="POST">
+                    <input type="hidden" name="edit_customer_details" value="1">
+                    <div class="mb-3">
+                        <label class="form-label small fw-800 text-muted">CLIENT NAME</label>
+                        <input type="text" name="customer_name" class="form-control fw-600" value="<?= htmlspecialchars($p['customer_name']) ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-800 text-muted">EMAIL</label>
+                        <input type="email" name="customer_email" class="form-control fw-600" value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-800 text-muted">CONTACT NUMBER</label>
+                        <input type="text" name="customer_phone" class="form-control fw-700 text-amber" value="<?= htmlspecialchars($_SESSION['phone'] ?? '') ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-800 text-muted">BOOKED ABOUT</label>
+                        <select name="category" class="form-select fw-700 text-success" required>
+                            <option value="Gate" <?= $p['category'] === 'Gate' ? 'selected' : '' ?>>GATE</option>
+                            <option value="Grills" <?= $p['category'] === 'Grills' ? 'selected' : '' ?>>GRILLS</option>
+                            <option value="Fence" <?= $p['category'] === 'Fence' ? 'selected' : '' ?>>FENCE</option>
+                            <option value="Others" <?= $p['category'] === 'Others' ? 'selected' : '' ?>>OTHERS</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-800 text-muted">ADDRESS</label>
+                        <textarea name="customer_address" class="form-control small fw-600" rows="2" required><?= htmlspecialchars($p['address'] ?? '') ?></textarea>
+                    </div>
+                    
+                    <!-- Assigned Welder display -->
+                    <div class="p-3 bg-light rounded border mb-4">
+                        <div class="fw-800 text-dark small mb-2"><i class="fas fa-hard-hat me-1"></i>ASSIGNED WELDER INFO</div>
+                        <div class="row g-2 small">
+                            <div class="col-6">
+                                <span class="text-muted d-block font-monospace" style="font-size: 0.75rem;">WELDER ASSIGNED</span>
+                                <span class="fw-700"><?= htmlspecialchars($welderInfo['name'] ?? '—') ?></span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted d-block font-monospace" style="font-size: 0.75rem;">CONTACT NUMBER</span>
+                                <span class="fw-700"><?= htmlspecialchars($welderInfo['phone'] ?? '—') ?></span>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <span class="text-muted d-block font-monospace" style="font-size: 0.75rem;">DATE ARRIVED</span>
+                                <span class="fw-700 text-amber"><?= $p['welder_visit_date'] ? date('F d, Y', strtotime($p['welder_visit_date'])) : '—' ?></span>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <span class="text-muted d-block font-monospace" style="font-size: 0.75rem;">TIME</span>
+                                <span class="fw-700"><?= htmlspecialchars($p['welder_visit_time'] ?? '—') ?></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning border-0 py-2 small fw-800 text-center mb-4">
+                        <i class="fas fa-exclamation-triangle me-1"></i>NOTE: MAKE SURE YOUR INFORMATION IS CORRECT.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-outline-success flex-fill fw-800 py-2">SAVE &amp; EDIT</button>
+                    </form>
+                    <form method="POST" class="flex-fill">
+                        <input type="hidden" name="confirm_details" value="1">
+                        <button type="submit" class="btn btn-danger w-100 fw-800 py-2">CONFIRM</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var customerReviewModal = new bootstrap.Modal(document.getElementById('customerReviewModal'));
+    customerReviewModal.show();
 });
 </script>
 <?php endif; ?>
