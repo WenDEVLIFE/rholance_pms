@@ -272,7 +272,8 @@ function e($s) { return htmlspecialchars($s ?? '', ENT_QUOTES); }
                 </button>
                 <a href="#" id="alertManageBtn"
                    class="btn fw-800 flex-fill"
-                   style="background:#EF4444; color:#fff;">
+                   style="background:#EF4444; color:#fff;"
+                   onclick="if(this.href.endsWith('#')) { event.preventDefault(); } else { window.location.href = this.href; event.preventDefault(); }">
                     <i class="fas fa-arrow-right me-1"></i>MANAGE
                 </a>
             </div>

@@ -256,7 +256,7 @@ function statusBadge($s) {
                 </div>
                 <div class="modal-footer border-0 px-4 pb-4 gap-2">
                     <button type="button" class="btn flex-fill fw-800" style="background:#10B981;color:#fff;" data-bs-dismiss="modal">EXIT</button>
-                    <button type="button" class="btn flex-fill fw-800" style="background:#F43F5E;color:#fff;" onclick="toggleApptEditor(true)">MANAGE</button>
+                    <button type="button" class="btn flex-fill fw-800" style="background:#F43F5E;color:#fff;" onclick="event.preventDefault(); event.stopPropagation(); toggleApptEditor(true);">MANAGE</button>
                 </div>
             </div>
 
@@ -505,8 +505,13 @@ function summaryRow(label, val) {
 }
 
 function toggleApptEditor(showEditor) {
-    document.getElementById('viewSummary').style.display = showEditor ? 'none' : 'block';
-    document.getElementById('viewEditor').style.display = showEditor ? 'block' : 'none';
+    if (showEditor) {
+        document.getElementById('viewSummary').style.display = 'none';
+        document.getElementById('viewEditor').style.display = 'block';
+    } else {
+        document.getElementById('viewSummary').style.display = 'block';
+        document.getElementById('viewEditor').style.display = 'none';
+    }
 }
 
 function togglePaymentBtn(cb) {
