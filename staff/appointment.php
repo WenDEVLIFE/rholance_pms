@@ -435,40 +435,56 @@ document.getElementById('welderSelectModal').addEventListener('hidden.bs.modal',
     }
 });
 
+function safeSetVal(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+}
+
+function safeSetText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+function safeSetHtml(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = val;
+}
+
 function openApprovalModal(appt) {
     currentAppt = appt;
-    document.getElementById('editApptId').value = appt.id;
+    safeSetVal('editApptId', appt.id);
     
     // Set Header Date
     const d = new Date(appt.appointment_date);
-    document.getElementById('mDateBadge').textContent = d.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}).toUpperCase();
+    safeSetText('mDateBadge', d.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}).toUpperCase());
 
     // Summary Details
-    const list = document.getElementById('summaryDetailsList');
-    list.innerHTML = `
+    safeSetHtml('summaryDetailsList', `
         ${summaryRow('CLIENT NAME', appt.customer_name)}
         ${summaryRow('EMAIL', appt.cust_email || '—')}
         ${summaryRow('CONTACT NUMBER', appt.cust_phone || '—')}
         ${summaryRow('BOOKED ABOUT', appt.requested_project || 'Fabrication')}
         ${summaryRow('ADDRESS', appt.address || '—')}
-    `;
+    `);
     
     // Pre-fill Editor
-    document.getElementById('editWelderId').value = appt.welder_id || '';
+    safeSetVal('editWelderId', appt.welder_id || '');
     if (appt.welder_id) {
-        document.getElementById('editWelderPhone').value = weldersData[appt.welder_id] || '';
+        safeSetVal('editWelderPhone', weldersData[appt.welder_id] || '');
         const welderItem = document.querySelector(`.welder-list-item[data-id="${appt.welder_id}"]`);
-        if (welderItem) {
-            document.querySelector('#assignedWelderBtn span').textContent = welderItem.getAttribute('data-name');
-        } else {
-            document.querySelector('#assignedWelderBtn span').textContent = appt.welder_name || '[SELECT WELDER]';
+        const welderBtnSpan = document.querySelector('#assignedWelderBtn span');
+        if (welderItem && welderBtnSpan) {
+            welderBtnSpan.textContent = welderItem.getAttribute('data-name');
+        } else if (welderBtnSpan) {
+            welderBtnSpan.textContent = appt.welder_name || '[SELECT WELDER]';
         }
     } else {
-        document.getElementById('editWelderPhone').value = '';
-        document.querySelector('#assignedWelderBtn span').textContent = '[SELECT WELDER]';
+        safeSetVal('editWelderPhone', '');
+        const welderBtnSpan = document.querySelector('#assignedWelderBtn span');
+        if (welderBtnSpan) welderBtnSpan.textContent = '[SELECT WELDER]';
     }
     
-    document.getElementById('editVisitDate').value = appt.appointment_date;
+    safeSetVal('editVisitDate', appt.appointment_date);
     
     // Convert '01:00 PM' to '13:00' for input type time
     if (appt.appointment_time) {
@@ -476,7 +492,7 @@ function openApprovalModal(appt) {
         let [hours, minutes] = time.split(':');
         if (hours === '12') hours = '00';
         if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
-        document.getElementById('editVisitTime').value = `${hours}:${minutes}`;
+        safeSetVal('editVisitTime', `${hours}:${minutes}`);
     }
 
     // Reset view
@@ -484,16 +500,19 @@ function openApprovalModal(appt) {
     
     // Payment Trigger Section
     const payTrigger = document.getElementById('initialPaymentTrigger');
-    if (appt.status === 'Approved') {
-        payTrigger.style.display = 'block';
-        document.getElementById('editApptStatus').value = 'Completed'; // Marking it complete directs to project
-        document.getElementById('staffPaymentBtn').href = `process_appointment.php?id=${appt.id}&status=Completed`;
-    } else {
-        payTrigger.style.display = 'none';
-        document.getElementById('editApptStatus').value = 'Approved';
+    if (payTrigger) {
+        if (appt.status === 'Approved') {
+            payTrigger.style.display = 'block';
+            safeSetVal('editApptStatus', 'Completed'); // Marking it complete directs to project
+            const staffPaymentBtn = document.getElementById('staffPaymentBtn');
+            if (staffPaymentBtn) staffPaymentBtn.href = `process_appointment.php?id=${appt.id}&status=Completed`;
+        } else {
+            payTrigger.style.display = 'none';
+            safeSetVal('editApptStatus', 'Approved');
+        }
     }
 
-    manageApptModal.show();
+    if (manageApptModal) manageApptModal.show();
 }
 
 function summaryRow(label, val) {
